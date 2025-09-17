@@ -313,23 +313,6 @@ $(document).ready(function(){
             });
         }
 
-        // start aside -->
-       let menuItem =  document.querySelectorAll('.menu-item');
-
-       menuItem.forEach(item=>{
-            item.addEventListener('click', ()=>{
-                removeActive();
-                item.classList.add('active');
-                document.querySelector('.notification-box').style.display = 'none';
-            });
-       });
-
-       // ...................Notifications ...................
-       document.querySelector('#Notify-box').addEventListener('click', ()=>{
-            document.querySelector('.notification-box').style.display = 'flex';
-            document.querySelector('#ntCounter1').style.display = 'none';
-       });
-
        // ..................Messages........................
        document.querySelector('#messageMenu').addEventListener('click', ()=>{
             document.querySelector('#notifyCounter2').style.display = 'none';
