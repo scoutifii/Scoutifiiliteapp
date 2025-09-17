@@ -1,0 +1,15 @@
+asgiref==3.9.1
+Django==5.2.6
+django-countries==7.6.1
+django-phonenumber-field==8.1.0
+gunicorn==23.0.0
+mysqlclient==2.2.7
+packaging==25.0
+phonenumbers==9.0.13
+pillow==11.3.0
+psycopg2==2.9.10
+python-dotenv==1.1.1
+redis==6.4.0
+sqlparse==0.5.3
+typing_extensions==4.15.0
+tzdata==2025.2
