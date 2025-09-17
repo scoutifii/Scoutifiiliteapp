@@ -3,6 +3,7 @@
 {% load countries %}
 
 {% block content %}
+{% for profile in profiles %}
         <div class="container">
             <div class="row mx-0 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-6 px-lg-2 px-xl-0 px-xxl-3">
@@ -22,13 +23,13 @@
                             <span class="form-label d-block text-light">
                                 Bio
                             </span>
-                            <textarea name="bio" id="Bio" rows="3" class="form-control bg-secondary border-0 text-light" placeholder="Add Bio" required></textarea>
+                            <textarea name="bio" id="Bio" rows="3" class="form-control bg-secondary border-0 text-light" placeholder="Add Bio" required>{{profile.bio}}</textarea>
                         </label>
                         <label for="Bio" class="d-block mb-4">
                             <span class="form-label d-block text-light">
                                 Phone No
                             </span>
-                            <input type="text" name="phone_no" id="phone_no" class="form-control bg-secondary border-0 text-light" placeholder="Add Phone" required></textarea>
+                            <input type="text" name="phone_no" id="phone_no" value="{{profile.phone_no}}" class="form-control bg-secondary border-0 text-light" placeholder="Add Phone" required></textarea>
                         </label>
                         <label for="Bio" class="d-block mb-4">
                             <span class="form-label d-block text-light">
@@ -40,7 +41,7 @@
                             <span class="form-label d-block text-light">
                                 Location
                             </span>
-                            <input type="text" name="location" id="location" class="form-control bg-secondary border-0 text-light" placeholder="Add Location" required></textarea>
+                            <input type="text" name="location" id="location" value="{{profile.location}}" class="form-control bg-secondary border-0 text-light" placeholder="Add Location" required></textarea>
                         </label>
                         <label for="country" class="d-block mb-4">
                             <span class="form-label d-block text-light">
@@ -50,7 +51,7 @@
                                 <option value="">Select Country</option>
                                 {% get_countries as countries %}
                                 {% for country in countries %}
-                                <option value="{{ country.code }}">{{ country.name }}</option>
+                                    <option value="{{ country.code }}">{{country.name }}</option>
                                 {% endfor %}
                             </select>
                         </label>
@@ -70,7 +71,7 @@
                             <span class="form-label d-block text-light">
                                 Upload Profile Picture
                             </span>
-                            <img src="{{profile.profileimg.url}}" alt="Photo" class="mb-2 rounded-full w-20 h-20 object-cover">
+                            <img src="{{profile.profileimg.url}}" alt="Photo" style="width: 4rem; height: 4rem; object-fit: cover; border-radius: 50%; cursor: pointer;">
                             <input id="feed-pic-upload" name="profileimg" type="file" accept="image/jpg, image/png, image/jpeg"
                                 class="hidden">
                         </label>
@@ -90,6 +91,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>{% endfor %}
 </main>
 {% endblock %}

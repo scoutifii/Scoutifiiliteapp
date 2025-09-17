@@ -110,3 +110,233 @@ jQuery(document).on('change', '#add_post', function(e){
             button.addEventListener('click', () => picker.togglePicker(button));
         }
     });
+/* End of Emojis */
+/* Start of adding comments */
+$(document).ready(function(){
+    $('.add-comment').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action');
+        
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {
+                "X-CSRFToken": csrftoken 
+            },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data){
+                const dataArr = [];
+                dataArr.push(data);
+                toastr.success("Your comment counts");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        }); 
+        // document.querySelectorAll('input-comment').reset()             
+    });
+});
+/* End of adding comments */
+
+// THEME CUSTOMIZATION
+        const theme = document.querySelector('#theme');
+        const themeModal = document.querySelector('.customize-theme');
+        const fontSizes = document.querySelectorAll('.choose-size span');
+        const root = document.querySelector(':root');
+        const colorPalette = document.querySelectorAll('.choose-color span');
+        const Bg1 = document.querySelector('.bg-1');
+        const Bg2 = document.querySelector('.bg-2');
+        const Bg3 = document.querySelector('.bg-3');
+
+        //opens modal
+        const openThemeModal = () =>{
+            themeModal.style.display = 'grid';
+        }
+
+        //closes modal
+        const closeThemeModal = (e) =>{
+            if(e.target.classList.contains('customize-theme')){
+                themeModal.style.display = 'none';
+            }
+        }
+
+        theme.addEventListener('click', openThemeModal);
+        themeModal.addEventListener('click', closeThemeModal);
+
+        // remove active class from spans or font size selectors
+        const removeSizeSelector = () => {
+            fontSizes.forEach(size => {
+                size.classList.remove('active');
+            })
+        }
+
+        // FONTS
+         fontSizes.forEach(size => {
+            size.addEventListener('click', () => {
+                removeSizeSelector()
+                let fontsize;
+                size.classList.toggle('active');
+                if(size.classList.contains('font-size-1')){
+                    fontsize = '10px';
+                    root.style.setProperty('----sticky-top-left', '5.4rem');
+                    root.style.setProperty('----sticky-top-right', '5.4rem');
+                } else if(size.classList.contains('font-size-2')){
+                    fontsize = '13px';
+                    root.style.setProperty('----sticky-top-left', '5.4rem');
+                    root.style.setProperty('----sticky-top-right', '-7rem');
+                } else if(size.classList.contains('font-size-3')){
+                    fontsize = '15px';
+                    root.style.setProperty('----sticky-top-left', '-2rem');
+                    root.style.setProperty('----sticky-top-right', '-17rem');
+                } else if(size.classList.contains('font-size-4')){
+                    fontsize = '17px';
+                    root.style.setProperty('----sticky-top-left', '5rem');
+                    root.style.setProperty('----sticky-top-right', '-25rem');
+                } else if(size.classList.contains('font-size-5')){
+                    fontsize = '19px';
+                    root.style.setProperty('----sticky-top-left', '-12rem');
+                    root.style.setProperty('----sticky-top-right', '-33rem');
+                }
+                // change font sizes of html root element
+                document.querySelector('html').style.fontSize = fontsize;
+            })
+         })
+
+         // Remobe active class from colors
+         const changeActiveColorClass = () => {
+            colorPalette.forEach(colorPicker =>{
+                colorPicker.classList.remove('active')
+            })
+         }
+
+         //CHANGE COLOR BACKGROUND
+         colorPalette.forEach(color =>{
+            color.addEventListener('click', () => {
+                let primary;
+                changeActiveColorClass();
+                if(color.classList.contains('color-1')){
+                    primaryHue = 52;
+                } else if(color.classList.contains('color-2')){
+                    primaryHue = 252;
+                } else if(color.classList.contains('color-3')){
+                    primaryHue = 352;
+                } else if(color.classList.contains('color-4')){
+                    primaryHue = 152;
+                } else if(color.classList.contains('color-5')){
+                    primaryHue = 202;
+                }
+                color.classList.add('active')
+                root.style.setProperty('--color-primary-hue', primaryHue)
+            });
+         })
+
+         // theme background values
+         let whiteColorLightness;
+         let lightColorLightness;
+         let darkColorLightness;
+
+         // changes background color
+         const changeBG = () =>{
+            root.style.setProperty('--color-light-lightness', lightColorLightness);
+            root.style.setProperty('--color-white-lightness', whiteColorLightness);
+            root.style.setProperty('--color-dark-lightness', darkColorLightness);
+         }
+
+         Bg1.addEventListener('click', () =>{
+            darkColorLightness = '252';
+            whiteColorLightness = '100%';
+            lightColorLightness = '90%';
+
+            Bg1.classList.add('active');
+            Bg2.classList.remove('active');
+            Bg3.classList.remove('active');
+            //remove customized changes from local storage
+            //window.location.reload();
+            changeBG();
+         });
+
+         Bg2.addEventListener('click', () =>{
+            darkColorLightness = '95%';
+            whiteColorLightness = '20%';
+            lightColorLightness = '15%';
+
+            Bg2.classList.add('active');
+            Bg1.classList.remove('active');
+            Bg3.classList.remove('active');
+            changeBG();
+         });
+
+         Bg3.addEventListener('click', () =>{
+            darkColorLightness = '95%';
+            whiteColorLightness = '10%';
+            lightColorLightness = '0%';
+
+            Bg3.classList.add('active');
+            Bg1.classList.remove('active');
+            Bg2.classList.remove('active');
+            changeBG();
+         });
+
+
+
+         /*Windows scroll  */
+        window.addEventListener('scroll', ()=>{
+            document.querySelector('.profile-popup').style.display = 'none';
+            document.querySelector('.add-post-popup').style.display = 'none';
+        });
+
+        // Sidebar
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        const removeActiveItem = () => {
+            menuItems.forEach(item =>{
+                item.classList.remove('active');
+            })
+        }
+
+        menuItems.forEach(item =>{
+           item.addEventListener('click', () => { 
+                removeActiveItem();
+                item.classList.add('active');
+            })  
+        })
+
+
+        // Active class remove
+       const removeActive = ()=>{
+            menuItem.forEach(item=>{
+                item.classList.remove('active');
+            });
+        }
+
+        // start aside -->
+       let menuItem =  document.querySelectorAll('.menu-item');
+
+       menuItem.forEach(item=>{
+            item.addEventListener('click', ()=>{
+                removeActive();
+                item.classList.add('active');
+                document.querySelector('.notification-box').style.display = 'none';
+            });
+       });
+
+       // ...................Notifications ...................
+       document.querySelector('#Notify-box').addEventListener('click', ()=>{
+            document.querySelector('.notification-box').style.display = 'flex';
+            document.querySelector('#ntCounter1').style.display = 'none';
+       });
+
+       // ..................Messages........................
+       document.querySelector('#messageMenu').addEventListener('click', ()=>{
+            document.querySelector('#notifyCounter2').style.display = 'none';
+            document.querySelector('.messages').classList.toggle('boxshadow1');
+            setTimeout(()=>{                
+                document.querySelector('.messages').classList.remove('boxshadow1');
+            }, 300);
+       });
+
+        

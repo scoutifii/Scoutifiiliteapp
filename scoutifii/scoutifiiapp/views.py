@@ -220,6 +220,8 @@ def logout(request):
 def settings(request):
     brand_setting = BrandSetting.objects.all()
     otp = random.randint(10000, 99999)
+    user_profile = Profile.objects.get(user=request.user)
+    profiles = Profile.objects.filter(user_id=request.user.id)
 
     if request.method == 'POST':
         if request.FILES.get('profileimg') == 'None':
@@ -300,8 +302,8 @@ def settings(request):
 
     context = {
         'brand_setting': brand_setting,
-        # 'user_profile': user_profile,
-        # 'profiles': profiles
+        'user_profile': user_profile,
+        'profiles': profiles
     }
 
     return render(request, 'settings.html', context)

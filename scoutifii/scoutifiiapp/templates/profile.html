@@ -737,9 +737,11 @@
                         </div>
                         <input type="hidden" name="profile_id" value="{{user_profile.pk}}" id="profile_id">
                         <input type="hidden" name="post_id" value="{{post.id}}" id="post_id">
-                        <input type="text" name="comment-body" id="create-message" placeholder="Your Comment as {{user_profile.user}}">
-                        <input type="submit" value="Comment" class="btn btn-primary">&nbsp;
-                        <input type="submit" value="Emoji" class="btn btn-danger" id="emoji-button">
+                        <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}"
+                        required
+                        class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
+                        <input type="submit" value="💡" class="btn btn-primary">&nbsp;
+                        <input type="submit" value="🚀" class="btn btn-danger" id="emoji-button">
                     </form>
                     {% endif %}
                 </div>
