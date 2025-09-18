@@ -1196,8 +1196,8 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-             grid-template-columns: auto 30vw;
-        }
+             width: 90%;
+        } 
         .main button{
             width: 15%
         }
@@ -1206,7 +1206,7 @@ a{
             width: 45%;
         }
         .middle-container .stories{
-             grid-template-columns: auto 30vw;
+             width: auto;
         }        
         nav .search-bar{
             display: block;
