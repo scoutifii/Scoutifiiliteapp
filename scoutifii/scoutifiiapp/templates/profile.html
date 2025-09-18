@@ -4,6 +4,7 @@
   Profile - {{user_profile.user.username}}
 {% endblock %}
 {% block content %}
+  
     <div class="cols_container">
       <div class="profile-details">
           <div class="left_col">
@@ -730,14 +731,14 @@
                     {% endif %}
 
                     {% if user.is_authenticated %}
-                    <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-message">
+                    <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-comment">
                         {% csrf_token %}
                         <div class="profile-picture">
                             <img src="{{user_profile.profileimg.url}}" alt="">
                         </div>
                         <input type="hidden" name="profile_id" value="{{user_profile.pk}}" id="profile_id">
                         <input type="hidden" name="post_id" value="{{post.id}}" id="post_id">
-                        <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}"
+                        <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}" 
                         required
                         class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
                         <input type="submit" value="💡" class="btn btn-primary">&nbsp;
@@ -750,5 +751,5 @@
           </div>                
       </div>
     </div>
-  
+ 
 {% endblock %}

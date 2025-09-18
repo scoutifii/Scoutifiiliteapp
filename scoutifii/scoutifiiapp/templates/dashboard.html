@@ -714,7 +714,7 @@
                     {% endif %}
 
                     {% if user.is_authenticated %}
-                    <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-message">
+                    <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-comment">
                         {% csrf_token %}
                         <div class="profile-picture">
                             <img src="{{user_profile.profileimg.url}}" alt="">

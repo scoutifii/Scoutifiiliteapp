@@ -113,7 +113,7 @@ jQuery(document).on('change', '#add_post', function(e){
 /* End of Emojis */
 /* Start of adding comments */
 $(document).ready(function(){
-    $('.add-comment').submit(function(e){
+    $('.create-comment').submit(function(e){
         e.preventDefault();
         const csrftoken = getCookie('csrftoken');
         const url = $(this).attr('action');
@@ -137,7 +137,7 @@ $(document).ready(function(){
                 toastr.error("error");
             }
         }); 
-        // document.querySelectorAll('input-comment').reset()             
+        document.querySelectorAll('input-comment').reset()             
     });
 });
 /* End of adding comments */
