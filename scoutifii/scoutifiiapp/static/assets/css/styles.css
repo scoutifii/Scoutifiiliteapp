@@ -1196,7 +1196,7 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-            width: 85%;
+             grid-template-columns: auto 30vw;
         }
         .main button{
             width: 15%
@@ -1206,7 +1206,7 @@ a{
             width: 45%;
         }
         .middle-container .stories{
-            width: 80%;
+             grid-template-columns: auto 30vw;
         }        
         nav .search-bar{
             display: block;
@@ -1260,9 +1260,8 @@ a{
             gap: 0.8rem;
         }
         .cols_container{ 
-            padding: 4rem 4% 3rem;
-            margin-top: -4rem;
-            width: 75%;
+            
+            width: 78%;
         }
         .cols_container .img_container{
             grid-template-columns: repeat(1,1fr);
