@@ -1087,7 +1087,7 @@ a{
     color: #fff;
     cursor: pointer;
 }
-.post-col .add-comment{
+.post-col .create-comment{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1096,7 +1096,7 @@ a{
     background: var(--color-white);
     margin-top: 1rem;
  }
- .post-col .add-comment input[type="text"]{
+ .post-col .create-comment input[type="text"]{
     justify-self: start;
     width: 100%;
     padding-left: 1rem;
@@ -1104,7 +1104,27 @@ a{
     color: var(--color-dark);
     margin-right: 1rem;
  }
- .post-col .add-comment .profile-picture{
+ .post-col .create-comment .profile-picture{
+    width: 2.8rem;
+ }
+ .stories .create-comment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .4rem var(--card-padding);
+    border-radius: var(--border-radius);
+    background: var(--color-white);
+    margin-top: 1rem;
+ }
+ .stories .create-comment input[type="text"]{
+    justify-self: start;
+    width: 100%;
+    padding-left: 1rem;
+    background: transparent;
+    color: var(--color-dark);
+    margin-right: 1rem;
+ }
+ .stories .create-comment .profile-picture{
     width: 2.8rem;
  }
 
@@ -1196,7 +1216,10 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-             width: 88%;
+             width: 85%;
+        } 
+        .main-middle-index{
+             width: 90%;
         } 
         .main button{
             width: 15%
@@ -1259,9 +1282,8 @@ a{
             font-size: 0.75rem;
             gap: 0.8rem;
         }
-        .cols_container{ 
-            
-            width: 78%;
+        .cols_container{             
+            width: 75%;
         }
         .cols_container .img_container{
             grid-template-columns: repeat(1,1fr);
