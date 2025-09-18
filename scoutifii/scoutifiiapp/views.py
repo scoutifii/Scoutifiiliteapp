@@ -513,7 +513,7 @@ def like_post(request, id):
         raise PermissionDenied
         # messages.info(request, 'You cannot like your own post')
     # if user has not liked any post
-    elif like_filter == 'None':
+    elif like_filter == None:
         new_like = LikePost.objects.create(
             post_id=post_id, 
             username=username, 
@@ -553,7 +553,7 @@ def flair(request, id):
     if post.user_id == request.user.id:
         raise PermissionDenied
     # if user has not voted player's flair any post
-    elif flair_filter == 'None':
+    elif flair_filter == None:
         new_flair = VideoFlair.objects.create(
             post_id=post_id, 
             username=username, 

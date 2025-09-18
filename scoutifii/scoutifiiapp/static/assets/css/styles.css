@@ -435,7 +435,6 @@ aside .menu-item:nth-last-child(2){
  }
  .progress{
     width: 0%;
-    display: none;
  }
  .feeds .feed{
     background: var(--color-white);
@@ -1243,7 +1242,10 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-            width: 92%;
+            width: 98%;
+        }
+        .main button{
+            width: 15%
         }
         .story-container{
             gap: 0.8rem;

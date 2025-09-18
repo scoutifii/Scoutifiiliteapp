@@ -283,11 +283,11 @@ $(document).ready(function(){
 
 
 
-         /*Windows scroll  */
+         /*Windows scroll  
         window.addEventListener('scroll', ()=>{
             document.querySelector('.profile-popup').style.display = 'none';
             document.querySelector('.add-post-popup').style.display = 'none';
-        });
+        });*/
 
         // Sidebar
         const menuItems = document.querySelectorAll('.menu-item');
@@ -321,5 +321,57 @@ $(document).ready(function(){
                 document.querySelector('.messages').classList.remove('boxshadow1');
             }, 300);
        });
+
+// Start of Like button
+
+$(document).ready(function(){
+    $('.like__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action');             
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("You Liked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+// End of Like button
+// Start of flair button
+$(document).ready(function(){
+    $('.flair__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Flair Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+// End of flair button
 
         
