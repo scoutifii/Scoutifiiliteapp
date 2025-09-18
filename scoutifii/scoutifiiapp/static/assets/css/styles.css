@@ -1107,49 +1107,6 @@ a{
  .post-col .add-comment .profile-picture{
     width: 2.8rem;
  }
-/* @media screen and (max-width:992px) {
-    .header_wrapper{        
-        display: block;
-        padding: 3rem 3%;
-    }
-    header{
-        overflow: hidden; 
-    }
-    .header_wrapper .cols_container{ 
-        padding: 4rem 4% 3rem;
-        margin-bottom: 5rem;
-    }
-    .header_wrapper .cols_container .img_container{
-        grid-template-columns: repeat(1,1fr);
-    }
-    .left_col ul li {
-        margin-left: -9%; 
-        justify-content: space-between;
-    }
-    .right_col button{
-        margin-left: -200%;
-        overflow: hidden;
-    }
-    .follow-info-detials{
-        flex-direction: column;
-    }
-    .profile-info{
-        flex-direction: column;
-    }
-}
-@media (min-width:1017px) {
-    .header_wrapper .cols_container .left_col{
-        margin: 0;
-        margin-right: auto;
-    }
-    .right_col{
-        flex-direction: row;
-    }
-    .right_col nav button{
-        margin-top: 0;
-    }
-} */
-/*  Profile End  */
 
 /*...... media queries  .............*/
 @media screen and (max-width: 1200px) {
@@ -1239,7 +1196,7 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-            width: 95%;
+            width: 92%;
         }
         .main button{
             width: 15%
@@ -1249,11 +1206,8 @@ a{
             width: 45%;
         }
         .middle-container .stories{
-            width: 94%''
-        }
-        .cols_container{
             width: 90%;
-        }
+        }        
         nav .search-bar{
             display: block;
         }
