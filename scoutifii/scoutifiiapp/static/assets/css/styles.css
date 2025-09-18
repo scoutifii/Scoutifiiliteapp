@@ -1196,7 +1196,7 @@ a{
     /* SMALL TABLETS AND MOBILE PHONES */
     @media (max-width: 768px) {
         .main-middle{
-             width: 90%;
+             width: 88%;
         } 
         .main button{
             width: 15%
