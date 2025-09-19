@@ -374,4 +374,507 @@ $(document).ready(function(){
 });
 // End of flair button
 
-        
+$(document).ready(function(){
+    $('.positioning__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Positioning Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.marking__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Marking Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.tackling__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Tackling Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+   
+$(document).ready(function(){
+    $('.vision__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Vision Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.pace__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Pace Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.speed__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Speed Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.heading__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Heading Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.jumping-reach__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Jumping Reach Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.work-rate__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Workrate Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.aggression__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Aggression Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.charisma__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Charisma Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.ball_protection__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Ball Protection Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.crossing__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Crossing Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.shooting__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Shooting Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.technique__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Technique Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.passing__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Passing Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.finishing__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Finishing Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.ball-control__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Ball Control Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.shooting__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Shooting Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.free-kick__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("FreeKick Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $('.dribbling__form').submit(function(e){
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        const url = $(this).attr('action')
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {"X-CSRFToken": csrftoken },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response){
+                toastr.success("Dribbling Ticked");
+            },
+            error: function(error){
+                toastr.error("error");
+            }
+        });
+    });
+});
+

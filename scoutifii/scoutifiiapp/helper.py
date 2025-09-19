@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 import os
 import math
 from django.utils import timezone
+import user_agents
 
 
 def validate_image_file_size(value):
@@ -103,3 +104,17 @@ def timeago(self):
 			return str(years) + "y"
 		else:
 			return str(years) + "years"
+
+
+def parse_user_agent(user_agent_string):
+	user_agent = user_agents.parse(user_agent_string)
+	device_type = "Desktop"
+	if user_agent.is_mobile:
+		device_type = "Mobile"
+	elif user_agent.is_tablet:
+		device_type = "Tablet"
+
+	return {
+		'device_type': device_type,
+		'browser': user_agent.browser.family,
+	}

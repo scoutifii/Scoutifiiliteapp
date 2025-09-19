@@ -24,7 +24,7 @@ from django.core.exceptions import PermissionDenied
 from itertools import chain
 from django.db.models import Q
 from django.http import JsonResponse
-
+from .helper import parse_user_agent
 
 def index(request):
     if request.user.is_authenticated:
@@ -170,6 +170,8 @@ def login(request):
     else:
         ip_address = request.META['REMOTE_ADDR']
         host = request.META['SERVER_NAME']
+        user_agent_string = request.META.get('HTTP_USER_AGENT', '')
+        device_info = parse_user_agent(user_agent_string)
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
@@ -190,7 +192,10 @@ def login(request):
                         username=request.user.username, 
                         ip_address=ip_address, 
                         server=host,
-                        last_logged_out=None
+                        last_logged_out=None,
+                        user_agent=user_agent_string,
+                        device_type=device_info['device_type'],
+                        browser=device_info['browser']
                     )
                     request.session['login_record_id'] = login_record.id
                     return redirect('dashboard')
@@ -312,7 +317,7 @@ def settings(request):
 @login_required(login_url='login')
 def search(request):
     brand_setting = BrandSetting.objects.all()
-    user_object = User.objects.get(username=request.user.username)   #getting object of currently logged in user
+    user_object = User.objects.get(username=request.user.username) 
     user_profile = Profile.objects.get(user=user_object) 
     if request.method == 'POST':
         searched = request.POST['q']

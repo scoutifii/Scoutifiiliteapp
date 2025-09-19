@@ -2,8 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from django_countries.fields import CountryField
-from .helper import validate_image_file_extension, validate_image_file_size, validate_video_file_extension, validate_video_file_size
+from .helper import (
+    validate_image_file_extension, 
+    validate_image_file_size, 
+    validate_video_file_extension, 
+    validate_video_file_size
+)
 import uuid
+
 
 class AllLogins(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -12,6 +18,9 @@ class AllLogins(models.Model):
     last_logged_out = models.DateTimeField(null=True, blank=True)
     ip_address = models.CharField(max_length=100, default=0, blank=True)
     server = models.CharField(max_length=100, default=0, blank=True)
+    user_agent = models.CharField(max_length=255, default=0, blank=True)
+    device_type = models.CharField(max_length=100, default=0, blank=True)
+    browser = models.CharField(max_length=100, default=0, blank=True)
 
     class Meta:
         db_table = "all_logins"
@@ -19,28 +28,48 @@ class AllLogins(models.Model):
     def __str__(self):
         return str(self.user) + ':' + str(self.login_date)
 
+
 class Profile(models.Model):
-    PROFILE_TYPES = (("user",'User'), ("player",'Player'), ("coach",'Coach'), ("agent", 'Agent'))
-   
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile') #Foreign key of currently logged in user
-    id_user = models.IntegerField() #Primary key of profile
+    PROFILE_TYPES = (
+        ("user", 'User'), 
+        ("player", 'Player'), 
+        ("coach", 'Coach'), 
+        ("agent", 'Agent')
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='profile'
+    )   #Foreign key of currently logged in user
+    id_user = models.IntegerField()   #Primary key of profile
     bio = models.TextField(blank=True)
-    profileimg = models.ImageField(upload_to='profile_images', default='default-user.png', validators= [validate_image_file_extension, validate_image_file_size], blank=True)
+    profileimg = models.ImageField(
+        upload_to='profile_images', 
+        default='default-user.png', 
+        validators=[validate_image_file_extension, validate_image_file_size], 
+        blank=True
+    )
     location = models.CharField(max_length=100, blank=True)
-    phone_no = PhoneNumberField(unique=True, max_length=13, null=False, blank=False)
+    phone_no = PhoneNumberField(
+        unique=True, 
+        max_length=13, 
+        null=False, 
+        blank=False
+    )
     forgot_password_token = models.CharField(max_length=100)
     country_id = CountryField()
     profile_type_data = models.CharField(default="user", max_length=10)
     birth_date = models.DateField(null=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    otp = models.CharField(max_length=100,null=True,blank=True)
+    otp = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         db_table = "profile"
     
     def __str__(self):
         return self.user.username
+
 
 class BrandSetting(models.Model):
     brand_name = models.CharField(max_length=100)
@@ -66,17 +95,38 @@ class BrandSetting(models.Model):
     def __str__(self):
         return self.brand_name
 
+
 class Post(models.Model):
-    POST_CATEGORY = (("football",'Football'), ("netball",'Netball'), ("basketball",'Basketball'), ("volleyball",'Volleyball'), ("athletics",'Athletics'), ("boxing",'Boxing'))
+    POST_CATEGORY = (
+        ("football", 'Football'), 
+        ("netball", 'Netball'), 
+        ("basketball", 'Basketball'), 
+        ("volleyball", 'Volleyball'), 
+        ("athletics", 'Athletics'), 
+        ("boxing", 'Boxing')
+    )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     uuid = models.CharField(max_length=255, blank=True, null=True)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name='posts'
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_prof = models.CharField(max_length=100, blank=True, null=True)
-    video = models.FileField(upload_to='player_videos/%Y/%m/%d', blank=False, validators=[validate_video_file_extension, validate_video_file_size], max_length=255)
+    video = models.FileField(
+        upload_to='player_videos/%Y/%m/%d', 
+        blank=False, 
+        validators=[validate_video_file_extension, validate_video_file_size], 
+        max_length=255
+    )
     video_name = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(blank=True, null=True, unique=True)
-    category_type = models.CharField(choices=POST_CATEGORY, max_length=50, null=True)
+    category_type = models.CharField(
+        choices=POST_CATEGORY, 
+        max_length=50, 
+        null=True
+    )
     no_of_likes = models.IntegerField(default=0)
     no_of_views = models.IntegerField(default=0)
     no_of_flair = models.IntegerField(default=0)
@@ -120,7 +170,11 @@ class Post(models.Model):
         db_table = "post"
         db_tablespace = "post_tablespace"
         indexes = [
-            models.Index(fields=['video_name'], name='post_video_name_idx', db_tablespace='post_tablespace'),
+            models.Index(
+                fields=['video_name'], 
+                name='post_video_name_idx', 
+                db_tablespace='post_tablespace'
+            ),
         ]
 
     def __str__(self):
@@ -130,10 +184,20 @@ class Post(models.Model):
         from .helper import timeago
         return timeago(self)
 
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, related_name="comments")
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, default=None)
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        default=None, 
+        related_name="comments"
+    )
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        default=None
+    )
     user_prof = models.CharField(max_length=50, blank=True, default=None)
     comment_body = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -142,7 +206,11 @@ class Comment(models.Model):
         db_table = "comments"
         db_tablespace = "comment_tablespace"
         indexes = [
-            models.Index(fields=['post'], name='comment_idx', db_tablespace='comment_tablespace'),
+            models.Index(
+                fields=['post'], 
+                name='comment_idx', 
+                db_tablespace='comment_tablespace'
+            ),
         ]
 
     def __str__(self):
@@ -152,9 +220,14 @@ class Comment(models.Model):
         from .helper import timeago
         return timeago(self)
 
+
 class LikePost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="like_post")
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name="like_post"
+    )
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     username = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -163,24 +236,54 @@ class LikePost(models.Model):
         db_table = "like_post"
         db_tablespace = "likepost_tablespace"
         indexes = [
-            models.Index(fields=['post'], name='likepost_idx', db_tablespace='likepost_tablespace'),
+            models.Index(
+                fields=['post'], 
+                name='likepost_idx', 
+                db_tablespace='likepost_tablespace'
+            ),
         ]
 
     def __str__(self):
         return self.username
 
-class Notification(models.Model):
-    NOTIFICATION_TYPES = ((1,'Like'), (2,'Comment'), (3,'Follow'), (4, 'Voted'), (5, 'Viewed'))
 
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="+", blank=True, null=True)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="noti_from_user", null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="noti_to_user", null=True)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profiles", default='')
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        (1, 'Like'), 
+        (2, 'Comment'), 
+        (3, 'Follow'), 
+        (4, 'Voted'), 
+        (5, 'Viewed')
+    )
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name="+", 
+        blank=True, 
+        null=True
+    )
+    sender = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="noti_from_user", 
+        null=True
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="noti_to_user", 
+        null=True
+    )
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="profiles", 
+        default=''
+    )
     notification_type = models.IntegerField(choices=NOTIFICATION_TYPES)
     text_preview = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_seen = models.BooleanField(default=False)
-
 
     class Meta:
         db_table = "notifications"
@@ -193,12 +296,30 @@ class Notification(models.Model):
         from .helper import timeago
         return timeago(self)
 
+
 class VideoCounts(models.Model):
-    post = models.ForeignKey(Post, related_name='video_counts', on_delete=models.CASCADE)
-    ip_address = models.GenericIPAddressField(max_length=15, default="127.0.0.1")
+    post = models.ForeignKey(
+        Post, 
+        related_name='video_counts', 
+        on_delete=models.CASCADE
+    )
+    ip_address = models.GenericIPAddressField(
+        max_length=15, 
+        default="127.0.0.1"
+    )
     session = models.CharField(max_length=50)
-    user = models.ForeignKey(User, related_name='users', on_delete=models.CASCADE, null=True)
-    profile = models.ForeignKey(Profile, related_name='video_counts', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(
+        User, 
+        related_name='users', 
+        on_delete=models.CASCADE, 
+        null=True
+    )
+    profile = models.ForeignKey(
+        Profile, 
+        related_name='video_counts', 
+        on_delete=models.CASCADE, 
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -207,10 +328,16 @@ class VideoCounts(models.Model):
     def __str__(self):
         return f'{0} in {1} post'.format(self.ip_address, self.post.video_name)
 
+
 class FollowersCount(models.Model):
     follower = models.CharField(max_length=100)
     user = models.CharField(max_length=100)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, related_name="followers_count")
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name="followers_count"
+    )
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -219,6 +346,7 @@ class FollowersCount(models.Model):
 
     def __str__(self):
         return self.user
+
 
 class OffTheBallVideo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -233,6 +361,7 @@ class OffTheBallVideo(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoPositioning(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -246,6 +375,7 @@ class VideoPositioning(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoMarking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -258,7 +388,8 @@ class VideoMarking(models.Model):
 
     def __str__(self):
         return self.username
-         
+
+
 class VideoAnticipation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -271,6 +402,7 @@ class VideoAnticipation(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoPace(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -285,6 +417,7 @@ class VideoPace(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoTackling(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -297,6 +430,7 @@ class VideoTackling(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoVision(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -311,6 +445,7 @@ class VideoVision(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoWorkRate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -323,6 +458,7 @@ class VideoWorkRate(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoAggression(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -337,6 +473,7 @@ class VideoAggression(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoCharisma(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -349,6 +486,7 @@ class VideoCharisma(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoBallProtection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -363,6 +501,7 @@ class VideoBallProtection(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoSpeed(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -375,6 +514,7 @@ class VideoSpeed(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoHeading(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -389,6 +529,7 @@ class VideoHeading(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoFlair(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -401,6 +542,7 @@ class VideoFlair(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoJumpingReach(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -415,6 +557,7 @@ class VideoJumpingReach(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoShooting(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -427,6 +570,7 @@ class VideoShooting(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoTechnique(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -441,6 +585,7 @@ class VideoTechnique(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoPassing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -453,6 +598,7 @@ class VideoPassing(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoFinishing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -467,6 +613,7 @@ class VideoFinishing(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoBallControl(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -479,6 +626,7 @@ class VideoBallControl(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoFreeKick(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -493,6 +641,7 @@ class VideoFreeKick(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoDribbling(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -505,6 +654,7 @@ class VideoDribbling(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoCrossing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -519,6 +669,7 @@ class VideoCrossing(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoSavingOneOnOne(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -531,6 +682,7 @@ class VideoSavingOneOnOne(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoCommandingInDefence(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -545,6 +697,7 @@ class VideoCommandingInDefence(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoFootworkAndDistribution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -557,6 +710,7 @@ class VideoFootworkAndDistribution(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoSavingPenalties(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -571,6 +725,7 @@ class VideoSavingPenalties(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoConcentration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -583,6 +738,7 @@ class VideoConcentration(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class VideoAgility(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -597,6 +753,7 @@ class VideoAgility(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoCloseRangeShotStoppingAbility(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -610,6 +767,7 @@ class VideoCloseRangeShotStoppingAbility(models.Model):
     def __str__(self):
         return self.username
 
+
 class VideoReflexes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -622,6 +780,7 @@ class VideoReflexes(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class ActivityLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -649,6 +808,3 @@ class ActivityLog(models.Model):
             'user_agent': self.user_agent,
             'created_at': self.created_at,
         }
-
-
-

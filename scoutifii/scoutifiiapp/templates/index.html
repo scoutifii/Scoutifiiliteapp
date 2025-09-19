@@ -101,9 +101,10 @@
                             </span>
                         </div>
                     </div>
+                    
                     <div class="tactical-button">
                         <div class="tactical-icons">
-                            <form action="" method="POST" class="flair__form">    
+                            <form action="{% url 'flair' post.id %}" method="POST" class="flair__form">    
                                 {% csrf_token %} 
                                 <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
                                 <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_positioning_id">
@@ -126,7 +127,7 @@
                                 <small class="notify-counter">{{post.no_of_flair}}</small>
                                 {% endif %}
                                 </span>
-                            <form action="" method="POST" class="positioning__form">    
+                            <form action="{% url 'positioning' post.id %}" method="POST" class="positioning__form">    
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
                                 <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_positioning_id">
@@ -149,7 +150,7 @@
                                     <small class="notify-counter">{{post.no_of_positioning}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="marking__form">  
+                            <form action="{% url 'marking' post.id %}" method="POST" class="marking__form">  
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_marking_id">
@@ -172,7 +173,7 @@
                                     <small class="notify-counter">{{post.no_of_marking}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="tackling__form">
+                            <form action="{% url 'tackling' post.id %}" method="POST" class="tackling__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_tackling_id">
@@ -195,7 +196,7 @@
                                 <small class="notify-counter">{{post.no_of_tackling}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="vision__form"> 
+                            <form action="{% url 'vision' post.id %}" method="POST" class="vision__form"> 
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_vision_id">
@@ -221,7 +222,7 @@
                                 <small class="notify-counter">{{post.no_of_vision}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="pace__form"> 
+                            <form action="{% url 'pace' post.id %}" method="POST" class="pace__form"> 
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_pace_id">
@@ -261,7 +262,7 @@
                     </div>
                     <div class="physical-button">
                         <div class="physical-icons">
-                            <form action="}" method="POST" class="speed__form">  
+                            <form action="{% url 'speed' post.id %}" method="POST" class="speed__form">  
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_speed_id">
@@ -288,7 +289,7 @@
                                 <small class="notify-counter">{{post.no_of_speed}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="heading__form">  
+                            <form action="{% url 'heading' post.id %}" method="POST" class="heading__form">  
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_heading_id">
@@ -310,7 +311,7 @@
                                 <small class="notify-counter">{{post.no_of_heading}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="jumping-reach__form">
+                            <form action="{% url 'jumpingreach' post.id %}" method="POST" class="jumping-reach__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_jumping_reach_id">
@@ -334,7 +335,7 @@
                                 <small class="notify-counter">{{post.no_of_jumping_reach}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="work-rate__form" title="Workrate">
+                            <form action="{% url 'workrate' post.id %}" method="POST" class="work-rate__form" title="Workrate">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_work_rate_id">
@@ -358,7 +359,7 @@
                                 <small class="notify-counter">{{post.no_of_work_rate}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="charisma__form">
+                            <form action="{% url 'charisma' post.id %}" method="POST" class="charisma__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_charisma_id">
@@ -381,7 +382,7 @@
                                 <small class="notify-counter">{{post.no_of_charisma}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="ball_protection__form">  
+                            <form action="{% url 'ballprotection' post.id %}" method="POST" class="ball_protection__form">  
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_ball_protection_id">
@@ -404,7 +405,7 @@
                                 <small class="notify-counter">{{post.no_of_ball_protection}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="crossing__form">
+                            <form action="{% url 'crossing' post.id %}" method="POST" class="crossing__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_crossing_id">
@@ -430,7 +431,7 @@
                     </div>
                     <div class="technical-button">
                         <div class="technical-icons">
-                            <form action="" method="POST" class="shooting__form">
+                            <form action="{% url 'shooting' post.id %}" method="POST" class="shooting__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_shooting_id">
@@ -454,7 +455,7 @@
                                 <small class="notify-counter">{{post.no_of_shooting}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="technique__form">
+                            <form action="{% url 'technique' post.id %}" method="POST" class="technique__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_technique_id">
@@ -490,7 +491,7 @@
                                 <small class="notify-counter">{{post.no_of_technique}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="passing__form">  
+                            <form action="{% url 'passing' post.id %}" method="POST" class="passing__form">  
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_passing_id">
@@ -516,7 +517,7 @@
                                 <small class="notify-counter">{{post.no_of_passing}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="finishing__form">
+                            <form action="{% url 'finishing' post.id %}" method="POST" class="finishing__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_finishing_id">
@@ -543,7 +544,7 @@
                                 <small class="notify-counter">{{post.no_of_finishing}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="ball-control__form"> 
+                            <form action="{% url 'ballcontrol' post.id %}" method="POST" class="ball-control__form"> 
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_ball_controll_id">
@@ -565,7 +566,7 @@
                                 <small class="notify-counter">{{post.no_of_ball_control}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="free-kick__form">
+                            <form action="{% url 'freekick' post.id %}" method="POST" class="free-kick__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_freek_kick_id">
@@ -587,7 +588,7 @@
                                 <small class="notify-counter">{{post.no_of_free_kick}}</small>
                                 {% endif %}
                             </span>
-                            <form action="" method="POST" class="dribbling__form">
+                            <form action="{% url 'dribbling' post.id %}" method="POST" class="dribbling__form">
                                 {% csrf_token %}
                                 <input type="hidden" name="profile_id" value="">
                                 <input type="hidden" name="post_id" value="" id="scoutifii_dribbling_id">
