@@ -12,7 +12,7 @@ from .models import (
     VideoTechnique, VideoPassing, VideoFinishing, 
     VideoBallControl, VideoFreeKick, VideoDribbling,
     VideoCrossing, VideoPace, Comment, LikePost, 
-    FollowersCount, Notification
+    FollowersCount, Notification, ActivityLog
 )
 from django.utils import timezone
 from django.contrib import auth
@@ -25,6 +25,10 @@ from itertools import chain
 from django.db.models import Q
 from django.http import JsonResponse
 from .helper import parse_user_agent
+from django.views.generic import TemplateView
+from django.core import serializers
+
+
 
 def index(request):
     if request.user.is_authenticated:
@@ -1438,3 +1442,31 @@ def user_comments(request, id):
 @login_required(login_url='login')
 def report(request):
     return render(request, 'report.html')
+
+
+# @login_required(login_url='login')
+def view_logs(request):
+    log_list = ActivityLog.objects.all().values(
+        'username', 
+        'activity', 
+        'ip_address', 
+        'url', 
+        'user_agent', 
+        'created_at'
+    )
+    # user_object = User.objects.get(username=request.user.username) 
+    # user_profile = Profile.objects.get(user=user_object)   
+    # brand_setting = BrandSetting.objects.all()
+
+    data = {
+        'log_list': list(log_list)
+    }
+    return JsonResponse({'log_data': data})
+
+   
+class LogView(TemplateView):
+    template_name = 'view_logs.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context

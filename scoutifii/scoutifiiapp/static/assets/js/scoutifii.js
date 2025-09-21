@@ -322,7 +322,30 @@ $(document).ready(function(){
             }, 300);
        });
 
-// Start of Like button
+
+// ...................Comments Modal Start..........................
+const comment = document.querySelector('#commentModal');
+const commentModal = document.querySelector('.comment-section');
+
+
+//opens comment modal
+const openCommentModal = () =>{
+    commentModal.style.display = 'grid';
+}
+
+//closes comment modal
+const closeCommentModal = (e) =>{
+    if(e.target.classList.contains('comment-section')){
+        commentModal.style.display = 'none';
+    }
+}
+
+comment.addEventListener('click', openCommentModal);
+commentModal.addEventListener('click', closeCommentModal);
+
+// ...................Comments Modal End..........................
+
+// ...............Start of Like button.......................
 
 $(document).ready(function(){
     $('.like__form').submit(function(e){

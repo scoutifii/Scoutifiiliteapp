@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Log Report
+{% endblock %}
+{% block content %}
+
+<div class="p2-counter bg-1 mt-4 align-items-center">
+    <div class="tab-pane fade" id="pills-logs" role="tabpanel" aria-labelledby="pills-logs-tab">
+        <div class="col p-2">
+            <div class="chartt h-100 w-100 align-content-center bg-1">
+                <h2 class="wht ms-4"> Logs</h2>
+                <table id="logs" class="table table-dark table-bordered table-hover w-100">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Username</th>
+                            <th scope="col">Activity</th>
+                            <th scope="col">IP Address</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">User Agent</th>
+                        </tr>
+                    </thead>
+                    <!-- {% for log in log_list %}
+                    <tbody id="log-data">
+                        <tr>
+                            <td>{{ log.username }}</td>
+                            <td>{{ log.activity }}</td>
+                            <td>{{ log.ip_address }}</td>
+                            <td>{{ log.url }}</td>
+                            <td>{{ log.user_agent }}</td>
+                        </tr>                    
+                    </tbody>
+                    {% endfor %} -->
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'assets/js/logs.js' %}"></script> 
+{% endblock %}  

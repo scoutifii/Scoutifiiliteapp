@@ -155,7 +155,7 @@
                                     <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>views</h6>
                                 {% endif %}
                             </span>
-                            <span>
+                            <span id="commentModal">
                                 {% if post.comments.count == 0 %}
                                 {% elif post.comments.count == 1 %}
                                 <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comment</h6>
@@ -693,47 +693,48 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-
-                    {% if not post.comments.all %}
-                        {% else %}
-                    <div class="comment-box comment-scroll">
-                        {% for comment in post.comments.all reversed %}
-                        <div>
-                        <div class="profile-picture">
-                            <a href="profile/{{comment.user}}">
-                                <img src="{{ comment.profile.profileimg.url }}" alt="">
-                            </a>
-                        </div>
-                        <div class="comment-body">
-                            <small> {{comment.comment_body }}</small>
-                            <small class="text-gry">{{comment.timeAgo}}</small>
+                    <div class="comment-section">
+                        <div class="card">
+                            {% if not post.comments.all %}
+                                {% else %}
+                            <div class="comment-box comment-scroll">
+                                {% for comment in post.comments.all reversed %}                          
+                                <div class="profile-picture">
+                                    <a href="profile/{{comment.user}}">
+                                        <img src="{{ comment.profile.profileimg.url }}" alt="">
+                                    </a>
+                                </div>
+                                <div class="comment-body">
+                                    <small> {{comment.comment_body }}</small>
+                                    <small class="text-gry">{{comment.get_timeago}}</small>                                
+                                </div>                                                
+                                {% endfor %}
                             </div>
-                        </div>                                                
-                        {% endfor %}
-                    </div>
-                    {% endif %}
+                            {% endif %}
 
-                    {% if user.is_authenticated %}
-                    <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-comment">
-                        {% csrf_token %}
-                        <div class="profile-picture">
-                            <img src="{{user_profile.profileimg.url}}" alt="">
+                            {% if user.is_authenticated %}
+                            <form action="{% url 'user-comments' post.id %}" method="post" enctype="multipart/form-data" class="create-comment">
+                                {% csrf_token %}
+                                <div class="profile-picture">
+                                    <img src="{{user_profile.profileimg.url}}" alt="">
+                                </div>
+                                <input type="hidden" name="profile_id" value="{{user_profile.pk}}" id="profile_id">
+                                <input type="hidden" name="post_id" value="{{post.id}}" id="post_id">
+                                <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}" 
+                                required
+                                class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
+                                <input type="submit" value="💡" class="btn btn-primary">&nbsp;
+                                <input type="submit" value="🚀" class="btn btn-danger" id="emoji-button">
+                            </form>
+                            {% endif %}
                         </div>
-                        <input type="hidden" name="profile_id" value="{{user_profile.pk}}" id="profile_id">
-                        <input type="hidden" name="post_id" value="{{post.id}}" id="post_id">
-                        <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}" 
-                        required
-                        class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
-                        <input type="submit" value="💡" class="btn btn-primary">&nbsp;
-                        <input type="submit" value="🚀" class="btn btn-danger" id="emoji-button">
-                    </form>
-                    {% endif %}
-                </div>
-            </div> 
+                    </div>
+                </div> 
+            </div>
             {% endfor %}
         </div>
-    </div>
     <!-- End stories -->
+    </div>
 </div>
 <!-- Main middle end -->
 <!-- Main right start -->

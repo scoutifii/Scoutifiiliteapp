@@ -705,7 +705,7 @@
                     <div class="liked-by">
                         {% for liked in post.like_post.all reversed %}
                         <span>
-                            <a href="profile/{{liked.user}}" title="Liked by {{liked.user}}">
+                            <a href="/profile/{{liked.user}}" title="Liked by {{liked.user}}">
                                 <img src="{{ liked.profile.profileimg.url }}" alt="">
                             </a>
                         </span>
@@ -719,7 +719,7 @@
                         {% for comment in post.comments.all reversed %}
                         <div>
                         <div class="profile-picture">
-                            <a href="profile/{{comment.user}}">
+                            <a href="/profile/{{comment.user}}">
                                 <img src="{{ comment.profile.profileimg.url }}" alt="">
                             </a>
                         </div>

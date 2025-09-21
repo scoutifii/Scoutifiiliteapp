@@ -42,4 +42,6 @@ urlpatterns = [
     path('pace/<str:id>', views.pace, name='pace'),
     path('user-comments/<str:id>', views.user_comments, name='user-comments'),
     path('autosuggest', views.autosuggest, name='autosuggest'),
+    # path('log', views.view_logs, name='log'),
+    path('logs', views.LogView.as_view(template_name='view_logs.html'), name='logs'),
 ]
