@@ -44,4 +44,5 @@ urlpatterns = [
     path('autosuggest', views.autosuggest, name='autosuggest'),
     # path('log', views.view_logs, name='log'),
     path('logs', views.LogView.as_view(template_name='view_logs.html'), name='logs'),
+    path('post/<str:id>', views.post_counts, name='post-counts'),
 ]

@@ -95,7 +95,7 @@
                                 <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
                                 <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_like_id">
                                 <span>
-                                    <button type="submit" value="{{post.id}}">
+                                    <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
                                             <g fill="#0000FF" stroke="none">
                                                 <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z">
@@ -138,14 +138,15 @@
                                 </svg>
                             </span>
                         </div>
-                        <div class="counters">
+                        <div class="counters" data-post-id="{{post.id}}">
                             <span>
-                            {% if post.no_of_likes == 0 %}
-                            {% elif post.no_of_likes == 1 %}
-                                <small class="like-counter" title="Likes">{{post.no_of_likes}}</small><h6>Like</h6>
-                            {% else %}
+                            <!-- {% if post.no_of_likes == 0 %}
+                            {% elif post.no_of_likes == 1 %} -->
+                                <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
+                                <h6 data-like-label="{{post.id}}">{{ post.no_of_likes|yesno:'Like,Likes' }}</h6>
+                            <!-- {% else %}
                                 <small class="like-counter" title="Likes">{{post.no_of_likes}}</small><h6>Likes</h6>
-                            {% endif %}                                        
+                            {% endif %}                                         -->
                             </span>
                             <span>
                                 {% if post.video_counts.count == 0 %}
@@ -720,7 +721,7 @@
                                 </div>
                                 <input type="hidden" name="profile_id" value="{{user_profile.pk}}" id="profile_id">
                                 <input type="hidden" name="post_id" value="{{post.id}}" id="post_id">
-                                <input type="text" name="comment_body" id="create-message" placeholder="Your Comment as {{user_profile.user}}" 
+                                <input type="text" name="comment_body" id="create-comment" placeholder="Your Comment as {{user_profile.user}}" 
                                 required
                                 class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
                                 <input type="submit" value="💡" class="btn btn-primary">&nbsp;

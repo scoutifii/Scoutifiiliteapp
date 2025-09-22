@@ -101,11 +101,11 @@ jQuery(document).on('change', '#add_post', function(e){
     /* Start of Emojis */
     document.addEventListener('DOMContentLoaded', function() {
         const button = document.querySelector('#emoji-button');
-        const input = document.querySelector('#add-comment');
+        const input = document.querySelector('#create-comment');
         if(button && input){
             const picker = new EmojiButton();
-            picker.on('emoji', emoji => {
-            input.value += emoji;
+            picker.on('emoji', (emoji) => {
+                input.value += emoji;
             });
             button.addEventListener('click', () => picker.togglePicker(button));
         }
@@ -324,52 +324,72 @@ $(document).ready(function(){
 
 
 // ...................Comments Modal Start..........................
-const comment = document.querySelector('#commentModal');
-const commentModal = document.querySelector('.comment-section');
+const commentTriggers = document.querySelectorAll('#commentModal');
+const commentModals = document.querySelectorAll('.comment-section');
 
-
-//opens comment modal
-const openCommentModal = () =>{
-    commentModal.style.display = 'grid';
-}
-
-//closes comment modal
-const closeCommentModal = (e) =>{
-    if(e.target.classList.contains('comment-section')){
-        commentModal.style.display = 'none';
+// open the comment modal for the corresponding feed
+const openCommentModal = (trigger) => {
+    const feed = trigger.closest('.feed');
+    const modal = feed ? feed.querySelector('.comment-section') : null;
+    if (modal) {
+        modal.style.display = 'grid';
     }
-}
+};
 
-comment.addEventListener('click', openCommentModal);
-commentModal.addEventListener('click', closeCommentModal);
+// close when clicking on the overlay background
+const closeCommentModal = (e) => {
+    if (e.target.classList.contains('comment-section')) {
+        e.target.style.display = 'none';
+    }
+};
+
+// attach events for all triggers
+commentTriggers.forEach((trigger) => {
+    // mouse click
+    trigger.addEventListener('click', () => openCommentModal(trigger));
+});
+
+// attach close handler to each modal
+commentModals.forEach((modal) => {
+    modal.addEventListener('click', closeCommentModal);
+});
 
 // ...................Comments Modal End..........................
 
 // ...............Start of Like button.......................
 
-$(document).ready(function(){
-    $('.like__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action');             
+// $(document).ready(function(){
+//     $('.like__form').on('submit', function(e){
+//         e.preventDefault();
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("You Liked");
-            },
-            error: function(error){
-                toastr.error("error");
-            }
-        });
-    });
-});
+//         const $form = $(this);
+//         const $btn = $form.find('like-button');
+//         const csrftoken = getCookie('csrftoken');
+//         const url = $form.attr('action');
+        
+//         $btn.toggleClass('is-liked');
+
+//         $.ajax({
+//             method: "POST",
+//             url: url,
+//             headers: {"X-CSRFToken": csrftoken },
+//             data: new FormData(this),
+//             contentType: false,
+//             cache: false,
+//             processData:false,
+//             success: function(response){
+//                 if(response && typeof response.liked !== 'undefined'){
+//                     $btn.toggleClass('is-liked', !!response.liked);
+//                 }
+//                 toastr.success("You Liked");
+//             },
+//             error: function(error){
+//                 $btn.toggleClass('is-liked');
+//                 toastr.error("error");
+//             },
+//         });
+//     });
+// });
 // End of Like button
 // Start of flair button
 $(document).ready(function(){
@@ -899,5 +919,110 @@ $(document).ready(function(){
             }
         });
     });
+});
+
+
+// utils
+function pluralize(n, one, many) {
+  return Number(n) === 1 ? one : many;
+}
+
+async function fetchCounts(postId) {
+  const res = await fetch(`/post/${postId}`, { credentials: 'same-origin' });
+  if (!res.ok) throw new Error('Failed to fetch counts');
+  return res.json();
+}
+
+function updateCountersInDom(postId, data) {
+  const likeEl = document.querySelector(`[data-like-counter="${postId}"]`);
+  const likeLabel = document.querySelector(`[data-like-label="${postId}"]`);
+  const viewEl = document.querySelector(`[data-view-counter="${postId}"]`);
+  const viewLabel = document.querySelector(`[data-view-label="${postId}"]`);
+  const commentEl = document.querySelector(`[data-comment-counter="${postId}"]`);
+  const commentLabel = document.querySelector(`[data-comment-label="${postId}"]`);
+
+  if (likeEl) likeEl.textContent = data.likes;
+  if (likeLabel) likeLabel.textContent = pluralize(data.likes, 'Like', 'Likes');
+  if (viewEl) viewEl.textContent = data.views;
+  if (viewLabel) viewLabel.textContent = pluralize(data.views, 'view', 'views');
+  if (commentEl) commentEl.textContent = data.comments;
+  if (commentLabel) commentLabel.textContent = pluralize(data.comments, 'Comment', 'Comments');
+}
+
+function collectVisiblePostIds() {
+  return Array.from(document.querySelectorAll('.counters[data-post-id]'))
+    .map(el => Number(el.getAttribute('data-post-id')))
+    .filter(Boolean);
+}
+
+// Periodic refresh (e.g., every 15s)
+function startCountsPolling(intervalMs = 15000) {
+  const postIds = collectVisiblePostIds();
+  if (!postIds.length) return;
+
+  async function tick() {
+    for (const id of postIds) {
+      try {
+        const data = await fetchCounts(id);
+        updateCountersInDom(id, data);
+      } catch (e) {
+        // optionally log
+      }
+    }
+  }
+  tick(); // initial
+  return setInterval(tick, intervalMs);
+}
+
+// Hook like__form success to refresh immediately
+$(document).ready(function () {
+  // Start polling
+  startCountsPolling(15000);
+
+  // Enhance existing like form handler if present
+  $('.like__form').on('submit', function (e) {
+    e.preventDefault();
+    const $form = $(this);
+    const url = $form.attr('action');
+    const csrftoken = getCookie('csrftoken'); // your existing helper
+    const postId = Number($form.find('input[name="post_id"]').val());
+
+    // optimistic UI toggle if you implemented .is-liked
+    const $btn = $form.find('.like-button');
+    $btn.toggleClass('is-liked');
+
+    $.ajax({
+      method: 'POST',
+      url,
+      headers: { 'X-CSRFToken': csrftoken },
+      data: new FormData(this),
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: async function (response) {
+        // If backend returns liked and likes, use it; otherwise query counts endpoint
+        if (response && typeof response.likes !== 'undefined') {
+          updateCountersInDom(postId, {
+            likes: response.likes,
+            views: response.views ?? document.querySelector(`[data-view-counter="${postId}"]`)?.textContent ?? 0,
+            comments: response.comments ?? document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent ?? 0,
+          });
+        } else {
+          try {
+            const data = await fetchCounts(postId);
+            updateCountersInDom(postId, data);
+          } catch {}
+        }
+        // sync liked state if server sent it
+        if (response && typeof response.liked !== 'undefined') {
+          $btn.toggleClass('is-liked', !!response.liked);
+        }
+      },
+      error: function () {
+        // revert optimistic toggle on error
+        $btn.toggleClass('is-liked');
+      },
+    });
+  });
 });
 

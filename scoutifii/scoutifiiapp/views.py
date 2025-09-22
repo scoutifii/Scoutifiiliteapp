@@ -26,8 +26,8 @@ from django.db.models import Q
 from django.http import JsonResponse
 from .helper import parse_user_agent
 from django.views.generic import TemplateView
-from django.core import serializers
-
+from django.views.decorators.http import require_GET
+from django.shortcuts import get_object_or_404
 
 
 def index(request):
@@ -1470,3 +1470,15 @@ class LogView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+@require_GET
+def post_counts(request, id):
+    post = get_object_or_404(Post, pk=id)
+    data = {
+        "post_id": post.id,
+        "likes": post.no_of_likes,
+        "views": post.video_counts.count(),
+        "comments": post.comments.count(),
+    }
+    return JsonResponse(data)
