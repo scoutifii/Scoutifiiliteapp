@@ -338,7 +338,18 @@ aside .menu-item:nth-last-child(2){
     border-bottom: none;
 }
 /* End of Search bar autocomplete  */
-
+.main-middle-index {
+  width: 100%;
+  max-width: 880px;          /* comfortable reading width for feed */
+  margin: 0 auto;            /* center in available space */
+  padding: 0 16px;           /* horizontal breathing room */
+}
+.main-middle {
+  width: 100%;
+  max-width: 880px;          /* comfortable reading width for feed */
+  margin: 0 auto;            /* center in available space */
+  padding: 0 16px;           /* horizontal breathing room */
+}
 .middle-container{
     max-width: 500px !important;
     width: 100%;
@@ -1392,6 +1403,10 @@ a{
     }
 }
 @media (max-width: 1024px) {
+    .main-middle {
+        max-width: 92vw;
+        padding: 0 14px;
+    }
     nav .search-bar{
         display: none;
     }
@@ -1446,7 +1461,8 @@ a{
         width: 45%;
     }
     .middle-container .stories{
-            width: auto;
+        width: auto;
+        margin: 0;
     }        
     nav .search-bar{
         display: block;
