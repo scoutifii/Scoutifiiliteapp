@@ -1429,10 +1429,14 @@ a{
 /* SMALL TABLETS AND MOBILE PHONES */
 @media (max-width: 768px) {
     .main-middle{
-            width: 85%;
+        width: 85%;
+        max-width: 96vw;
+        padding: 0 12px;
     } 
     .main-middle-index{
-            width: 90%;
+        width: 90%;
+        max-width: 96vw;
+        padding: 0 12px;
     } 
     .main button{
         width: 15%
@@ -1551,6 +1555,10 @@ a{
     }
 }
 @media (max-width: 480px) {
+    .main-middle {
+        max-width: 100%;
+        padding: 0 10px;
+    }
     .comment-section .comment-box > .comment-body {
         width: 100%;
         margin-left: 50px; /* keep alignment on small screens */
