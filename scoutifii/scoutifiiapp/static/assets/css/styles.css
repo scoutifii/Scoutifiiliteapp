@@ -340,13 +340,7 @@ aside .menu-item:nth-last-child(2){
 /* End of Search bar autocomplete  */
 .main-middle-index {
   width: 100%;
-  max-width: 880px;          /* comfortable reading width for feed */
-  margin: 0 auto;            /* center in available space */
-  padding: 0 16px;           /* horizontal breathing room */
-}
-.main-middle {
-  width: 100%;
-  max-width: 880px;          /* comfortable reading width for feed */
+  max-width: 780px;          /* comfortable reading width for feed */
   margin: 0 auto;            /* center in available space */
   padding: 0 16px;           /* horizontal breathing room */
 }
@@ -1444,12 +1438,10 @@ a{
 /* SMALL TABLETS AND MOBILE PHONES */
 @media (max-width: 768px) {
     .main-middle{
-        width: 85%;
         max-width: 96vw;
         padding: 0 12px;
     } 
     .main-middle-index{
-        width: 90%;
         max-width: 96vw;
         padding: 0 12px;
     } 
