@@ -12,6 +12,7 @@ from .helper import (
     VideoStorage
 )
 import uuid
+from datetime import date
 videos_storage = VideoStorage()
 
 
@@ -827,3 +828,72 @@ class ActivityLog(models.Model):
             'user_agent': self.user_agent,
             'created_at': self.created_at,
         }
+
+
+# \scoutifiiapp\models.py
+class Plan(models.Model):
+    code = models.CharField(max_length=30, unique=True)  # free, plus, pro
+    name = models.CharField(max_length=64, unique=True)
+    price_cents = models.PositiveIntegerField(default=0)  # monthly
+    currency = models.CharField(max_length=8, default="USD")
+    max_uploads_per_day = models.PositiveIntegerField(null=True, blank=True)
+    max_bytes_per_day = models.BigIntegerField(null=True, blank=True)
+    soft_limit = models.BooleanField(default=False)  # allow overage but bill later
+    overage_price_cents_per_upload = models.PositiveIntegerField(null=True, blank=True)
+    overage_price_cents_per_gb = models.PositiveIntegerField(null=True, blank=True)
+    features = models.JSONField(default=dict)
+
+    class Meta:
+        db_table = "plan"
+    
+    def __str__(self):
+        return '%s - %s' % (self.code, self.name)
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.PROTECT)
+    stripe_customer_id = models.CharField(max_length=120, blank=True, default="")
+    stripe_sub_id = models.CharField(max_length=120, blank=True, default="")
+    status = models.CharField(max_length=30, default="active")  # active, past_due, canceled
+    current_period_start = models.DateTimeField(null=True, blank=True)
+    current_period_end = models.DateTimeField(null=True, blank=True)
+    seats = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        db_table = "subscription"
+    
+    def __str__(self):
+        return '%s - %s' % (self.user, self.plan)
+
+class UsageQuota(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    period_start = models.DateField()
+    uploads = models.PositiveIntegerField(default=0)
+    bytes_uploaded = models.BigIntegerField(default=0)
+    class Meta:
+        db_table = "usage_quota"
+        unique_together = ("user", "period_start")
+    
+    def __str__(self):
+        return f"(self.user, self.period_start, self.bytes_uploaded)"
+
+
+class OverageEvent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    type = models.CharField(max_length=32)  # "upload" or "bytes"
+    quantity = models.BigIntegerField()     # count or bytes
+    unit_price_cents = models.PositiveIntegerField()
+
+    def record_overage(user, over_uploads: int = 0, over_bytes: int = 0):
+        overage_event = OverageEvent(
+            user=user,
+            date=date.today(),
+            type="upload",
+            quantity=over_uploads,
+            unit_price_cents=user.plan.overage_price_cents_per_upload,
+        )
+        overage_event.save()
+
+

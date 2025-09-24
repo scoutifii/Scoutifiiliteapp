@@ -910,7 +910,9 @@ aside .menu-item:nth-last-child(2){
 /* Comment Modal  */
 .comment-section{
     margin-top: 1rem;
-    display: none;
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 .comment-section .card{
     background: var(--card-bg, #ffffff);

@@ -15,8 +15,10 @@
                         </a>
                     </div>
                     <div class="notification-body">
-                        <a href="profile/{{notification.profile.user}}">{{ notification.sender.first_name }} {{ notification.sender.last_name }} </a>
-                        Liked your scoutifii post: <b>{{notification.post.video_name}}</b>
+                        <a href="profile/{{notification.profile.user}}">
+                            <strong>{{ notification.text_preview }}</strong>
+                        </a>
+                         <b>{{notification.post.video_name}}</b>
                         <small class="text-gry">{{notification.get_timeago}}</small>
                     </div>
                 </div>
@@ -29,22 +31,23 @@
                     </div>
                     <div class="notification-body">
                         <a href="profile/{{notification.profile.user}}">
-                        {{ notification.sender.first_name }} {{ notification.sender.last_name }}</a>
-                        Commented on your scoutifii post: <b>{{notification.post.video_name}}</b>
+                            <strong>{{ notification.text_preview }}</strong>
+                        </a>
+                        <b>{{notification.post.video_name}}</b>
                         <small class="text-gry">{{notification.get_timeago}}</small>
                     </div>
                 </div>
                 {% elif notification.notification_type == 3 %}
                 <div data-type="follow">
                     <div class="profile-picture">
-                        <a href="profile/{{notification.profile.user}}">
+                        <a href="profile/{{notification.sender.username}}">
                             <img src="{{ notification.profile.profileimg.url }}" alt="">
                         </a>
                     </div>
                     <div class="notification-body">
-                        <a href="profile/{{notification.profile.user}}">
-                        {{ notification.sender.first_name }} {{ notification.sender.last_name }}</a> 
-                        started following you
+                        <a href="profile/{{notification.sender.username}}">                        
+                            <span>{{ notification.text_preview }}</span> 
+                        </a> 
                         <small class="text-gry">{{notification.get_timeago}}</small>
                     </div>
                 </div>
@@ -57,8 +60,9 @@
                     </div>
                     <div class="notification-body">
                         <a href="profile/{{notification.profile.user}}">
-                        {{ notification.sender.first_name }} {{ notification.sender.last_name }}</a> 
-                        Voted your <b>{{notification.text_preview}}</b> skills on scoutifii post: <b>{{notification.post.video_name}}</b>
+                            <strong>{{ notification.text_preview }}</strong>
+                        </a> 
+                         <b>{{notification.post.video_name}}</b>
                         <small class="text-gry">{{notification.get_timeago}}</small>
                     </div>
                 </div>

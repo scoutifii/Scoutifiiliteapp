@@ -77,7 +77,7 @@ def user_commented_post(sender, instance, created, *args, **kwargs):
             post = comment.post
             sender = comment.user
             profile = comment.profile
-            text_preview = 'You commented'
+            text_preview = f"{comment.user.first_name} {comment.user.last_name} commented on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -118,7 +118,7 @@ def user_liked_post(sender, instance, created, *args, **kwargs):
             post = like.post
             sender = like.user
             profile = like.profile
-            text_preview = 'You liked'
+            text_preview = f"{like.user.first_name} {like.user.last_name} liked on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -158,7 +158,7 @@ def user_rated_offTheBallVideo(sender, instance, created, *args, **kwargs):
             post = offTheBallVideo.post
             sender = offTheBallVideo.user
             profile = offTheBallVideo.profile
-            text_preview = "Off the Ball"
+            text_preview = f"{offTheBallVideo.user.first_name} {offTheBallVideo.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -179,7 +179,7 @@ def user_rated_positioning(sender, instance, created, *args, **kwargs):
             post = positioning.post
             sender = positioning.user
             profile = positioning.profile
-            text_preview = "Positioning"
+            text_preview = f"{positioning.user.first_name} {positioning.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post,
@@ -200,7 +200,7 @@ def user_rated_marking(sender, instance, created, *args, **kwargs):
             post = marking.post
             sender = marking.user
             profile = marking.profile
-            text_preview = "Marking"
+            text_preview = f"{marking.user.first_name} {marking.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post, 
@@ -221,7 +221,7 @@ def user_rated_anticipation(sender, instance, created, *args, **kwargs):
             post = anticipation.post
             sender = anticipation.user
             profile = anticipation.profile
-            text_preview = "Anticipation"
+            text_preview = f"{anticipation.user.first_name} {anticipation.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post, 
@@ -243,7 +243,7 @@ def user_rated_pace(sender, instance, created, *args, **kwargs):
             post = pace.post
             sender = pace.user
             profile = pace.profile
-            text_preview = "Pace"
+            text_preview = f"{pace.user.first_name} {pace.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -265,7 +265,7 @@ def user_rated_tackling(sender, instance, created, *args, **kwargs):
             post = tackling.post
             sender = tackling.user
             profile = tackling.profile
-            text_preview = "Tackling"
+            text_preview = f"{tackling.user.first_name} {tackling.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post, 
@@ -287,7 +287,7 @@ def user_rated_vision(sender, instance, created, *args, **kwargs):
             post = vision.post
             sender = vision.user
             profile = vision.profile
-            text_preview = "Vision"
+            text_preview = f"{vision.user.first_name} {vision.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -309,7 +309,7 @@ def user_rated_workrate(sender, instance, created, *args, **kwargs):
             post = workrate.post
             sender = workrate.user
             profile = workrate.profile
-            text_preview = "Workrate"
+            text_preview = f"{workrate.user.first_name} {workrate.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post, 
@@ -331,7 +331,7 @@ def user_rated_aggression(sender, instance, created, *args, **kwargs):
             post = aggression.post
             sender = aggression.user
             profile = aggression.profile
-            text_preview = "Aggression"
+            text_preview = f"{aggression.user.first_name} {aggression.user.last_name} voted on your post"
 
             Notification.objects.create(
                post=post, 
@@ -353,7 +353,7 @@ def user_rated_charisma(sender, instance, created, *args, **kwargs):
             post = charisma.post
             sender = charisma.user
             profile = charisma.profile
-            text_preview = "Charisma"
+            text_preview = f"{charisma.user.first_name} {charisma.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -375,7 +375,7 @@ def user_rated_ballprotection(sender, instance, created, *args, **kwargs):
             post = ballprotection.post
             sender = ballprotection.user
             profile = ballprotection.profile
-            text_preview = "Ball Protection"
+            text_preview = f"{ballprotection.user.first_name} {ballprotection.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -397,7 +397,7 @@ def user_rated_speed(sender, instance, created, *args, **kwargs):
             post = speed.post
             sender = speed.user
             profile = speed.profile
-            text_preview = "Speed"
+            text_preview = f"{speed.user.first_name} {speed.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -418,7 +418,7 @@ def user_rated_heading(sender, instance, created, *args, **kwargs):
             heading = instance
             post = heading.post
             sender = heading.user
-            text_preview = "Heading"
+            text_preview = f"{heading.user.first_name} {heading.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -440,7 +440,7 @@ def user_rated_flair(sender, instance, created, *args, **kwargs):
             post = flair.post
             sender = flair.user
             profile = flair.profile
-            text_preview = "Flair"
+            text_preview = f"{flair.user.first_name} {flair.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -462,7 +462,7 @@ def user_rated_jumpingreach(sender, instance, created, *args, **kwargs):
             post = jumpingreach.post
             sender = jumpingreach.user
             profile = jumpingreach.profile
-            text_preview = "Jumping Reach"
+            text_preview = f"{jumpingreach.user.first_name} {jumpingreach.user.last_name} voted on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -484,7 +484,7 @@ def user_rated_shooting(sender, instance, created, *args, **kwargs):
             post = shooting.post
             sender = shooting.user
             profile = shooting.profile
-            text_preview = "Shooting"
+            text_preview = f"{shooting.user.first_name} {shooting.user.last_name} voted your ball passing skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -506,7 +506,7 @@ def user_rated_technique(sender, instance, created, *args, **kwargs):
             post = technique.post
             sender = technique.user
             profile = technique.profile
-            text_preview = "Technique"
+            text_preview = f"{technique.user.first_name} {technique.user.last_name} voted your ball technique on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -528,7 +528,7 @@ def user_rated_passing(sender, instance, created, *args, **kwargs):
             post = passing.post
             sender = passing.user
             profile = passing.profile
-            text_preview = "Passing"
+            text_preview = f"{passing.user.first_name} {passing.user.last_name} voted your passing skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -550,7 +550,7 @@ def user_rated_finishing(sender, instance, created, *args, **kwargs):
             post = finishing.post
             sender = finishing.user
             profile = finishing.profile
-            text_preview = "Finishing"
+            text_preview = f"{finishing.user.first_name} {finishing.user.last_name} voted finishing skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -572,7 +572,7 @@ def user_rated_ballcontrol(sender, instance, created, *args, **kwargs):
             post = ballcontrol.post
             sender = ballcontrol.user
             profile = ballcontrol.profile
-            text_preview = "Ball Control"
+            text_preview = f"{ballcontrol.user.first_name} {ballcontrol.user.last_name} voted ball control skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -594,7 +594,7 @@ def user_rated_freekick(sender, instance, created, *args, **kwargs):
             post = freekick.post
             sender = freekick.user
             profile = freekick.profile
-            text_preview = "Freekick"
+            text_preview = f"{freekick.user.first_name} {freekick.user.last_name} voted freekick skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -616,7 +616,7 @@ def user_rated_dribbling(sender, instance, created, *args, **kwargs):
             post = dribbling.post
             sender = dribbling.user
             profile = dribbling.profile
-            text_preview = "Dribbling"
+            text_preview = f"{dribbling.user.first_name} {dribbling.user.last_name} voted for dribbling skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -638,7 +638,7 @@ def user_rated_crossing(sender, instance, created, *args, **kwargs):
             post = crossing.post
             sender = crossing.user
             profile = crossing.profile
-            text_preview = "Crossing"
+            text_preview = f"{crossing.user.first_name} {crossing.user.last_name} voted for crossing skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -660,7 +660,7 @@ def user_rated_savingoneonone(sender, instance, created, *args, **kwargs):
             post = savingoneonone.post
             sender = savingoneonone.user
             profile = savingoneonone.profile
-            text_preview = "Saving One on One"
+            text_preview = f"{savingoneonone.user.first_name} {savingoneonone.user.last_name} voted saving one-on-one skill on your post"
 
             Notification.objects.create(
                 post=post, 
@@ -682,7 +682,7 @@ def user_rated_footworkanddistribution(sender, instance, created, *args, **kwarg
             post = footworkanddistribution.post
             sender = footworkanddistribution.user
             profile = footworkanddistribution.profile
-            text_preview = "Footwork Distribution"
+            text_preview = f"{footworkanddistribution.user.first_name} {footworkanddistribution.user.last_name} voted your footwork distribution on your post"
 
             Notification.objects.create(
                 post=post, 
