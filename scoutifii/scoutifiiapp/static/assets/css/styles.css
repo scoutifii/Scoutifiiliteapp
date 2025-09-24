@@ -1711,7 +1711,7 @@ a{
         padding: 0 12px;
     } 
     .comment-section .comment-box > .comment-body {
-        width: 100%;
+        width: 80%;
         margin-left: 50px; /* keep alignment on small screens */
     }
     .comment-section .card {
@@ -1733,6 +1733,9 @@ a{
     .comment-section .card {
         max-width: 96vw;
         height: 56vh;            /* slight increase for ultra-small screens */
+    }
+    .comment-section .comment-body{
+        width: 80vw;
     }
 }
 /*...... media queries end  .............*/
