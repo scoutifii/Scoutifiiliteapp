@@ -58,19 +58,18 @@
         <!-- Phone -->
         <div class="mb-4">
           <label for="phone_no" class="form-label text-light">Phone No</label>
-          <input type="tel" name="phone_no" id="phone_no" value="{{ profile.phone_no|default:'' }}"
+          <input type="tel" name="phone_no" id="phone_no" value=""
                  class="form-control bg-secondary border-0 text-light"
-                 placeholder="+1 555 123 4567"
-                 pattern="\\+?[0-9\\-\\s]{7,}" required>
+                 placeholder="+1 555 123 4567" required>
           <div class="form-text text-secondary">Include country code if applicable.</div>
         </div>
 
         <!-- Birth Date -->
         <div class="mb-4">
           <label for="add_dob" class="form-label text-light">Birth Date</label>
-          <input type="date" name="birth_date" id="add_dob"
-                 value=""
-                 class="form-control bg-secondary border-0 text-light" required>
+          <input type="text" name="birth_date" id="add_dob"
+                 value="" placeholder="YYYY-MM-DD"
+                 class="form-control bg-secondary border-0 text-light js-date" required>
         </div>
 
         <!-- Location -->
@@ -84,9 +83,9 @@
         <!-- Country -->
         <div class="mb-4">
           <label for="add_country" class="form-label text-light">Country</label>
-          <select name="country_id" id="add_country"
+          <select name="country_id" id="add_country" data-placeholder="Select country"
                   class="form-select bg-secondary border-0 text-light">
-            <option value="">Select Country</option>
+            <option></option>
             {% get_countries as countries %}
             {% for country in countries %}
               <option value="{{ country.code }}"
@@ -147,5 +146,42 @@
     $(function () {
         $("#add_dob").datepicker();
     });
+    $(function () {
+        $('#add_country').select2({
+            width: '100%',
+            placeholder: function() {
+            return $(this).data('placeholder') || '';
+            },
+            allowClear: true,
+            dropdownAutoWidth: true,
+            dropdownParent: $(document.body), // safe for modals/webviews
+            minimumResultsForSearch: 10 // search only when there are enough items
+        });
+    });
+
+
+
+  (function() {
+    function isMobile() {
+      return window.matchMedia('(max-width: 576px)').matches;
+    }
+    function init() {
+      const useNative = isMobile();
+      flatpickr('.js-date', {
+        dateFormat: 'Y-m-d',
+        altInput: !useNative,
+        altFormat: 'D, M j, Y',
+        allowInput: true,
+        disableMobile: !useNative
+      });
+    }
+    document.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('resize', function () {
+      document.querySelectorAll('.js-date').forEach(el => {
+        if (el._flatpickr) el._flatpickr.destroy();
+      });
+      init();
+    });
+  })();
 </script>
 {% endblock %}
