@@ -8,7 +8,7 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
     path('settings', views.settings, name='settings'),
-    path('like-post/<str:id>', views.like_post, name='like-post'),
+    path('like-post/<uuid:id>', views.like_post, name='like-post'),
     path('profile/<str:pk>', views.profile, name='profile'),
     path('follower/<str:pk>', views.follower, name='follower'),
     path('following/<str:pk>', views.following, name='following'),
@@ -42,7 +42,7 @@ urlpatterns = [
     path('pace/<str:id>', views.pace, name='pace'),
     path('user-comments/<str:id>', views.user_comments, name='user-comments'),
     path('autosuggest', views.autosuggest, name='autosuggest'),
-    # path('log', views.view_logs, name='log'),
+    path('log', views.view_logs, name='log'),
     path('logs', views.LogView.as_view(template_name='view_logs.html'), name='logs'),
-    path('post/<str:id>', views.post_counts, name='post-counts'),
+    path('post/<uuid:id>', views.post_counts, name='post-counts'),
 ]

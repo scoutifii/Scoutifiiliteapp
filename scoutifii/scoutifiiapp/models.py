@@ -6,9 +6,13 @@ from .helper import (
     validate_image_file_extension, 
     validate_image_file_size, 
     validate_video_file_extension, 
-    validate_video_file_size
+    validate_video_file_size,
+    validate_video_mime,
+    validate_image_mime,
+    VideoStorage
 )
 import uuid
+videos_storage = VideoStorage()
 
 
 class AllLogins(models.Model):
@@ -40,13 +44,17 @@ class Profile(models.Model):
         User, 
         on_delete=models.CASCADE, 
         related_name='profile'
-    )   #Foreign key of currently logged in user
-    id_user = models.IntegerField()   #Primary key of profile
+    )   # Foreign key of currently logged in user
+    id_user = models.IntegerField()   # Primary key of profile
     bio = models.TextField(blank=True)
     profileimg = models.ImageField(
         upload_to='profile_images', 
         default='default-user.png', 
-        validators=[validate_image_file_extension, validate_image_file_size], 
+        validators=[
+            validate_image_file_extension, 
+            validate_image_file_size,
+            validate_image_mime
+        ], 
         blank=True
     )
     location = models.CharField(max_length=100, blank=True)
@@ -115,10 +123,15 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_prof = models.CharField(max_length=100, blank=True, null=True)
     video = models.FileField(
-        upload_to='player_videos/%Y/%m/%d', 
-        blank=False, 
-        validators=[validate_video_file_extension, validate_video_file_size], 
-        max_length=255
+        storage=VideoStorage, 
+        upload_to='%Y/%m/%d',
+        blank=True, 
+        null=True,
+        validators=[
+            validate_video_file_extension, 
+            validate_video_file_size, 
+            validate_video_mime
+        ],
     )
     video_name = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(blank=True, null=True, unique=True)
@@ -333,7 +346,7 @@ class FollowersCount(models.Model):
     follower = models.CharField(max_length=100)
     user = models.CharField(max_length=100)
     profile = models.ForeignKey(
-        Profile, 
+        'Profile', 
         on_delete=models.CASCADE, 
         null=True, 
         related_name="followers_count"
@@ -343,6 +356,12 @@ class FollowersCount(models.Model):
 
     class Meta:
         db_table = "followers_count"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['follower', 'user'], 
+                name='unique_follow_pair'
+            ),
+        ]
 
     def __str__(self):
         return self.user

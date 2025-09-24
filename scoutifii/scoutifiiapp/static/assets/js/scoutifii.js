@@ -324,7 +324,7 @@ $(document).ready(function(){
 
 
 // ...................Comments Modal Start..........................
-const commentTriggers = document.querySelectorAll('#commentModal');
+const commentTriggers = document.querySelectorAll('#comment-modal');
 const commentModals = document.querySelectorAll('.comment-section');
 
 // open the comment modal for the corresponding feed
@@ -353,6 +353,7 @@ commentTriggers.forEach((trigger) => {
 commentModals.forEach((modal) => {
     modal.addEventListener('click', closeCommentModal);
 });
+
 
 // ...................Comments Modal End..........................
 
@@ -928,7 +929,7 @@ function pluralize(n, one, many) {
 }
 
 async function fetchCounts(postId) {
-  const res = await fetch(`/post/${postId}`, { credentials: 'same-origin' });
+  const res = await fetch(`post/${encodeURIComponent(postId)}`, { credentials: 'same-origin' });
   if (!res.ok) throw new Error('Failed to fetch counts');
   return res.json();
 }

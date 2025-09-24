@@ -100,7 +100,7 @@
                                     <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>views</h6>
                                 {% endif %}
                             </span>
-                            <span id="commentModal">
+                            <span id="comment-modal" data-post-id="{{ post.id }}">
                                 {% if post.comments.count == 0 %}
                                 {% elif post.comments.count == 1 %}
                                 <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comment</h6>

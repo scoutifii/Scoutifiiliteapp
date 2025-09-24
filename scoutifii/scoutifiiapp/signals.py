@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from .models import (
@@ -12,9 +13,61 @@ from .models import (
     Notification, VideoCloseRangeShotStoppingAbility,
     VideoSavingOneOnOne, VideoFootworkAndDistribution,
     VideoSavingPenalties, VideoConcentration, VideoAgility,
-    VideoCommandingInDefence
+    VideoCommandingInDefence, FollowersCount
 )
-          
+
+
+@receiver(post_save, sender=FollowersCount)
+def user_followed(sender, instance, created, *args, **kwargs):
+    """
+    When a FollowersCount row is created, create a follow notification (type 3).
+    """
+    try:
+        if not created:
+            return
+
+        follow = instance
+        # FollowersCount stores usernames as \CharFields
+        follower_user = User.objects.filter(username=follow.follower).first()
+        followed_user = User.objects.filter(username=follow.user).first()
+
+        if not follower_user or not followed_user:
+            return  # safety if usernames don’t resolve
+
+        Notification.objects.create(
+            post=None,  # no post context for follows
+            sender=follower_user,
+            user=followed_user,
+            profile=follow.profile,  # keep consistent with your other notifications
+            text_preview=f"{follower_user.last_name} {follower_user.first_name} has started following you",
+            notification_type=3,  # Follow
+        )
+    except Exception as e:
+        raise e
+
+
+@receiver(post_delete, sender=FollowersCount)
+def user_unfollowed(sender, instance, *args, **kwargs):
+    """
+    When a FollowersCount row is deleted, remove the corresponding follow notification.
+    """
+    try:
+        follow = instance
+        follower_user = User.objects.filter(username=follow.follower).first()
+        followed_user = User.objects.filter(username=follow.user).first()
+
+        if not follower_user or not followed_user:
+            return
+
+        Notification.objects.filter(
+            sender=follower_user,
+            user=followed_user,
+            profile=follow.profile,
+            notification_type=3,
+        ).delete()
+    except Exception as e:
+        raise e
+
 
 @receiver(post_save, sender=Comment)   
 def user_commented_post(sender, instance, created, *args, **kwargs):

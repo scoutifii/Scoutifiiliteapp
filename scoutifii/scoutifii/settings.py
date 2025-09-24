@@ -121,6 +121,9 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+VIDEOS_ROOT = r'E:/scoutifii_uploads/videos'  # ensure folder exists and Django has write permissions
+VIDEOS_URL = '/videos/' 
+
 
 # Default primary key field type
 

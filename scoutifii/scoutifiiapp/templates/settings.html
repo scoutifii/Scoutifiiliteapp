@@ -3,94 +3,149 @@
 {% load countries %}
 
 {% block content %}
-{% for profile in profiles %}
-        <div class="container">
-            <div class="row mx-0 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-6 px-lg-2 px-xl-0 px-xxl-3">
-                    <h4 class="font-bold text-blue-500 text-3xl justify-content-center">Update Profile</h4>
-                    <hr>
-                    {% for message in messages %}
-                    {% if message == 0 %}
-                        <p class="alert alert-success fade show" role="alert">{{message}}</p>
-                        {% else %}
-                        <p class="alert alert-danger fade show" role="alert">{{message}}</p>
-                        {% endif %}
-                    {% endfor %}
-                    <form action="{% url 'settings' %}" method="post" enctype="multipart/form-data" 
-                            class="rounded-1 p-4 border text-secondary bg-dark border-secondary">
-                        {% csrf_token %}
-                        <label for="Bio" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Bio
-                            </span>
-                            <textarea name="bio" id="Bio" rows="3" class="form-control bg-secondary border-0 text-light" placeholder="Add Bio" required>{{profile.bio}}</textarea>
-                        </label>
-                        <label for="Bio" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Phone No
-                            </span>
-                            <input type="text" name="phone_no" id="phone_no" value="{{profile.phone_no}}" class="form-control bg-secondary border-0 text-light" placeholder="Add Phone" required></textarea>
-                        </label>
-                        <label for="Bio" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Birth Date
-                            </span>
-                            <input type="text" name="birth_date" id="add_dob" class="form-control bg-secondary border-0 text-light" placeholder="Add Date of Birth" required></textarea>
-                        </label>
-                        <label for="Bio" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Location
-                            </span>
-                            <input type="text" name="location" id="location" value="{{profile.location}}" class="form-control bg-secondary border-0 text-light" placeholder="Add Location" required></textarea>
-                        </label>
-                        <label for="country" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Country
-                            </span>
-                            <select name="country_id" id="add_country" class="form-control bg-secondary border-0 text-light">
-                                <option value="">Select Country</option>
-                                {% get_countries as countries %}
-                                {% for country in countries %}
-                                    <option value="{{ country.code }}">{{country.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </label>
-                        <label for="profile_type_data" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Profile Type
-                            </span>
-                            <select name="profile_type_data" id="add_profile_type" class="form-control bg-secondary border-0 text-light">
-                                <option value="">Select Profile</option>
-                                <option value="user">User</option>
-                                <option value="player">Player</option>
-                                <option value="coach">Coach</option>
-                                <option value="agent">Agent</option>
-                            </select>
-                        </label>
-                        <label for="profile_type_data" class="d-block mb-4">
-                            <span class="form-label d-block text-light">
-                                Upload Profile Picture
-                            </span>
-                            <img src="{{profile.profileimg.url}}" alt="Photo" style="width: 4rem; height: 4rem; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                            <input id="feed-pic-upload" name="profileimg" type="file" accept="image/jpg, image/png, image/jpeg"
-                                class="hidden">
-                        </label>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-6">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="fw-bold text-primary m-0">Update Profile</h4>
+      </div>
 
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-primary px-3 rounded-3">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg"><title>Update</title>
-                                    <path d="M8.90002 7.55999C9.21002 3.95999 11.06 2.48999 15.11 2.48999H15.24C19.71 2.48999 21.5 4.27999 21.5 8.74999V15.27C21.5 19.74 19.71 21.53 15.24 21.53H15.11C11.09 21.53 9.24002 20.08 8.91002 16.54" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M2 12H14.88" stroke="#0000FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M12.65 8.6499L16 11.9999L12.65 15.3499" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Update
-                            </button>
-                            <div class="d-block text-end"></div>
-                        </div>
-                    </form>
-                </div>
+      {% if messages %}
+      <div class="mb-3">
+        {% for message in messages %}
+          {% if message.level_tag == 'success' or message == 0 %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+          {% else %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="{% url 'settings' %}" method="post" enctype="multipart/form-data"
+            class="rounded-3 p-4 border bg-dark border-secondary shadow-sm">
+        {% csrf_token %}
+
+        <!-- Avatar -->
+        <div class="mb-4">
+          <label class="form-label text-light d-block">Profile Picture</label>
+          <div class="d-flex align-items-center gap-3">
+            <label for="feed-pic-upload" class="m-0" style="cursor:pointer;">
+              <img src="{{ profile.profileimg.url }}" alt="Profile picture"
+                   class="border border-secondary"
+                   style="width: 4rem; height: 4rem; object-fit: cover; border-radius: 50%;">
+            </label>
+            <div class="text-secondary small">Click the avatar to upload a new photo (JPG/PNG).</div>
+          </div>
+          <input id="feed-pic-upload" name="profileimg" type="file" accept="image/jpg, image/png, image/jpeg"
+                 class="visually-hidden">
         </div>
-    </div>{% endfor %}
-</main>
+
+        <!-- Bio -->
+        <div class="mb-4">
+          <label for="Bio" class="form-label text-light">Bio</label>
+          <textarea name="bio" id="Bio" rows="3"
+                    class="form-control bg-secondary border-0 text-light"
+                    placeholder="Tell us a bit about yourself" required>{{ profile.bio }}</textarea>
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-4">
+          <label for="phone_no" class="form-label text-light">Phone No</label>
+          <input type="tel" name="phone_no" id="phone_no" value="{{ profile.phone_no|default:'' }}"
+                 class="form-control bg-secondary border-0 text-light"
+                 placeholder="+1 555 123 4567"
+                 pattern="\\+?[0-9\\-\\s]{7,}" required>
+          <div class="form-text text-secondary">Include country code if applicable.</div>
+        </div>
+
+        <!-- Birth Date -->
+        <div class="mb-4">
+          <label for="add_dob" class="form-label text-light">Birth Date</label>
+          <input type="date" name="birth_date" id="add_dob"
+                 value=""
+                 class="form-control bg-secondary border-0 text-light" required>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-4">
+          <label for="location" class="form-label text-light">Location</label>
+          <input type="text" name="location" id="location" value="{{ profile.location|default:'' }}"
+                 class="form-control bg-secondary border-0 text-light"
+                 placeholder="City, State/Region" required>
+        </div>
+
+        <!-- Country -->
+        <div class="mb-4">
+          <label for="add_country" class="form-label text-light">Country</label>
+          <select name="country_id" id="add_country"
+                  class="form-select bg-secondary border-0 text-light">
+            <option value="">Select Country</option>
+            {% get_countries as countries %}
+            {% for country in countries %}
+              <option value="{{ country.code }}"
+                      {% if profile.country and profile.country.code == country.code %}selected{% endif %}>
+                {{ country.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Profile Type -->
+        <div class="mb-4">
+          <label for="add_profile_type" class="form-label text-light">Profile Type</label>
+          <select name="profile_type_data" id="add_profile_type"
+                  class="form-select bg-secondary border-0 text-light">
+            <option value="">Select Profile</option>
+            <option value="user" {% if profile.profile_type == 'user' %}selected{% endif %}>User</option>
+            <option value="player" {% if profile.profile_type == 'player' %}selected{% endif %}>Player</option>
+            <option value="coach" {% if profile.profile_type == 'coach' %}selected{% endif %}>Coach</option>
+            <option value="agent" {% if profile.profile_type == 'agent' %}selected{% endif %}>Agent</option>
+          </select>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-flex justify-content-between align-items-center">
+          <button type="submit" class="btn btn-primary px-4 rounded-3 d-inline-flex align-items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <title>Update</title>
+              <path d="M8.90002 7.55999C9.21002 3.95999 11.06 2.48999 15.11 2.48999H15.24C19.71 2.48999 21.5 4.27999 21.5 8.74999V15.27C21.5 19.74 19.71 21.53 15.24 21.53H15.11C11.09 21.53 9.24002 20.08 8.91002 16.54" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12H14.88" stroke="#0000FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12.65 8.6499L16 11.9999L12.65 15.3499" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Update
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Optional: inline preview for avatar -->
+<script>
+  (function() {
+    const input = document.getElementById('feed-pic-upload');
+    const img = document.querySelector('label[for="feed-pic-upload"] img');
+    if (!input || !img) return;
+    input.addEventListener('change', function() {
+      const file = this.files && this.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      img.src = url;
+    });
+  })();
+
+    $(document).ready(function() {
+        $('#add_country').select2();
+    });
+    $(function () {
+        $("#add_dob").datepicker();
+    });
+</script>
 {% endblock %}

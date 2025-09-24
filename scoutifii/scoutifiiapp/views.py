@@ -229,8 +229,8 @@ def logout(request):
 def settings(request):
     brand_setting = BrandSetting.objects.all()
     otp = random.randint(10000, 99999)
-    user_profile = Profile.objects.get(user=request.user)
-    profiles = Profile.objects.filter(user_id=request.user.id)
+    # user_profile = Profile.objects.get(user=request.user)
+    # profiles = Profile.objects.filter(user_id=request.user.id)
 
     if request.method == 'POST':
         if request.FILES.get('profileimg') == 'None':
@@ -243,10 +243,10 @@ def settings(request):
             birth_date_str = request.POST['birth_date']
             try:
                 birth_date = datetime.strptime(
-                    birth_date_str, '%d/%m/%Y'
+                    birth_date_str, '%Y/%m/%d'
                 ).date()
             except ValueError:
-                messages.error(request, 'Invalid date format. Please use DD/MM/YYYY.')
+                messages.error(request, 'Invalid date format. Please use YYYY/MM/DD.')
 
             data = {
                 'profileimg': image,
@@ -280,10 +280,10 @@ def settings(request):
             birth_date_str = request.POST['birth_date']
             try:
                 birth_date = datetime.strptime(
-                    birth_date_str, '%d/%m/%Y'
+                    birth_date_str, '%Y/%m/%d'
                 ).date()
             except ValueError:
-                messages.error(request, 'Invalid date format. Please use DD/MM/YYYY.')
+                messages.error(request, 'Invalid date format. Please use YYYY/MM/DD.')
 
             data = {
                 'profileimg': image,
@@ -310,9 +310,9 @@ def settings(request):
             return redirect('dashboard')
 
     context = {
-        'brand_setting': brand_setting,
-        'user_profile': user_profile,
-        'profiles': profiles
+        'brand_setting': brand_setting
+        # 'user_profile': user_profile,
+        # 'profiles': profiles
     }
 
     return render(request, 'settings.html', context)
@@ -1469,16 +1469,20 @@ class LogView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['log_list'] = ActivityLog.objects.all().order_by('-created_at')    
         return context
 
 
 @require_GET
 def post_counts(request, id):
+    try:
+        uid = uuid.UUID(str(id))
+    except (ValueError, AttributeError):
+        return JsonResponse({"detail": "Invalid post id"}, status=404)
     post = get_object_or_404(Post, pk=id)
-    data = {
-        "post_id": post.id,
+    return JsonResponse({
+        "post_id": str(post.id),
         "likes": post.no_of_likes,
         "views": post.video_counts.count(),
         "comments": post.comments.count(),
-    }
-    return JsonResponse(data)
+    })

@@ -1,32 +1,32 @@
-fetch('/logs')
-.then(response => response.json())
-.then(data => {
-    console.log(data);
-    if (data.error) {
-        console.error(data.error);
-    } else {
-        const logsData = data.log_list.map(log => ({
-        created_at: log.created_at,
-        username: log.username,
-        activity: log.activity,
-        ip_address: log.ip_address,
-        url: log.url,
-        user_agent: log.user_agent
-        }));
+// Requires DataTables assets loaded in base.html
+(async function () {
+  try {
+    const res = await fetch('/log', { credentials: 'same-origin' });
+    const payload = await res.json();
+    const data = (payload?.log_data?.log_list || []).map(r => ([
+      r.username || '',
+      r.activity || '',
+      r.ip_address || '',
+      r.url || '',
+      r.user_agent || '',
+      new Date(r.created_at).toLocaleString()
+    ]));
 
-        $('#logs').DataTable({
-            data: logsData,
-            columns: [
-                { data: 'username', title: 'Username' },
-                { data: 'activity', title: 'Activity' },
-                { data: 'ip_address', title: 'IP Address' },
-                { data: 'url', title: 'Url' },
-                { data: 'user_agent', title: 'User Agent' },
-                { data: 'created_at', title: 'Date & Time' }
-            ],
-            destroy: true
-        });
-
-    }
-})
-.catch(error => console.error('Error:', error));
+    $('#logs').DataTable({
+      data,
+      columns: [
+        { title: 'Username' },
+        { title: 'Activity' },
+        { title: 'IP Address' },
+        { title: 'URL' },
+        { title: 'User Agent' },
+        { title: 'Date & Time' }
+      ],
+      responsive: true,
+      pageLength: 25,
+      order: [[5, 'desc']]
+    });
+  } catch (e) {
+    console.error(e);
+  }
+});
