@@ -910,9 +910,11 @@ aside .menu-item:nth-last-child(2){
 /* Comment Modal  */
 .comment-section{
     margin-top: 1rem;
-    display: block;
-    visibility: visible;
+    display: none;
     opacity: 1;
+}
+.comment-section.is-open {
+  display: block;
 }
 .comment-section .card{
     background: var(--card-bg, #ffffff);
@@ -1522,6 +1524,33 @@ a{
 }
 #repost-message { width: 100%; }
 
+/* CSS */
+.password-field {
+  position: relative;          /* anchor for absolute icon */
+}
+
+/* Login password toggle */
+.password-field .password-input {
+  padding-right: 2.5rem;       /* make space for the icon */
+}
+
+.password-field .password-toggle {
+  position: absolute;
+  right: 0.5rem;               /* distance from the right edge */
+  top: 50%;
+  transform: translateY(-15%); /* fine-tune vertical alignment within Bootstrap form-control */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0 0.25rem;
+  cursor: pointer;
+}
+
+.password-field .password-toggle .password-icon {
+  pointer-events: none;        /* click goes to the button */
+}
 
 /*...... media queries  .............*/
 @media screen and (max-width: 1200px) {

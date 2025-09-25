@@ -116,52 +116,94 @@
                     </div>
                     <div class="action-button">
                         <div class="interaction-button">
-                            <form action="{% url 'like-post' post.id %}" method="POST" class="like__form">	
-                                {% csrf_token %}
-                                <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
-                                <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_like_id">
-                                <span>
-                                    <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
-                                            <g fill="#0000FF" stroke="none">
-                                                <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                    </button>
-                                </span>
-                            </form>
                             <span>
-                                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><title>Views</title>
-                                    <g transform="translate(0,512) scale(0.1,-0.1)" fill="#0000FF" stroke="none">
-                                    <path d="M2342 4900 c-114 -30 -187 -74 -279 -166 -67 -67 -89 -98 -127 -175
-                                    -70 -144 -90 -242 -90 -429 1 -135 4 -168 28 -255 78 -294 259 -489 503 -540
-                                    129 -28 254 -17 422 36 113 36 237 99 320 163 249 192 306 488 156 805 -189
-                                    397 -608 650 -933 561z m490 -409 c153 -59 273 -249 285 -451 9 -150 -38 -279
-                                    -143 -389 -72 -77 -129 -111 -230 -139 -217 -60 -406 -22 -494 100 -43 58 -57
-                                    95 -76 196 -48 253 47 547 209 649 102 65 325 81 449 34z"/>
-                                    <path d="M800 4745 c-331 -60 -643 -291 -751 -555 -95 -236 -43 -490 141 -678
-                                    256 -263 736 -350 1053 -191 163 82 273 220 329 414 20 70 23 100 22 240 -2
-                                    220 -34 358 -116 498 -132 227 -380 326 -678 272z m239 -240 c188 -45 342
-                                    -200 387 -391 29 -122 7 -304 -50 -429 -101 -222 -363 -266 -674 -114 -125 61
-                                    -222 149 -266 243 -74 158 -20 439 109 568 117 116 314 165 494 123z"/>
-                                    <path d="M1855 3080 c-847 -88 -1555 -162 -1573 -165 -42 -8 -98 -57 -111 -98
-                                    -6 -18 -47 -584 -92 -1258 -79 -1192 -81 -1227 -64 -1263 10 -21 34 -49 53
-                                    -64 l35 -27 1897 0 1897 0 35 27 c19 15 43 44 53 65 18 38 18 40 -39 428 -31
-                                    214 -56 397 -56 406 0 14 102 -9 613 -137 336 -84 613 -154 615 -154 1 0 1
-                                    499 0 1109 -3 1093 -3 1109 -23 1131 -40 44 -68 33 -755 -293 -354 -168 -647
-                                    -304 -649 -301 -2 2 -26 151 -52 331 -37 250 -52 333 -67 352 -34 45 -69 64
-                                    -124 67 -29 2 -746 -69 -1593 -156z m1510 -232 c14 -168 154 -2242 151 -2245
-                                    -8 -8 -3048 -244 -3100 -240 -106 7 -96 -119 -96 1191 0 896 3 1146 13 1166 7
-                                    13 24 28 37 33 20 6 2762 161 2942 166 l46 1 7 -72z m1395 -889 c-49 -398 -92
-                                    -738 -95 -755 l-5 -31 -398 80 c-218 43 -400 83 -403 88 -8 13 -112 739 -107
-                                    745 10 9 1093 603 1096 600 1 -2 -38 -329 -88 -727z"/>
-                                    </g>
-                                </svg>
+                                <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
+                                        <g fill="#0000FF" stroke="none">
+                                            <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                    <form action="{% url 'like-post' post.id %}" method="POST" class="like__form">	
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
+                                        <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_like_id">
+                                        
+                                    </form>
+                                </button>
+                            </span>
+                            <!-- Watch button -->
+                            <span>
+                                <button type="button"
+                                    class="btn btn-activities watch-button"
+                                    data-post-id="{{ post.id }}">
+                                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+                                        <title>Views</title>
+                                        <g transform="translate(0,512) scale(0.1,-0.1)" fill="#0000FF" stroke="none">
+                                        <path d="M2342 4900 c-114 -30 -187 -74 -279 -166 -67 -67 -89 -98 -127 -175
+                                        -70 -144 -90 -242 -90 -429 1 -135 4 -168 28 -255 78 -294 259 -489 503 -540
+                                        129 -28 254 -17 422 36 113 36 237 99 320 163 249 192 306 488 156 805 -189
+                                        397 -608 650 -933 561z m490 -409 c153 -59 273 -249 285 -451 9 -150 -38 -279
+                                        -143 -389 -72 -77 -129 -111 -230 -139 -217 -60 -406 -22 -494 100 -43 58 -57
+                                        95 -76 196 -48 253 47 547 209 649 102 65 325 81 449 34z"/>
+                                        <path d="M800 4745 c-331 -60 -643 -291 -751 -555 -95 -236 -43 -490 141 -678
+                                        256 -263 736 -350 1053 -191 163 82 273 220 329 414 20 70 23 100 22 240 -2
+                                        220 -34 358 -116 498 -132 227 -380 326 -678 272z m239 -240 c188 -45 342
+                                        -200 387 -391 29 -122 7 -304 -50 -429 -101 -222 -363 -266 -674 -114 -125 61
+                                        -222 149 -266 243 -74 158 -20 439 109 568 117 116 314 165 494 123z"/>
+                                        <path d="M1855 3080 c-847 -88 -1555 -162 -1573 -165 -42 -8 -98 -57 -111 -98
+                                        -6 -18 -47 -584 -92 -1258 -79 -1192 -81 -1227 -64 -1263 10 -21 34 -49 53
+                                        -64 l35 -27 1897 0 1897 0 35 27 c19 15 43 44 53 65 18 38 18 40 -39 428 -31
+                                        214 -56 397 -56 406 0 14 102 -9 613 -137 336 -84 613 -154 615 -154 1 0 1
+                                        499 0 1109 -3 1093 -3 1109 -23 1131 -40 44 -68 33 -755 -293 -354 -168 -647
+                                        -304 -649 -301 -2 2 -26 151 -52 331 -37 250 -52 333 -67 352 -34 45 -69 64
+                                        -124 67 -29 2 -746 -69 -1593 -156z m1510 -232 c14 -168 154 -2242 151 -2245
+                                        -8 -8 -3048 -244 -3100 -240 -106 7 -96 -119 -96 1191 0 896 3 1146 13 1166 7
+                                        13 24 28 37 33 20 6 2762 161 2942 166 l46 1 7 -72z m1395 -889 c-49 -398 -92
+                                        -738 -95 -755 l-5 -31 -398 80 c-218 43 -400 83 -403 88 -8 13 -112 739 -107
+                                        745 10 9 1093 603 1096 600 1 -2 -38 -329 -88 -727z"/>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </span>
+                            <!-- Comment button -->
+                            <span>
+                                <button type="button"
+                                    class="btn btn-activities comment-button"
+                                    data-post-id="{{ post.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aos6pscdb9tli0h74ayxqhivmuxwoi4y" class="crayons-icon reaction-icon not-reacted">
+                                        <title id="aos6pscdb9tli0h74ayxqhivmuxwoi4y">Comment</title>
+                                        <g fill="#0000FF" stroke="none">
+                                            <path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </span>
+                            <!-- Share button -->
+                            <span>
+                                <button type="button"
+                                    class="btn btn-activities share-button"
+                                    data-post-id="{{post.id}}"
+                                    data-share-title="{{ post.video_name|default:'Scoutifii Video' }}"
+                                    data-share-text="Check out this video on Scoutifii"
+                                    data-share-url="{{post.video.url }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" role="img" aria-label="Share" viewBox="0 0 24 24">
+                                        <title>Share</title>
+                                        <path fill="#0000FF" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.02-4.11A2.99 2.99 0 0 0 18 7.91 3 3 0 1 0 15 5a3 3 0 0 0 .09.7L8.07 9.81A3.004 3.004 0 0 0 6 9a3 3 0 1 0 0 6c.82 0 1.57-.33 2.11-.86l6.99 4.09c-.06.24-.1.49-.1.75a3 3 0 1 0 3-2.9z"/>
+                                    </svg>
+                                </button>
                             </span>
                             <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aos6pscdb9tli0h74ayxqhivmuxwoi4y" class="crayons-icon reaction-icon not-reacted"><title id="aos6pscdb9tli0h74ayxqhivmuxwoi4y">Comment</title><g fill="#0000FF" stroke="none"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"></path></g>
-                                </svg>
+                                <button type="button"
+                                    class="btn btn-activities repost-button"
+                                    data-post-id="{{ post.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-label="Repost" viewBox="0 0 24 24">
+                                    <title>Repost</title>
+                                    <path fill="#0000FF" d="M7 7h7a4 4 0 0 1 0 8H9v3L3 14l6-4v3h5a2 2 0 0 0 0-4H7V7z"/>
+                                    </svg>
+                                    <!-- <span>Repost</span> -->
+                                </button>
                             </span>
                         </div>
                         <div class="counters" data-post-id="{{post.id}}">
@@ -763,7 +805,7 @@
       </div>
     </div>
 
-      <div class="customize-theme">
+    <div class="customize-theme">
         <div class="card">
             <h2>Customize your view</h2>
             <p class="text-gry">Manage your font size, color, and background</p>
@@ -815,6 +857,34 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Share fallback modal -->
+<div id="share-fallback" class="share-fallback hidden">
+  <div class="share-fallback__dialog">
+    <h4>Share link</h4>
+    <input type="text" id="share-url-input" readonly>
+    <button type="button" id="copy-share-url" class="btn btn-primary">Copy</button>
+    <button type="button" id="close-share-fallback" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Repost modal (once per page) -->
+<div id="repost-modal" class="repost-modal hidden">
+  <div class="repost-modal__dialog">
+    <h4>Share to your timeline</h4>
+    <form id="repost-form" class="repost__form" action="{% url 'post-repost' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="original_post_id" id="repost-original-id">
+      <input type="hidden" name="profile_post_id" id="repost-profile-id">
+      <textarea name="message" id="repost-message" rows="3" placeholder="Add a message (optional)"></textarea>
+      <div class="repost-modal__actions">
+        <button type="button" id="repost-cancel" class="btn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Share</button>
       </div>
+    </form>
+  </div>
+</div>
+
  
 {% endblock %}

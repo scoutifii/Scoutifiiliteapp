@@ -324,7 +324,7 @@ $(document).ready(function(){
 
 
 // ...................Comments Modal Start..........................
-const commentTriggers = document.querySelectorAll('#comment-modal');
+const commentTriggers = document.querySelectorAll('.comment-button');
 const commentModals = document.querySelectorAll('.comment-section');
 
 // open the comment modal for the corresponding feed
@@ -1153,3 +1153,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// ..............Toggle password.............
+function loginPassword(){
+    const password = document.getElementById("loginpassword");
+    if (password.type == "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+}
+
+function signupPassword(){
+    const password = document.getElementById("signuppassword");
+    if (password.type == "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+}
+
+function confirmPassword(){
+    const password = document.getElementById("confirmpassword");
+    if (password.type == "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+}
+

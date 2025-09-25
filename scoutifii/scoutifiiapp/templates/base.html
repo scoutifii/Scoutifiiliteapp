@@ -277,14 +277,14 @@
                                     <label class="form-label" for="form2Example1">Username</label>
                                     <input type="text" name="username" id="form2Example1" class="form-control" required/>
                                 </div>
-                                <div class="form-outline mb-4 relative">
+                                <div class="form-outline mb-4 password-field">
                                     <label class="form-label" for="form2Example2">Password</label>
-                                    <input type="password" name="password" id="form2Example2" class="form-control" required/> 
-                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">                               
+                                    <input type="password" name="password" id="loginpassword" class="form-control" required/> 
+                                    <button type="button" class="password-toggle" aria-label="Show password" onclick="loginPassword()">                               
                                         <svg fill="#000000" class="password-icon" width="20" height="20" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg" onclick="signupPassword();">
                                             <path d="M960 1489.82c-348.474 0-668.545-202.323-841.298-529.918C291.455 632.306 611.526 429.984 960 429.984s668.545 202.322 841.298 529.918C1628.545 1287.497 1308.474 1489.82 960 1489.82Zm948.342-553.552C1720.645 558.648 1357.332 324 960 324c-397.333 0-760.645 234.648-948.342 612.268L0 959.902l11.658 23.634c187.697 377.62 551.01 612.268 948.342 612.268 397.333 0 760.645-234.648 948.342-612.268L1920 959.902l-11.658-23.634ZM960 1171.869c-116.9 0-211.967-95.067-211.967-211.967 0-116.9 95.067-211.967 211.967-211.967 116.9 0 211.967 95.067 211.967 211.967 0 116.9-95.067 211.967-211.967 211.967m0-529.918c-175.297 0-317.951 142.654-317.951 317.951 0 175.297 142.654 317.95 317.951 317.95 175.297 0 317.951-142.653 317.951-317.95S1135.297 641.951 960 641.951" fill-rule="evenodd"/>
                                         </svg>
-                                    </span>
+                                    </button>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -361,13 +361,23 @@
                                                 <input type="email" name="email" id="form3Example3" class="form-control" />
                                                 <label class="form-label" for="form3Example3">Email</label>
                                             </div>
-                                            <div data-mdb-input-init class="form-outline mb-4">
-                                                <input type="password" name="password" id="form3Example4" class="form-control" />
+                                            <div data-mdb-input-init class="form-outline mb-4 password-field">
+                                                <input type="password" name="password" id="signuppassword" class="form-control password-input" required/>
                                                 <label class="form-label" for="form3Example4">Password</label>
+                                                <button type="button" class="password-toggle" aria-label="Show password" onclick="signupPassword()">                               
+                                                    <svg fill="#000000" class="password-icon" width="20" height="20" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg" onclick="signupPassword();">
+                                                        <path d="M960 1489.82c-348.474 0-668.545-202.323-841.298-529.918C291.455 632.306 611.526 429.984 960 429.984s668.545 202.322 841.298 529.918C1628.545 1287.497 1308.474 1489.82 960 1489.82Zm948.342-553.552C1720.645 558.648 1357.332 324 960 324c-397.333 0-760.645 234.648-948.342 612.268L0 959.902l11.658 23.634c187.697 377.62 551.01 612.268 948.342 612.268 397.333 0 760.645-234.648 948.342-612.268L1920 959.902l-11.658-23.634ZM960 1171.869c-116.9 0-211.967-95.067-211.967-211.967 0-116.9 95.067-211.967 211.967-211.967 116.9 0 211.967 95.067 211.967 211.967 0 116.9-95.067 211.967-211.967 211.967m0-529.918c-175.297 0-317.951 142.654-317.951 317.951 0 175.297 142.654 317.95 317.951 317.95 175.297 0 317.951-142.653 317.951-317.95S1135.297 641.951 960 641.951" fill-rule="evenodd"/>
+                                                    </svg>
+                                                </button>
                                             </div>
-                                            <div data-mdb-input-init class="form-outline mb-4">
-                                                <input type="password" name="password_confirm" id="form3Example4" class="form-control" />
+                                            <div data-mdb-input-init class="form-outline mb-4 password-field">
+                                                <input type="password" name="password_confirm" id="confirmpassword" class="form-control password-input" required/>
                                                 <label class="form-label" for="form3Example4">Confirm Password</label>
+                                                <button type="button" class="password-toggle" aria-label="Show password" onclick="confirmPassword()">                               
+                                                    <svg fill="#000000" class="password-icon" width="20" height="20" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg" onclick="signupPassword();">
+                                                        <path d="M960 1489.82c-348.474 0-668.545-202.323-841.298-529.918C291.455 632.306 611.526 429.984 960 429.984s668.545 202.322 841.298 529.918C1628.545 1287.497 1308.474 1489.82 960 1489.82Zm948.342-553.552C1720.645 558.648 1357.332 324 960 324c-397.333 0-760.645 234.648-948.342 612.268L0 959.902l11.658 23.634c187.697 377.62 551.01 612.268 948.342 612.268 397.333 0 760.645-234.648 948.342-612.268L1920 959.902l-11.658-23.634ZM960 1171.869c-116.9 0-211.967-95.067-211.967-211.967 0-116.9 95.067-211.967 211.967-211.967 116.9 0 211.967 95.067 211.967 211.967 0 116.9-95.067 211.967-211.967 211.967m0-529.918c-175.297 0-317.951 142.654-317.951 317.951 0 175.297 142.654 317.95 317.951 317.95 175.297 0 317.951-142.653 317.951-317.95S1135.297 641.951 960 641.951" fill-rule="evenodd"/>
+                                                    </svg>
+                                                </button>
                                             </div> 
 
                                             <div class="modal-footer">
