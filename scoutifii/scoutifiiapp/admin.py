@@ -8,7 +8,9 @@ from .models import (
     VideoSavingPenalties, VideoShooting, VideoSpeed, VideoTackling, VideoTechnique,
     VideoVision, VideoWorkRate, VideoAgility, VideoCloseRangeShotStoppingAbility,
 	OffTheBallVideo, VideoPositioning, VideoMarking, FollowersCount,
-    VideoCounts, Notification, VideoCharisma, VideoFreeKick)
+    VideoCounts, Notification, VideoCharisma, VideoFreeKick,
+	Notification, Repost, Plan, Subscription, OverageEvent, UsageQuota
+)
 
 class AllLoginsAdmin(admin.ModelAdmin):
 	list_display = ['user', 'username', 'login_date', 'last_logged_out']
@@ -55,3 +57,8 @@ admin.site.register(VideoSavingPenalties)
 admin.site.register(VideoConcentration)
 admin.site.register(VideoAgility)
 admin.site.register(VideoCloseRangeShotStoppingAbility)
+admin.site.register(Repost)
+admin.site.register(Plan)
+admin.site.register(Subscription)
+admin.site.register(OverageEvent)
+admin.site.register(UsageQuota)

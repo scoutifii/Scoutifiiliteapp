@@ -179,6 +179,7 @@ class Post(models.Model):
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
+    repost_count = models.IntegerField(default=0)
 
     class Meta:
         db_table = "post"
@@ -830,7 +831,6 @@ class ActivityLog(models.Model):
         }
 
 
-# \scoutifiiapp\models.py
 class Plan(models.Model):
     code = models.CharField(max_length=30, unique=True)  # free, plus, pro
     name = models.CharField(max_length=64, unique=True)
@@ -859,6 +859,7 @@ class Subscription(models.Model):
     current_period_start = models.DateTimeField(null=True, blank=True)
     current_period_end = models.DateTimeField(null=True, blank=True)
     seats = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "subscription"
@@ -871,6 +872,7 @@ class UsageQuota(models.Model):
     period_start = models.DateField()
     uploads = models.PositiveIntegerField(default=0)
     bytes_uploaded = models.BigIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "usage_quota"
         unique_together = ("user", "period_start")
@@ -885,6 +887,7 @@ class OverageEvent(models.Model):
     type = models.CharField(max_length=32)  # "upload" or "bytes"
     quantity = models.BigIntegerField()     # count or bytes
     unit_price_cents = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def record_overage(user, over_uploads: int = 0, over_bytes: int = 0):
         overage_event = OverageEvent(
@@ -896,4 +899,23 @@ class OverageEvent(models.Model):
         )
         overage_event.save()
 
+
+class Repost(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reposts')
+    profile = models.ForeignKey(
+        'Profile', 
+        on_delete=models.CASCADE, 
+        related_name='reposts',
+        null=True
+    )
+    original = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reposts')
+    message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "repost"
+        db_tablespace = "repost_tablespace"
+    
+    def __str__(self):
+        return f"{self.user} - {self.original} - {self.message}"
 

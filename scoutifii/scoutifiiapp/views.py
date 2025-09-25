@@ -1,4 +1,9 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect, reverse
+from django.shortcuts import (
+    render, 
+    redirect, 
+    HttpResponseRedirect, 
+    reverse
+)
 from .models import BrandSetting
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -12,7 +17,8 @@ from .models import (
     VideoTechnique, VideoPassing, VideoFinishing, 
     VideoBallControl, VideoFreeKick, VideoDribbling,
     VideoCrossing, VideoPace, Comment, LikePost, 
-    FollowersCount, Notification, ActivityLog
+    FollowersCount, Notification, ActivityLog,
+    Repost
 )
 from django.utils import timezone
 from django.contrib import auth
@@ -23,10 +29,10 @@ import uuid
 from django.core.exceptions import PermissionDenied
 from itertools import chain
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from .helper import parse_user_agent
 from django.views.generic import TemplateView
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import get_object_or_404
 
 
@@ -499,6 +505,32 @@ def user_post(request, id):
         return HttpResponseRedirect(reverse('dashboard'))
     else:
         return render(request, 'dashboard')
+
+
+@login_required(login_url='login')
+@require_POST
+def post_repost(request):
+    original_id = request.POST.get('original_post_id')
+    message = (request.POST.get('message') or '').strip()
+    if not original_id:
+        return HttpResponseBadRequest('missing original_post_id')
+    original = get_object_or_404(Post, pk=original_id, status=True)
+    # Either create a dedicated Repost model or a Post with type='repost'
+    repost = Repost.objects.create(
+        user=request.user,
+        original=original,
+        message=message
+    )
+    # Optional: bump a repost_count metric on the original
+    original.repost_count = (original.repost_count or 0) + 1
+    original.save(update_fields=['repost_count'])
+
+    return JsonResponse({
+        "ok": True,
+        "repost_id": repost.id,
+        "original_id": original.id,
+        "repost_count": original.repost_count,
+    })
 
 
 @login_required(login_url='login')
