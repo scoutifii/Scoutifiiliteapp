@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
+from .kafka.producer import send_event
+from django.utils.timezone import now
 from .models import (
     VideoReflexes, VideoFlair, VideoPositioning, 
     VideoMarking, VideoAnticipation, OffTheBallVideo, 
@@ -13,21 +15,22 @@ from .models import (
     Notification, VideoCloseRangeShotStoppingAbility,
     VideoSavingOneOnOne, VideoFootworkAndDistribution,
     VideoSavingPenalties, VideoConcentration, VideoAgility,
-    VideoCommandingInDefence, FollowersCount
+    VideoCommandingInDefence, FollowersCount, Post
 )
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @receiver(post_save, sender=FollowersCount)
 def user_followed(sender, instance, created, *args, **kwargs):
-    """
-    When a FollowersCount row is created, create a follow notification (type 3).
-    """
     try:
         if not created:
             return
 
         follow = instance
-        # FollowersCount stores usernames as \CharFields
+        
         follower_user = User.objects.filter(username=follow.follower).first()
         followed_user = User.objects.filter(username=follow.user).first()
 
@@ -826,4 +829,31 @@ def user_rated_commandingindefence(sender, instance, created, *args, **kwargs):
             )
     except Exception as e:
         raise e
-    
+
+
+@receiver(post_save, sender=Post)
+def post_created_event(sender, instance: "Post", created, **kwargs):
+    if not created:
+        return
+    payload = {
+        "id": instance.id,
+        "user_id": instance.user_id,
+        "created_at": now().isoformat(),
+        "video_url": getattr(instance, "video", None) and instance.video.url,
+        "caption": getattr(instance, "caption", None),
+    }
+    send_event(os.getenv('KAFKA_TOPICS["post_created"]'), key=str(instance.id), payload=payload)
+
+
+@receiver(post_save, sender=Comment)
+def comment_created_event(sender, instance: "Comment", created, **kwargs):
+    if not created:
+        return
+    payload = {
+        "id": instance.id,
+        "post_id": instance.post_id,
+        "author_id": instance.user_id,
+        "text": instance.body[:512],
+        "created_at": now().isoformat(),
+    }
+    send_event(os.getenv('KAFKA_TOPICS["comment_created"]'), key=str(instance.post_id), payload=payload)

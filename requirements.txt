@@ -1,4 +1,6 @@
+annotated-types==0.7.0
 asgiref==3.9.1
+confluent-kafka==2.11.1
 Django==5.2.6
 django-countries==7.6.1
 django-phonenumber-field==8.1.0
@@ -8,9 +10,13 @@ packaging==25.0
 phonenumbers==9.0.13
 pillow==11.3.0
 psycopg2==2.9.10
+pydantic==2.11.9
+pydantic_core==2.33.2
 python-dotenv==1.1.1
+python-magic-bin==0.4.14
 redis==6.4.0
 sqlparse==0.5.3
+typing-inspection==0.4.1
 typing_extensions==4.15.0
 tzdata==2025.2
 ua-parser==1.0.1

@@ -21,6 +21,9 @@ from .models import (
     Repost
 )
 from django.utils import timezone
+from django.utils.timezone import now
+import os
+from dotenv import load_dotenv
 from django.contrib import auth
 from django.core.cache import cache
 from django.contrib import messages
@@ -34,6 +37,9 @@ from .helper import parse_user_agent
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import get_object_or_404
+from scoutifiiapp.kafka.producer import send_event
+
+load_dotenv()
 
 
 def index(request):
@@ -1465,7 +1471,18 @@ def user_comments(request, id):
                 user_prof=user_obj, 
                 profile_id=profile, 
                 comment_body=body
-            )        
+            )
+            send_event(
+                os.getenv('KAFKA_TOPICS["comment_created"]'),
+                key=str(id),
+                payload={
+                    "post_id": id, 
+                    "author_id": request.user.id, 
+                    "text": request.POST["body"],
+                    "created_at": now().isoformat()
+                },
+            )
+            return JsonResponse({"ok": True})        
         return HttpResponseRedirect(reverse('dashboard'))
     else:
         return render(request, 'dashboard')
