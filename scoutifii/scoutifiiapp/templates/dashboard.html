@@ -89,7 +89,7 @@
                         </video>
                     </div>
                     <div class="action-button">
-                        <div class="interaction-button">
+                        <div class="interaction-button" data-post-id="{{post.id}}">
                             <span>
                                 <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
@@ -105,6 +105,8 @@
                                         
                                     </form>
                                 </button>
+                                <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
+                                <!-- <h6 data-like-label="{{post.id}}">{{ post.no_of_likes|yesno:'Like,Likes' }}</h6> -->
                             </span>
                             <!-- Watch button -->
                             <span>
@@ -139,6 +141,7 @@
                                         </g>
                                     </svg>
                                 </button>
+                                <small class="view-counter" title="Views" data-view-counter="{{post.video_counts.count}}">{{post.video_counts.count}}</small>
                             </span>
                             <!-- Comment button -->
                             <span>
@@ -153,6 +156,7 @@
                                         </g>
                                     </svg>
                                 </button>
+                                <small class="comment-counter" title="Comments" data-comment-counter="{{post.comments.count}}">{{post.comments.count}}</small>
                             </span>
                             <!-- Share button -->
                             <span>
@@ -178,33 +182,6 @@
                                     </svg>
                                     <!-- <span>Repost</span> -->
                                 </button>
-                            </span>
-                        </div>
-                        <div class="counters" data-post-id="{{post.id}}">
-                            <span>
-                            <!-- {% if post.no_of_likes == 0 %}
-                            {% elif post.no_of_likes == 1 %} -->
-                                <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
-                                <h6 data-like-label="{{post.id}}">{{ post.no_of_likes|yesno:'Like,Likes' }}</h6>
-                            <!-- {% else %}
-                                <small class="like-counter" title="Likes">{{post.no_of_likes}}</small><h6>Likes</h6>
-                            {% endif %}                                         -->
-                            </span>
-                            <span>
-                                {% if post.video_counts.count == 0 %}
-                                    {% elif post.video_counts.count == 1 %}
-                                    <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>view</h6>
-                                    {% else %}
-                                    <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>views</h6>
-                                {% endif %}
-                            </span>
-                            <span>
-                                {% if post.comments.count == 0 %}
-                                {% elif post.comments.count == 1 %}
-                                <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comment</h6>
-                                {% else %}
-                                <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comments</h6>
-                                {% endif %}
                             </span>
                         </div>
                     </div>

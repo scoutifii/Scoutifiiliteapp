@@ -337,7 +337,7 @@ const openCommentModal = (trigger) => {
 };
 
 // close when clicking on the overlay background
-const closeCommentModal = (e) => {
+const closeCommentModal = (trigger) => {
     if (e.target.classList.contains('comment-section')) {
         e.target.style.display = 'none';
     }
@@ -1034,62 +1034,61 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyBtn = document.getElementById('copy-share-url');
   const closeBtn = document.getElementById('close-share-fallback');
 
-function openFallback(url) {
-    if (!fallbackModal) return;
-    shareInput.value = url;
-    fallbackModal.classList.remove('hidden');
-    shareInput.focus();
-    shareInput.select();
-}
+    function openFallback(url) {
+        if (!fallbackModal) return;
+        shareInput.value = url;
+        fallbackModal.classList.remove('hidden');
+        shareInput.focus();
+        shareInput.select();
+    }
 
-function closeFallback() {
-    if (!fallbackModal) return;
-    fallbackModal.classList.add('hidden');
-}
+    function closeFallback() {
+        if (!fallbackModal) return;
+        fallbackModal.classList.add('hidden');
+    }
 
-document.querySelectorAll('.share-button').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const title = btn.dataset.shareTitle || 'Share';
-      const text = btn.dataset.shareText || '';
-      const url = btn.dataset.shareUrl || window.location.href;
+    document.querySelectorAll('.share-button').forEach(btn => {
+        btn.addEventListener('click', async () => {
+        const title = btn.dataset.shareTitle || 'Share';
+        const text = btn.dataset.shareText || '';
+        const url = btn.dataset.shareUrl || window.location.href;
 
-      if (navigator.share) {
-        try {
-          await navigator.share({ title, text, url });
-        } catch (err) {
-          // User canceled or share failed; silently ignore or open fallback
-          // openFallback(url);
+        if (navigator.share) {
+            try {
+            await navigator.share({ title, text, url });
+            } catch (err) {
+            // User canceled or share failed; silently ignore or open fallback
+            // openFallback(url);
+            }
+        } else {
+            // Fallback: try clipboard, else open modal
+            try {
+            await navigator.clipboard.writeText(url);
+            alert('Link copied to clipboard');
+            } catch (_) {
+            openFallback(url);
+            }
         }
-      } else {
-        // Fallback: try clipboard, else open modal
+        });
+    });
+
+    copyBtn?.addEventListener('click', async () => {
         try {
-          await navigator.clipboard.writeText(url);
-          alert('Link copied to clipboard');
+        await navigator.clipboard.writeText(shareInput.value);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
         } catch (_) {
-          openFallback(url);
+        // no-op
         }
-      }
+    });
+
+    closeBtn?.addEventListener('click', closeFallback);
+    fallbackModal?.addEventListener('click', (e) => {
+        if (e.target === fallbackModal) closeFallback();
     });
 });
 
-copyBtn?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(shareInput.value);
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
-    } catch (_) {
-      // no-op
-    }
-});
-
-closeBtn?.addEventListener('click', closeFallback);
-fallbackModal?.addEventListener('click', (e) => {
-    if (e.target === fallbackModal) closeFallback();
-  });
-});
-
-// .................Repost..........................
-// Repost: open modal with selected post id
+// .........Repost: open modal with selected post id
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('repost-modal');
   const form = document.getElementById('repost-form');

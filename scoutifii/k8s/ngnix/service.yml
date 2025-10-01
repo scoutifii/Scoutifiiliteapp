@@ -1,0 +1,14 @@
+# Exposing to the outside world
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: tcp
+      port: 80
+      targetPort: 80 # Container deployment port
+  selector:
+    app: nginx-deployment

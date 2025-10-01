@@ -1484,8 +1484,9 @@ a{
 .share-fallback__dialog {
   background: #fff;
   color: #111;
-  width: 90%;
-  max-width: 420px;
+  width: 80%;
+  height: auto;
+  max-width: 42px;
   padding: 1rem;
   border-radius: 0.5rem;
 }

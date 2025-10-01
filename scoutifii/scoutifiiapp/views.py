@@ -1524,10 +1524,6 @@ class LogView(TemplateView):
 
 @require_GET
 def post_counts(request, id):
-    try:
-        uid = uuid.UUID(str(id))
-    except (ValueError, AttributeError):
-        return JsonResponse({"detail": "Invalid post id"}, status=404)
     post = get_object_or_404(Post, pk=id)
     return JsonResponse({
         "post_id": str(post.id),
