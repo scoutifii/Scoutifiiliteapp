@@ -121,7 +121,7 @@ def dashboard(request):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
     num_of_followers = len(suggestions_username_profile_list)
-    token = str(uuid.uuid4())  
+    # token = str(uuid.uuid4())  
 
     context = {
         'user_profile': user_profile, 
@@ -130,7 +130,7 @@ def dashboard(request):
         'username_suggestions': suggestions_username_profile_list[:10],
         'year': year,
         'num_of_followers': num_of_followers,
-        'token': token
+        # 'token': token
     }
     return render(request, 'dashboard.html', context)
 

@@ -62,8 +62,8 @@ class Profile(models.Model):
     phone_no = PhoneNumberField(
         unique=True, 
         max_length=13, 
-        null=False, 
-        blank=False
+        null=True, 
+        blank=True
     )
     forgot_password_token = models.CharField(max_length=100)
     country_id = CountryField()

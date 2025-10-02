@@ -57,9 +57,9 @@ class DashboardViewTests(TestCase):
             username="u2", email="u2@example.com", password="pass1234"
         )
         # Profiles
-        self.me_profile = Profile.objects.create(user=self.me, id_user=self.me.id)
-        self.u1_profile = Profile.objects.create(user=self.u1, id_user=self.u1.id)
-        self.u2_profile = Profile.objects.create(user=self.u2, id_user=self.u2.id)
+        self.me_profile = Profile.objects.create(user=self.me, id_user=self.me.id, phone_no="1000000001")
+        self.u1_profile = Profile.objects.create(user=self.u1, id_user=self.u1.id, phone_no="1000000002")
+        self.u2_profile = Profile.objects.create(user=self.u2, id_user=self.u2.id, phone_no="1000000003")
 
         # Brand setting (view expects queryset to exist)
         BrandSetting.objects.create()  # add required fields if model enforces them
@@ -153,8 +153,8 @@ class LikeFlairPermissionTests(TestCase):
         self.other = User.objects.create_user(username="other", email="x@example.com", password="pass1234")
 
         # Profiles (minimal fields to satisfy FK)
-        self.owner_profile = Profile.objects.create(user=self.owner, id_user=self.owner.id)
-        self.other_profile = Profile.objects.create(user=self.other, id_user=self.other.id)
+        self.owner_profile = Profile.objects.create(user=self.owner, id_user=self.owner.id, phone_no="2000000001")
+        self.other_profile = Profile.objects.create(user=self.other, id_user=self.other.id, phone_no="2000000002")
 
         BrandSetting.objects.create()  # if required by middleware/context
 

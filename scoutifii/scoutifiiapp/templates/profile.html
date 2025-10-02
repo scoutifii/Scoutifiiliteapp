@@ -132,6 +132,7 @@
                                     </form>
                                 </button>
                                 <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
+                                <!-- <h6 data-like-label="{{post.id}}">{{ post.no_of_likes|yesno:'Like,Likes' }}</h6> -->
                             </span>
                             <!-- Watch button -->
                             <span>
@@ -209,32 +210,6 @@
                                 </button>
                             </span>
                         </div>
-                            <span>
-                            {% if post.no_of_likes == 0 %}
-                            {% elif post.no_of_likes == 1 %} 
-                                <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
-                                <h6 data-like-label="{{post.id}}">{{ post.no_of_likes|yesno:'Like,Likes' }}</h6>
-                            {% else %}
-                                <small class="like-counter" title="Likes">{{post.no_of_likes}}</small><h6>Likes</h6>
-                            {% endif %}                                         
-                            </span>
-                            <span>
-                                {% if post.video_counts.count == 0 %}
-                                    {% elif post.video_counts.count == 1 %}
-                                    <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>view</h6>
-                                    {% else %}
-                                    <small class="view-counter" title="Views">{{post.video_counts.count}}</small><h6>views</h6>
-                                {% endif %}
-                            </span>
-                            <span id="commentModal">
-                                {% if post.comments.count == 0 %}
-                                {% elif post.comments.count == 1 %}
-                                <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comment</h6>
-                                {% else %}
-                                <small class="comment-counter" title="Comments">{{post.comments.count}}</small><h6>Comments</h6>
-                                {% endif %}
-                            </span>
-                        </div> -->
                     </div>
                     {% if post.category_type == 'football' %}
                     <div class="tactical-button">
