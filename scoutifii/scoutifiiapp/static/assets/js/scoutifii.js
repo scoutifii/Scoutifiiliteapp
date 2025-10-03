@@ -951,7 +951,7 @@ function updateCountersInDom(postId, data) {
 }
 
 function collectVisiblePostIds() {
-  return Array.from(document.querySelectorAll('.counters[data-post-id]'))
+  return Array.from(document.querySelectorAll('.interaction-button[data-post-id]'))
     .map(el => Number(el.getAttribute('data-post-id')))
     .filter(Boolean);
 }
@@ -974,58 +974,120 @@ function startCountsPolling(intervalMs = 15000) {
   tick(); // initial
   return setInterval(tick, intervalMs);
 }
+// JavaScript
+$(document).on('submit', '.like__form', function (e) {
+  e.preventDefault();
+  const $form = $(this);
+  const url = $form.attr('action');
+  const csrftoken = getCookie('csrftoken');
+  const fd = new FormData(this);
 
-// Hook like__form success to refresh immediately
-$(document).ready(function () {
-  // Start polling
-  startCountsPolling(15000);
+  // Try to get post id from hidden input or data attribute
+  let postId = Number($form.find('input[name="post_id"]').val());
+  if (!postId) {
+    postId = Number($form.data('postId')) || Number($form.closest('[data-post-id]').data('postId'));
+  }
 
-  // Enhance existing like form handler if present
-  $('.like__form').on('submit', function (e) {
-    e.preventDefault();
-    const $form = $(this);
-    const url = $form.attr('action');
-    const csrftoken = getCookie('csrftoken'); // your existing helper
-    const postId = Number($form.find('input[name="post_id"]').val());
+  // Button class must match your DOM, ensure it is ".like-button"
+  const $btn = $form.find('.like-button');
+  const revertOnError = $btn.length > 0;
 
-    // optimistic UI toggle if you implemented .is-liked
-    const $btn = $form.find('.like-button');
-    $btn.toggleClass('is-liked');
+  // Optimistic UI
+  if (revertOnError) $btn.toggleClass('is-liked');
 
-    $.ajax({
-      method: 'POST',
-      url,
-      headers: { 'X-CSRFToken': csrftoken },
-      data: new FormData(this),
-      contentType: false,
-      cache: false,
-      processData: false,
-      success: async function (response) {
-        // If backend returns liked and likes, use it; otherwise query counts endpoint
-        if (response && typeof response.likes !== 'undefined') {
+  $.ajax({
+    method: 'POST',
+    url,
+    headers: { 'X-CSRFToken': csrftoken },
+    data: fd,
+    contentType: false,
+    cache: false,
+    processData: false,
+    success: async function (response) {
+      // Sync liked state if provided
+      if ($btn.length && typeof response?.liked !== 'undefined') {
+        $btn.toggleClass('is-liked', !!response.liked);
+      }
+
+      // Update counters
+      if (postId) {
+        if (typeof response?.likes !== 'undefined') {
           updateCountersInDom(postId, {
             likes: response.likes,
-            views: response.views ?? document.querySelector(`[data-view-counter="${postId}"]`)?.textContent ?? 0,
-            comments: response.comments ?? document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent ?? 0,
+            views: response.views ?? Number(document.querySelector(`[data-view-counter="${postId}"]`)?.textContent) || 0,
+            comments: response.comments ?? Number(document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent) || 0,
           });
         } else {
           try {
             const data = await fetchCounts(postId);
             updateCountersInDom(postId, data);
-          } catch {}
+          } catch (_) { /* ignore */ }
         }
-        // sync liked state if server sent it
-        if (response && typeof response.liked !== 'undefined') {
-          $btn.toggleClass('is-liked', !!response.liked);
-        }
-      },
-      error: function () {
-        // revert optimistic toggle on error
-        $btn.toggleClass('is-liked');
-      },
-    });
+      }
+    },
+    error: function () {
+      if (revertOnError) $btn.toggleClass('is-liked'); // revert optimistic toggle
+      toastr.error('Could not like. Please try again.');
+    },
   });
 });
+
+
+
+
+
+
+// Hook like__form success to refresh immediately
+// $(document).ready(function () {
+//   // Start polling
+//   startCountsPolling(15000);
+
+//   // Enhance existing like form handler if present
+//   $('.like__form').on('submit', function (e) {
+//     e.preventDefault();
+//     const $form = $(this);
+//     const url = $form.attr('action');
+//     const csrftoken = getCookie('csrftoken'); // your existing helper
+//     const postId = Number($form.find('input[name="post_id"]').val());
+
+//     // optimistic UI toggle if you implemented .is-liked
+//     const $btn = $form.find('.like-button');
+//     $btn.toggleClass('is-liked');
+
+//     $.ajax({
+//       method: 'POST',
+//       url,
+//       headers: { 'X-CSRFToken': csrftoken },
+//       data: new FormData(this),
+//       contentType: false,
+//       cache: false,
+//       processData: false,
+//       success: async function (response) {
+//         // If backend returns liked and likes, use it; otherwise query counts endpoint
+//         if (response && typeof response.likes !== 'undefined') {
+//           updateCountersInDom(postId, {
+//             likes: response.likes,
+//             views: response.views ?? document.querySelector(`[data-view-counter="${postId}"]`)?.textContent ?? 0,
+//             comments: response.comments ?? document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent ?? 0,
+//           });
+//         } else {
+//           try {
+//             const data = await fetchCounts(postId);
+//             updateCountersInDom(postId, data);
+//           } catch {}
+//         }
+//         // sync liked state if server sent it
+//         if (response && typeof response.liked !== 'undefined') {
+//           $btn.toggleClass('is-liked', !!response.liked);
+//         }
+//       },
+//       error: function () {
+//         // revert optimistic toggle on error
+//         $btn.toggleClass('is-liked');
+//       },
+//     });
+//   });
+// });
 
 
 document.addEventListener('DOMContentLoaded', () => {

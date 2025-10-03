@@ -9,7 +9,8 @@ from .models import (
     VideoVision, VideoWorkRate, VideoAgility, VideoCloseRangeShotStoppingAbility,
 	OffTheBallVideo, VideoPositioning, VideoMarking, FollowersCount,
     VideoCounts, Notification, VideoCharisma, VideoFreeKick,
-	Notification, Repost, Plan, Subscription, OverageEvent, UsageQuota
+	Notification, Repost, Plan, Subscription, OverageEvent, UsageQuota,
+	Advertiser, AdPlacement, AdClick, Campaign, Creative, AdImpression
 )
 
 class AllLoginsAdmin(admin.ModelAdmin):
@@ -62,3 +63,9 @@ admin.site.register(Plan)
 admin.site.register(Subscription)
 admin.site.register(OverageEvent)
 admin.site.register(UsageQuota)
+admin.site.register(Campaign)
+admin.site.register(Creative)
+admin.site.register(AdImpression)
+admin.site.register(AdClick)
+admin.site.register(Advertiser)
+admin.site.register(AdPlacement)

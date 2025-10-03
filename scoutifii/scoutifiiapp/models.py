@@ -919,3 +919,88 @@ class Repost(models.Model):
     def __str__(self):
         return f"{self.user} - {self.original} - {self.message}"
 
+class Advertiser(models.Model):
+    name = models.CharField(max_length=255)
+    contact_email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "advertiser"
+    
+    def __str__(self):
+        return f"{self.name} - {self.contact_email}"
+
+class AdPlacement(models.Model):
+    # E.g., 'dashboard_feed_top', 'profile_sidebar', 'post_detail_inline'
+    code = models.CharField(max_length=64, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "ad_placement"
+    
+    def __str__(self):
+        return f"{self.code} - {self.description}"
+
+class Campaign(models.Model):
+    advertiser = models.ForeignKey(Advertiser, on_delete=models.CASCADE, related_name="campaigns")
+    name = models.CharField(max_length=255)
+    placement = models.ForeignKey(AdPlacement, on_delete=models.PROTECT, related_name="campaigns")
+    start_at = models.DateTimeField()
+    end_at = models.DateTimeField()
+    active = models.BooleanField(default=True)
+    daily_budget_cents = models.PositiveIntegerField(default=0)  # optional
+    target_country = models.CharField(max_length=2, blank=True)  # ISO country code
+    target_profile_type = models.CharField(max_length=64, blank=True)  # align with your Profile.profile_type_data
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "campaign"
+    
+    def __str__(self):
+        return f"{self.name} - {self.advertiser}"
+
+class Creative(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='creatives')
+    image = models.ImageField(upload_to='ads/', blank=True, null=True)
+    click_url = models.URLField()
+    headline = models.CharField(max_length=120, blank=True)
+    html = models.TextField(blank=True)  # if you want custom HTML
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "creative"
+    
+    def __str__(self):
+        return f"{self.campaign} - {self.click_url}"
+
+class AdImpression(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='impressions')
+    creative = models.ForeignKey(Creative, on_delete=models.CASCADE, related_name='impressions')
+    placement = models.ForeignKey(AdPlacement, on_delete=models.PROTECT, related_name='impressions')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "ad_impression"
+    
+    def __str__(self):
+        return f"{self.campaign} - {self.creative}"
+
+class AdClick(models.Model):
+    impression = models.ForeignKey(AdImpression, on_delete=models.CASCADE, related_name='clicks')
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "ad_click"
+    
+    def __str__(self):
+        return f"{self.impression}"

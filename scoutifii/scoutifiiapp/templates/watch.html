@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}{% for post in postLists%} {{post.video_name}}{% endfor %} {% endblock %}
 {% block content %}
 <div class="main-middle-index">
     <!-- Start stories -->
     <div class="middle-container">
         <div class="stories">
-            {% for post in posts %}    
+            {% for post in postLists %}    
             <div class="feeds">
                 <div class="feed myfeed">
                     <div class="feed-top">
@@ -27,30 +28,29 @@
                         <h5>{{post.video_name}}</h5>
                     </div>
                     <div class="feed-img">
-                        <a href="{% url 'watch' post.id %}">
-                            <video playsinline="true" mediatype="video" controls preload="metadata">
-                                <source src="{{post.video.url}}" type="video/mp4" id="video_source">
-                                <track label="English" kind="captions" srclang="en" default>
-                            </video>
-                        </a>
+                        <video playsinline="true" mediatype="video" controls preload="metadata">
+                            <source src="{{post.video.url}}" type="video/mp4" id="video_source">
+                            <track label="English" kind="captions" srclang="en" default>
+                        </video>
                     </div>
                     <div class="action-button">
                         <div class="interaction-button" data-post-id="{{post.id}}">
                             <span>
-                                <form action="{% url 'like-post' post.id %}" method="POST" class="like__form">	
-                                    {% csrf_token %}
-                                    <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
-                                    <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_like_id">                                        
-                                    <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
-                                            <g fill="#0000FF" stroke="none">
-                                                <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                    </button>
-                                    <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
-                                </form> 
+                                <button type="submit" value="{{post.id}}" class="btn btn-activities like-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" role="img" aria-labelledby="aarhrervsb8no027882614vhsp65oesq" class="crayons-icon reaction-icon not-reacted"><title id="aarhrervsb8no027882614vhsp65oesq">Like Post</title>
+                                        <g fill="#0000FF" stroke="none">
+                                            <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                    <form action="{% url 'like-post' post.id %}" method="POST" class="like__form">	
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{user_profile.pk}}">
+                                        <input type="hidden" name="post_id" value="{{post.id}}" id="scoutifii_like_id">
+                                        
+                                    </form>
+                                </button>
+                                <small class="like-counter" title="Likes" data-like-counter="{{post.no_of_likes}}">{{post.no_of_likes}}</small>
                             </span>
                             <!-- Watch button -->
                             <span>
@@ -781,6 +781,5 @@
     </form>
   </div>
 </div>
-
 
 {% endblock %}

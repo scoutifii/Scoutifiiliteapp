@@ -87,7 +87,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 8},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -132,3 +132,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Maximum allowed payload size
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024     # 100MB
+
+# Required so PasswordResetView builds a full link
+DEFAULT_FROM_EMAIL = 'no-reply@scoutifii.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'admin'
+EMAIL_HOST_PASSWORD = 'your-smtp-password'
+EMAIL_USE_TLS = True

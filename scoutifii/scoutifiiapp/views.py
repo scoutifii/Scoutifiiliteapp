@@ -18,17 +18,17 @@ from .models import (
     VideoBallControl, VideoFreeKick, VideoDribbling,
     VideoCrossing, VideoPace, Comment, LikePost, 
     FollowersCount, Notification, ActivityLog,
-    Repost
+    Repost, VideoCounts
 )
 from django.utils import timezone
 from django.utils.timezone import now
 import os
 from dotenv import load_dotenv
 from django.contrib import auth
+from django.contrib.auth import authenticate
 from django.core.cache import cache
 from django.contrib import messages
 import random
-import uuid
 from django.core.exceptions import PermissionDenied
 from itertools import chain
 from django.db.models import Q
@@ -38,6 +38,12 @@ from django.views.generic import TemplateView
 from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import get_object_or_404
 from scoutifiiapp.kafka.producer import send_event
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import mail_managers
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 load_dotenv()
 
@@ -1531,3 +1537,81 @@ def post_counts(request, id):
         "views": post.video_counts.count(),
         "comments": post.comments.count(),
     })
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['email']
+            user = User.objects.get(email=user)
+            token = PasswordResetTokenGenerator().make_token(user)
+            mail_managers('password_reset_link', 'password_reset_link', {'user': user, 'token': token}, user.email)
+            return redirect('password_reset_sent')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'forgot_password.html', {'form': form})
+
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()  # sets new password securely
+            update_session_auth_hash(request, user)  # prevents logout
+            messages.success(request, 'Password changed successfully.')
+            return redirect('dashboard')  # or profile/dashboard
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render(request, 'change_password.html', {'form': form})
+
+
+@require_GET
+def watch(request, pk):
+    if request.user.is_authenticated:
+        user_object = User.objects.get(username=request.user.username) 
+        user_profile = Profile.objects.get(user=user_object) 
+        post = get_object_or_404(
+            Post.objects.select_related('user').only(
+                'id', 'user_id', 'video', 'video_name', 'created_at', 'status'
+            ),
+            pk=pk
+        )
+        video = get_object_or_404(Post, id=pk)
+        post_lists = Post.objects.filter(id=pk)
+        view_count = VideoCounts.objects.filter(post_id=post).count()
+        brand_setting = BrandSetting.objects.all()
+        year = datetime.now().strftime("%Y")
+        if not request.session.session_key:
+            request.session.save()
+        
+        session_key = request.session.session_key   
+        ip_address = request.META.get('REMOTE_ADDR', '')
+        if post.user_id == request.user.id:
+            messages.info(request, 'Access denied')
+            return redirect('dashboard')
+        else:
+            if not VideoCounts.objects.filter(post=video, session=session_key):
+                views = VideoCounts(post=video, ip_address=ip_address, session=session_key, user_id=request.user.pk)
+                views.save()
+    else:
+        post_lists = Post.objects.filter(id=pk)
+        post = Post.objects.get(id=pk)
+        view_count = VideoCounts.objects.filter(post_id=post).count()
+        brand_setting = BrandSetting.objects.all() 
+        user_profile = Profile.objects.all()
+        year = datetime.now().strftime("%Y")
+
+    context = {
+        'posts':post,
+        'view_count':view_count,
+        'postLists':post_lists,
+        'brand_setting': brand_setting,
+        'user_profile': user_profile,
+        'year': year
+    }
+
+    return render(request, 'watch.html', context)
