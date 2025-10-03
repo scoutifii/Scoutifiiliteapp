@@ -15,8 +15,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DJANGO_DEBUG', 0) != 'True'
 
 ALLOWED_HOSTS = [
-    '127.0.0.1', 'localhost',
-    'z5w3x27v-8000.uks1.devtunnels.ms',
+    '127.0.0.1', 'localhost'
 ]
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
 if ALLOWED_HOSTS_ENV:
