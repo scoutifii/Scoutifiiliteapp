@@ -43,6 +43,9 @@ from django.core.mail import mail_managers
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
+
 
 
 load_dotenv()
@@ -407,19 +410,44 @@ def profile(request, pk):
 
 @login_required(login_url='login')
 def follower(request, pk):
-    user_object = User.objects.get(username=pk)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = get_object_or_404(User, username=pk)
+    user_profile = get_object_or_404(Profile, user=user_object)
     brand_setting = BrandSetting.objects.all()
-    user = pk
-    user_followers = len(FollowersCount.objects.filter(user=user))
-    user_followers_list = list(FollowersCount.objects.filter(user=user))
+   
+    follower_qs = FollowersCount.objects.filter(user=user_object.username) 
+    
+    # Count without materializing the list
+    user_followers = follower_qs.count()
+
+    # Get actual follower users in one go
+    follower_usernames = follower_qs.values_list('follower', flat=True)
+
+    followers_users = (
+        User.objects.filter(username__in=follower_usernames)
+        .select_related('profile')
+        .only('id', 'username', 'first_name', 'last_name', 'profile__profileimg', 'profile__bio')
+        .order_by('username')
+    )
+
+    # Pagination (query param ?page=)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(followers_users, 24)  # 24 per page
+    try:
+        followers_page = paginator.page(page)
+    except PageNotAnInteger:
+        followers_page = paginator.page(1)
+    except EmptyPage:
+        followers_page = paginator.page(paginator.num_pages)
+
 
     context = {
         'user_object': user_object,
         'user_profile': user_profile,
-        'user_followers_list': user_followers_list,
         'user_followers': user_followers,
-        'brand_setting': brand_setting
+        'followers_users': followers_users,
+        'brand_setting': brand_setting,
+        'paginator': paginator,
+        'followers_page': followers_page, 
     }
 
     return render(request, 'follower.html', context)

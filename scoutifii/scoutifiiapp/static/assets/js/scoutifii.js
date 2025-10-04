@@ -1014,8 +1014,8 @@ $(document).on('submit', '.like__form', function (e) {
         if (typeof response?.likes !== 'undefined') {
           updateCountersInDom(postId, {
             likes: response.likes,
-            views: response.views ?? Number(document.querySelector(`[data-view-counter="${postId}"]`)?.textContent) || 0,
-            comments: response.comments ?? Number(document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent) || 0,
+            views: response.views ?? Number(document.querySelector(`[data-view-counter="${postId}"]`)?.textContent) ?? 0,
+            comments: response.comments ?? Number(document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent) ?? 0,
           });
         } else {
           try {

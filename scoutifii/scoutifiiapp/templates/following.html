@@ -1,0 +1,104 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Profile - {{ user_profile.user.username }}
+{% endblock %}
+
+{% block content %}
+<div class="follow-page">
+  <section class="follow-card">
+    <header class="follow-card__header">
+      <h2 class="follow-card__title">
+        {{ user_following }} &#9782; Following
+      </h2>
+    </header>
+    <hr class="follow-card__divider">
+    {% if user_following_list %}
+      <ul class="follow-list" role="list">
+        {% for user in user_following_list %}
+          <li class="follow-item">
+            <a class="follow-item__avatar" href="{% url 'profile' user.user %}">
+              <img
+                src="{{ user.profile.profileimg.url }}"
+                alt="{{ user.user }} avatar"
+                loading="lazy"
+                decoding="async"
+              >
+            </a>
+            <div class="follow-item__body">
+              <a class="follow-item__name" href="{% url 'profile' user.user %}">
+                {{ user.user }}
+              </a>
+              {% if user.profile.bio %}
+                <p class="follow-item__meta">{{ user.profile.bio|truncatechars:80 }}</p>
+              {% endif %}
+            </div>
+            <div class="follow-item__actions">
+              <a class="btn btn--primary btn--sm btn-follow" href="{% url 'profile' user.user %}">
+                Follow
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="follow-empty">No following yet.</p>
+    {% endif %}
+  </section>
+</div>
+
+<div class="customize-theme">
+    <div class="card">
+        <h2>Customize your view</h2>
+        <p class="text-gry">Manage your font size, color, and background</p>
+
+        <!-- FONT SIZES -->
+        <div class="font-size">
+            <h4>Font Size</h4>
+            <div>
+                <h6>Aa</h6>
+                <div class="choose-size">
+                    <span class="font-size-1"></span>
+                    <span class="font-size-2 active"></span>
+                    <span class="font-size-3"></span>
+                    <span class="font-size-4"></span>
+                    <span class="font-size-5"></span>
+                </div>
+                <h3>Aa</h3>
+            </div>
+        </div>
+
+        <!-- PRIMARY COLORS -->
+        <div class="color">
+            <h4>Color</h4>
+            <div class="choose-color">
+                <span class="color-1 active"></span>
+                <span class="color-2"></span>
+                <span class="color-3"></span>
+                <span class="color-4"></span>
+                <span class="color-5"></span>
+            </div>
+        </div>
+
+        <!-- BACKGROUND COLORS -->
+        <div class="background">
+            <h4>Background</h4>
+            <div class="choose-bg">
+                <div class="bg-1 active">
+                    <span></span>
+                    <h5 for="bg-1">Light</h5>
+                </div>
+                <div class="bg-2">
+                    <span></span>
+                    <h5 for="bg-2">Dim</h5>
+                </div>
+                <div class="bg-3">
+                    <span></span>
+                    <h5 for="bg-3">Lights Out</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

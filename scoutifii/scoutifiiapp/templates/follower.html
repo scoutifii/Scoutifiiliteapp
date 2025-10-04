@@ -1,0 +1,118 @@
+<!-- HTML -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Followers - {{ user_object.username }}
+{% endblock %}
+
+{% block content %}
+<div class="follow-page">
+  <section class="follow-card">
+    <header class="follow-card__header">
+      <h1 class="follow-card__title">
+        ({{ user_followers }}) &#9782; Followers 
+      </h1>
+    </header>
+    <hr class="follow-card__divider">
+
+    {% if followers_page and followers_page.object_list %}
+      <ul class="follow-list" role="list">
+        {% for u in followers_page %}
+          <li class="follow-item">
+            <a class="follow-item__avatar" href="{% url 'profile' u.username %}">
+              <img
+                src="{{ u.profile.profileimg.url }}"
+                alt="{{ u.username }} avatar"
+                loading="lazy"
+                decoding="async"
+              >
+            </a>
+            <div class="follow-item__body">
+              <a class="follow-item__name" href="{% url 'profile' u.username %}">
+                {{ u.username }}
+              </a>
+              {% if u.profile.bio %}
+                <p class="follow-item__meta">{{ u.profile.bio|default_if_none:''|truncatechars:80 }}</p>
+              {% endif %}
+            </div>
+            <div class="follow-item__actions">
+              <a class="btn btn--primary btn--sm" href="{% url 'profile' u.username %}">
+                View
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <nav class="pagination" aria-label="Followers pagination">
+        {% if followers_page.has_previous %}
+          <a class="pagination__link" href="?page={{ followers_page.previous_page_number }}">\&laquo; Prev</a>
+        {% endif %}
+        <span class="pagination__status">
+          Page {{ followers_page.number }} of {{ followers_page.paginator.num_pages }}
+        </span>
+        {% if followers_page.has_next %}
+          <a class="pagination__link" href="?page={{ followers_page.next_page_number }}">Next \&raquo;</a>
+        {% endif %}
+      </nav>
+    {% else %}
+      <p class="follow-empty">No followers yet.</p>
+    {% endif %}
+  </section>
+</div>
+
+<div class="customize-theme">
+    <div class="card">
+        <h2>Customize your view</h2>
+        <p class="text-gry">Manage your font size, color, and background</p>
+
+        <!-- FONT SIZES -->
+        <div class="font-size">
+            <h4>Font Size</h4>
+            <div>
+                <h6>Aa</h6>
+                <div class="choose-size">
+                    <span class="font-size-1"></span>
+                    <span class="font-size-2 active"></span>
+                    <span class="font-size-3"></span>
+                    <span class="font-size-4"></span>
+                    <span class="font-size-5"></span>
+                </div>
+                <h3>Aa</h3>
+            </div>
+        </div>
+
+        <!-- PRIMARY COLORS -->
+        <div class="color">
+            <h4>Color</h4>
+            <div class="choose-color">
+                <span class="color-1 active"></span>
+                <span class="color-2"></span>
+                <span class="color-3"></span>
+                <span class="color-4"></span>
+                <span class="color-5"></span>
+            </div>
+        </div>
+
+        <!-- BACKGROUND COLORS -->
+        <div class="background">
+            <h4>Background</h4>
+            <div class="choose-bg">
+                <div class="bg-1 active">
+                    <span></span>
+                    <h5 for="bg-1">Light</h5>
+                </div>
+                <div class="bg-2">
+                    <span></span>
+                    <h5 for="bg-2">Dim</h5>
+                </div>
+                <div class="bg-3">
+                    <span></span>
+                    <h5 for="bg-3">Lights Out</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
