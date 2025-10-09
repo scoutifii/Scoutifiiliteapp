@@ -1974,7 +1974,7 @@ a{
         padding: 0 12px;
     } 
     .cols_container {
-        width: 85%;
+        width: 80%;
     }
     .comment-section .comment-box > .comment-body {
         width: 80%;
@@ -2017,7 +2017,7 @@ a{
         padding: 0.55rem 0.9rem;
         font-size: 0.95rem;
         width: 100%;
-        margin-left: -10rem;
+        margin-left: -15rem;
     }
     .feed-img {
         aspect-ratio: 1 / 1;          /* square on very small devices */
