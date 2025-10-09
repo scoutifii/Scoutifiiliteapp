@@ -10,17 +10,19 @@
                 <div class="feed myfeed">
                     <div class="feed-top">
                         <div class="user">
-                            <div class="profile-picture" id="my-profile-picture">
-                                <img src="{{post.profile.profileimg.url}}" alt="">
-                            </div>
-                            <div class="info">
-                                <h3>{{post.user}}</h3>
-                                <div class="time text-gry">
-                                    <small class="text-lg"><b>({{post.profile.profile_type_data}}, {{post.category_type}})</b>
-                                        {{post.profile.country_id}}, <span>{{post.get_timeago}}</span>
-                                    </small>
+                            <a href="{% url 'profile' post.user %}}">
+                                <div class="profile-picture" id="my-profile-picture">
+                                    <img src="{{post.profile.profileimg.url}}" alt="">
                                 </div>
-                            </div>
+                                <div class="info">
+                                    <h3>{{post.user}}</h3>
+                                    <div class="time text-gry">
+                                        <small class="text-lg"><b>({{post.profile.profile_type_data}}, {{post.category_type}})</b>
+                                            {{post.profile.country_id}}, <span>{{post.get_timeago}}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                     <div class="feed-title">

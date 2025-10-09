@@ -452,6 +452,14 @@ aside .menu-item:nth-last-child(2){
     align-items: center;
     /*position: relative;*/
  }
+ .feed-top .user > a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;                    /* space between avatar and text */
+  text-decoration: none;
+  color: inherit;                 /* keep text color from parent */
+  min-width: 0;                   /* allow text truncation */
+}
  .feed .feed-top .user{
     display: flex;
     gap: 1rem;
@@ -1873,7 +1881,7 @@ a{
         top: 10rem;
     }
     .cols_container{             
-        width: 90%;
+        max-width: 92vw;
     }
     .cols_container .img_container{
         grid-template-columns: repeat(1,1fr);
@@ -1974,7 +1982,7 @@ a{
         padding: 0 12px;
     } 
     .cols_container {
-        width: 70%;
+        width: 92vw;
     }
     .comment-section .comment-box > .comment-body {
         width: 80%;
@@ -1994,12 +2002,6 @@ a{
     .comment-section .card .create-message{
         top: 10rem;
     }
-    /* .tactical-button .tactical-icons {
-        gap: clap(6px 2vw 12px);
-    }
-    .tactical-button .tactical-icons form {
-        gap: 4px;
-    } */
     .tactical-button .tactical-icons .btn.btn-activities {
         border-radius: 8px;
     }

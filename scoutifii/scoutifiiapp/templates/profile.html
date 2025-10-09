@@ -49,15 +49,15 @@
               {% else %}
                 {% if button_text == 'Follow' %}
                   <button type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
-                    </path>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+                        </path>
                     </svg>
                       {{button_text}}
                   </button>
                 {% else %}
                   <button type="submit" style="background: #00ffee;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
                         </path>
                     </svg>
@@ -92,17 +92,19 @@
                 <div class="feed myfeed">
                     <div class="feed-top">
                         <div class="user">
-                            <div class="profile-picture" id="my-profile-picture">
-                                <img src="{{post.profile.profileimg.url}}" alt="">
-                            </div>
-                            <div class="info">
-                                <h3>{{post.user}}</h3>
-                                <div class="time text-gry">
-                                    <small class="text-lg"><b>({{post.profile.profile_type_data}}, {{post.category_type}})</b>
-                                        {{post.profile.country_id}}, <span>{{post.get_timeago}}</span>
-                                    </small>
+                            <a href="{% url 'profile' post.user %}">
+                                <div class="profile-picture" id="my-profile-picture">
+                                    <img src="{{post.profile.profileimg.url}}" alt="">
                                 </div>
-                            </div>
+                                <div class="info">
+                                    <h3>{{post.user}}</h3>
+                                    <div class="time text-gry">
+                                        <small class="text-lg"><b>({{post.profile.profile_type_data}}, {{post.category_type}})</b>
+                                            {{post.profile.country_id}}, <span>{{post.get_timeago}}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                         <span class="edit">
                             <button type="button" class="edit__btn" aria-haspopup="menu" aria-expanded="false" aria-label="Open post actions">
