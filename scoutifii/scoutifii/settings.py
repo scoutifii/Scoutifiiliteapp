@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'scoutifiiapp.apps.ScoutifiiappConfig',
     'phonenumber_field',
     'django_countries',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'admin'
 EMAIL_HOST_PASSWORD = 'your-smtp-password'
 EMAIL_USE_TLS = True
+
+# Configure GraphQL schema
+GRAPHENE = {
+    'SCHEMA': 'scoutifiiapp.schema.schema',
+}

@@ -861,7 +861,6 @@ aside .menu-item:nth-last-child(2){
   display: inline-block;
   margin-top: 4px;
   color: #6b7280; /* gray-500 */
-  font-size: 0.78rem;
 }
 
 /* Create-comment form layout */
@@ -961,10 +960,6 @@ aside .menu-item:nth-last-child(2){
   /* ensure they sit on same row on wide screens */
   display: inline-block;
 }
-
-
-
-
 
 /*  Login and Signup modal      */
 .main{
@@ -1773,7 +1768,7 @@ a{
 }
 @media (max-width: 1024px) {
     .main-middle {
-        max-width: 92vw;
+        max-width: 100vw;
         padding: 0 14px;
     }
     nav .search-bar{
@@ -1870,25 +1865,22 @@ a{
     position: relative;
   }
 
-  /* Give main content bottom padding so it doesn't hide behind the bar */
-  .main-container,
-  main, body {
-    padding-bottom: 64px; /* roughly bar height */
-  }
     .main-middle{
+        /* grid-template-columns: repeat(1, 1fr) ; */
+        grid-column: 1 / -1;
         max-width: 96vw;
     }  
     .main button{
-        width: 15%
+        width: 15%;
     }
     /* .main-middle .story-container .story{
         gap: 0.1rem;
         width: 45%;
     } */
-    .middle-container .stories{
+    /* .middle-container .stories{
         width: auto;
         margin: 0;
-    }         
+    }          */
     nav .search-bar{
         display: block;
     }
@@ -2005,10 +1997,7 @@ a{
 }
 /* compact on small screens */
 @media (max-width: 520px) {
-  .notification-box {
-    padding: 0.75rem;
-    gap: 0.7rem;
-  }
+  .notification-box { padding: 0.75rem;gap: 0.7rem;}
   .notification-box > div {
     grid-template-columns: 40px 1fr;
     gap: 0.7rem;
@@ -2051,12 +2040,14 @@ a{
         height: 24px;
     }
     .main-middle{
-        max-width: 96vw;
-        padding: 0 12px;
-    } 
-    .main-middle-index{
-        max-width: 100vw;
-        padding: 0 12px;
+        width: 100%;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     } 
     .cols_container {
         width: 92vw;
@@ -2078,9 +2069,6 @@ a{
     }
     .comment-section .card .create-message{
         top: 10rem;
-    }
-    .tactical-button .tactical-icons .btn.btn-activities {
-        border-radius: 8px;
     }
     .follow-item {
         grid-template-columns: auto 1fr;
