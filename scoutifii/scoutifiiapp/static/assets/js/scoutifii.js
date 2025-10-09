@@ -14,57 +14,88 @@ const getCookie = (name) => {
     return cookieValue;
 }
 
-const addPost = document.querySelector('#add_post');
-const postUuid = Math.random().toString(36).slice(2,12)
-jQuery(document).on('change', '#add_post', function(e){
-    if ($('#feed-pic-upload').val()) {
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url  = $(this).attr('action');
-        $.ajax({
-            type: 'POST',
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(addPost),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(){                     
-                toastr.success('Uploaded Successfully');
-                window.location.reload("{% url 'dashboard' %}");
-            },
-            xhr: function() {                
-                let xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", (evt) => {
-                    if (evt.lengthComputable) {
-                        let percent = Math.round(((evt.loaded / evt.total) * 100));
-                        document.getElementById('progress_bar').style["display"] = 'block';
+// JavaScript
+// Robust AJAX uploader for #add_post with progress and safe reload
+$(document).on('change', '#add_post', function (e) {
+  const form = this; // the actual <form id="add_post">
+  const fileInput = form.querySelector('#feed-pic-upload');
 
-                        // let circle = document.querySelector('.circle-progress-bar');
-                        // let circumference = 2 * Math.PI * 50;
-                        // let offset = circumference - (percent / 100) * circumference;
-                        // circle.style.strokeDashoffset = offset;
+  // Only proceed when a file is actually selected
+  if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+    return; // no file picked
+  }
 
-                            
-                        document.getElementById('progress_bar_process').style["width"] = ""+percent + '%';
-                        document.getElementById('progress_bar_process').innerHTML = ""+percent + '% completed';
-                        document.getElementById('uploaded_video').innerHTML = "Uploaded:" + parseInt(evt.loaded/1000000)+"/"+parseInt(evt.total/1000000)+"MB";
+  e.preventDefault();
 
-                    }
-                }, false);
-                xhr.addEventListener('load', (event) =>{
-                    document.getElementById('progress_bar').style["display"] = 'none';
+  const url = $(form).attr('action');
+  if (!url) {
+    console.error('Missing action attribute on #add_post');
+    toastr.error('Upload endpoint missing.');
+    return;
+  }
 
-                });
-                    return xhr;
-                },
-            error: function(error){
-                toastr.error("error");
-            },
-        });
-        return false;
-    }
+  const csrftoken = getCookie('csrftoken');
+  const fd = new FormData(form);
+
+  // Progress UI elements (optional)
+  const bar = document.getElementById('progress_bar');
+  const barProcess = document.getElementById('progress_bar_process');
+  const uploadedVideo = document.getElementById('uploaded_video');
+
+  $.ajax({
+    method: 'POST',
+    url,
+    headers: { 'X-CSRFToken': csrftoken },
+    data: fd,
+    contentType: false,
+    cache: false,
+    processData: false,
+    xhr: function () {
+      const xhr = new window.XMLHttpRequest();
+      xhr.upload.addEventListener(
+        'progress',
+        (evt) => {
+          if (!evt.lengthComputable) return;
+          const percent = Math.round((evt.loaded / evt.total) * 100);
+
+          if (bar) bar.style.display = 'block';
+          if (barProcess) {
+            barProcess.style.width = `${percent}%`;
+            barProcess.textContent = `${percent}% completed`;
+          }
+          if (uploadedVideo) {
+            const loadedMb = Math.max(0, Math.floor(evt.loaded / 1_000_000));
+            const totalMb = Math.max(1, Math.floor(evt.total / 1_000_000));
+            uploadedVideo.textContent = `Uploaded: ${loadedMb}/${totalMb}MB`;
+          }
+        },
+        false
+      );
+      xhr.addEventListener('load', () => {
+        if (bar) bar.style.display = 'none';
+      });
+      return xhr;
+    },
+    success: function () {
+      toastr.success('Uploaded successfully');
+      // Avoid Django template tags in static JS. Reload current page or redirect via data attribute.
+      const redirect = form.getAttribute('data-success-redirect');
+      if (redirect) {
+        window.location.href = redirect;
+      } else {
+        window.location.reload();
+      }
+    },
+    error: function (jqXHR) {
+      console.error('Upload failed', jqXHR);
+      toastr.error('Upload failed. Please try again.');
+      if (bar) bar.style.display = 'none';
+    },
+  });
+
+  return false;
 });
+
 
 /* For Autoplay of videos */
     const videos = document.querySelectorAll('video');
@@ -98,7 +129,7 @@ jQuery(document).on('change', '#add_post', function(e){
 
     /* End of Autoplay of videos */
 
-    /* Start of Emojis */
+    /* Start of Emojis 
     document.addEventListener('DOMContentLoaded', function() {
         const button = document.querySelector('#emoji-button');
         const input = document.querySelector('#create-comment');
@@ -111,36 +142,41 @@ jQuery(document).on('change', '#add_post', function(e){
         }
     });
 /* End of Emojis */
-/* Start of adding comments */
-$(document).ready(function(){
-    $('.create-comment').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action');
-        
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {
-                "X-CSRFToken": csrftoken 
-            },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(data){
-                const dataArr = [];
-                dataArr.push(data);
-                toastr.success("Your comment counts");
-            },
-            error: function(error){
-                toastr.error("error");
-            }
-        }); 
-        document.querySelectorAll('input-comment').reset()             
-    });
+/*..... Start of adding comments .....*/
+
+$(document).on('submit', '.create-comment', function(e){
+    e.preventDefault();
+
+    const $form = $(this);
+    const csrftoken = getCookie('csrftoken');
+    const url = $form.attr('action');
+    const fd = new FormData(this);
+
+    const $inputs = $form.find('input, button, textarea');
+    $inputs.prop('disabled', true);
+            
+    $.ajax({
+        method: "POST",
+        url,
+        headers: { "X-CSRFToken": csrftoken },
+        data: fd,
+        contentType: false,
+        cache: false,
+        processData:false,
+        success: function(response){
+            const $text = $form.find('#create-comment-input"]');
+            $text.val('');
+            $form[0].reset();
+            $inputs.prop('disabled', false);
+            toastr.success("Your comment counts");
+        },
+        error: function(){
+            $inputs.prop('disabled', false);
+            toastr.error("Could not post comment. Please try again.");
+        },
+    });            
 });
-/* End of adding comments */
+/*..... End of adding comments..... */
 
 // THEME CUSTOMIZATION
         const theme = document.querySelector('#theme');
@@ -393,29 +429,43 @@ commentModals.forEach((modal) => {
 // });
 // End of Like button
 // Start of flair button
-$(document).ready(function(){
-    $('.flair__form').submit(function(e){
+    $(document).on('submit', '.flair__form', function(e){
         e.preventDefault();
+        const $form = $(this);
+        const postId = Number($form.data('postId'));
+        const metric = String($form.data('metric'));
+        const $btn = $form.find('.action-btn');
+        const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
         const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+
+        const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+        // Optimistic toggle
+        $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
 
         $.ajax({
             method: "POST",
-            url: url,
+            url: $form.attr('action'),
             headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Flair Ticked");
+            data: $form.serialize(),
+            // contentType: false,
+            // cache: false,
+            // processData:false,
+            success: function(res){
+                
+                if (res && typeof res.count !== 'undefined') {
+                    if ($counter.length) $counter.text(res.count);
+                    toastr.success("Flair Ticked");
+                }
+                if (typeof res?.selected !== 'undefined') {
+                    $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+                }
             },
             error: function(error){
-                toastr.error("error");
-            }
+                $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+                toastr.error('Could not submit. Please try again.');
+            },
         });
     });
-});
 // End of flair button
 
 $(document).ready(function(){
@@ -1243,3 +1293,29 @@ function confirmPassword(){
     }
 }
 
+//........ Post Delete Button..................
+$(document).on('click', '.edit__btn', function () {
+  const $btn = $(this);
+  const $menu = $btn.closest('.edit').find('.edit-menu');
+  const expanded = $btn.attr('aria-expanded') === 'true';
+  $('.edit__btn').attr('aria-expanded', 'false'); // close others
+  $('.edit-menu').hide();
+  if (!expanded) {
+    $btn.attr('aria-expanded', 'true');
+    $menu.show();
+  }
+});
+
+// Close on outside click or Escape
+$(document).on('click', function (e) {
+  if (!$(e.target).closest('.edit').length) {
+    $('.edit__btn').attr('aria-expanded', 'false');
+    $('.edit-menu').hide();
+  }
+});
+$(document).on('keydown', function (e) {
+  if (e.key === 'Escape') {
+    $('.edit__btn').attr('aria-expanded', 'false');
+    $('.edit-menu').hide();
+  }
+});

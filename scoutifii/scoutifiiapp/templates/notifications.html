@@ -66,6 +66,21 @@
                         <small class="text-gry">{{notification.get_timeago}}</small>
                     </div>
                 </div>
+                {% elif notification.notification_type == 5 %}
+                <div data-type="view">
+                    <div class="profile-picture">
+                        <a href="profile/{{notification.profile.user}}">
+                            <img src="{{ notification.profile.profileimg.url }}" alt="">
+                        </a>
+                    </div>
+                    <div class="notification-body">
+                        <a href="profile/{{notification.profile.user}}">
+                            <strong>{{ notification.text_preview }}</strong>
+                        </a> 
+                         <b>{{notification.post.video_name}}</b>
+                        <small class="text-gry">{{notification.get_timeago}}</small>
+                    </div>
+                </div>
                 {% endif %} 
                 {% empty %}
                 <div>

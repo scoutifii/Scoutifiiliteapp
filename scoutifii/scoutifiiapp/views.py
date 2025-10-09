@@ -25,7 +25,6 @@ from django.utils.timezone import now
 import os
 from dotenv import load_dotenv
 from django.contrib import auth
-from django.contrib.auth import authenticate
 from django.core.cache import cache
 from django.contrib import messages
 import random
@@ -44,8 +43,6 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Count
-
 
 
 load_dotenv()
@@ -444,7 +441,6 @@ def follower(request, pk):
         'user_object': user_object,
         'user_profile': user_profile,
         'user_followers': user_followers,
-        'followers_users': followers_users,
         'brand_setting': brand_setting,
         'paginator': paginator,
         'followers_page': followers_page, 
@@ -530,11 +526,9 @@ def user_post(request, id):
         video_name = request.POST['video_name']
         category_type = request.POST['category_type']
         profile = request.POST['profile_id']
-        uuid = request.POST.get('uuid', '')
 
         new_post = Post.objects.create(
             user_id=user,
-            uuid=uuid,
             user_prof=user_obj,
             profile_id=profile,
             video=video,
@@ -1506,17 +1500,17 @@ def user_comments(request, id):
                 profile_id=profile, 
                 comment_body=body
             )
-            send_event(
-                os.getenv('KAFKA_TOPICS["comment_created"]'),
-                key=str(id),
-                payload={
-                    "post_id": id, 
-                    "author_id": request.user.id, 
-                    "text": request.POST["body"],
-                    "created_at": now().isoformat()
-                },
-            )
-            return JsonResponse({"ok": True})        
+            # send_event(
+            #     os.getenv('KAFKA_TOPICS["comment_created"]'),
+            #     key=str(id),
+            #     payload={
+            #         "post_id": id, 
+            #         "author_id": request.user.id, 
+            #         "text": request.POST["body"],
+            #         "created_at": now().isoformat()
+            #     },
+            # )
+            # return JsonResponse({"ok": True})        
         return HttpResponseRedirect(reverse('dashboard'))
     else:
         return render(request, 'dashboard')

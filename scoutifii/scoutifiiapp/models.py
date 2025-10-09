@@ -339,10 +339,17 @@ class VideoCounts(models.Model):
 
     class Meta:
         db_table = "video_counts"
+        indexes = [
+            models.Index(fields=['post', 'user']),
+            models.Index(fields=['post', 'session']),
+            models.Index(fields=['post', 'ip_address']),
+        ]
+        unique_together = (('post', 'user'),)
+            # Enforce uniqueness per authenticated user per post            
 
     def __str__(self):
-        return f'{0} in {1} post'.format(self.ip_address, self.post.video_name)
-
+        who = self.user.username if self.user_id else (self.ip_address or self.session or 'anon')
+        return f'{who} viewed {self.post_id}'
 
 class FollowersCount(models.Model):
     follower = models.CharField(max_length=100)

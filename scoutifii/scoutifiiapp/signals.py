@@ -15,7 +15,7 @@ from .models import (
     Notification, VideoCloseRangeShotStoppingAbility,
     VideoSavingOneOnOne, VideoFootworkAndDistribution,
     VideoSavingPenalties, VideoConcentration, VideoAgility,
-    VideoCommandingInDefence, FollowersCount, Post
+    VideoCommandingInDefence, FollowersCount, Post, VideoCounts
 )
 import os
 from dotenv import load_dotenv
@@ -831,29 +831,73 @@ def user_rated_commandingindefence(sender, instance, created, *args, **kwargs):
         raise e
 
 
-@receiver(post_save, sender=Post)
-def post_created_event(sender, instance: "Post", created, **kwargs):
-    if not created:
-        return
-    payload = {
-        "id": instance.id,
-        "user_id": instance.user_id,
-        "created_at": now().isoformat(),
-        "video_url": getattr(instance, "video", None) and instance.video.url,
-        "caption": getattr(instance, "caption", None),
-    }
-    send_event(os.getenv('KAFKA_TOPICS["post_created"]'), key=str(instance.id), payload=payload)
+# @receiver(post_save, sender=Post)
+# def post_created_event(sender, instance: "Post", created, **kwargs):
+#     if not created:
+#         return
+#     payload = {
+#         "id": instance.id,
+#         "user_id": instance.user_id,
+#         "created_at": now().isoformat(),
+#         "video_url": getattr(instance, "video", None) and instance.video.url,
+#         "caption": getattr(instance, "caption", None),
+#     }
+#     send_event(os.getenv('KAFKA_TOPICS["post_created"]'), key=str(instance.id), payload=payload)
 
 
-@receiver(post_save, sender=Comment)
-def comment_created_event(sender, instance: "Comment", created, **kwargs):
-    if not created:
-        return
-    payload = {
-        "id": instance.id,
-        "post_id": instance.post_id,
-        "author_id": instance.user_id,
-        "text": instance.body[:512],
-        "created_at": now().isoformat(),
-    }
-    send_event(os.getenv('KAFKA_TOPICS["comment_created"]'), key=str(instance.post_id), payload=payload)
+# @receiver(post_save, sender=Comment)
+# def comment_created_event(sender, instance: "Comment", created, **kwargs):
+#     if not created:
+#         return
+#     payload = {
+#         "id": instance.id,
+#         "post_id": instance.post_id,
+#         "author_id": instance.user_id,
+#         "text": instance.body[:512],
+#         "created_at": now().isoformat(),
+#     }
+#     send_event(os.getenv('KAFKA_TOPICS["comment_created"]'), key=str(instance.post_id), payload=payload)
+
+
+# @receiver(post_save, sender=VideoCounts)
+# def user_viewed_post(sender, instance: "VideoCounts", created, *args, **kwargs):
+#     try:
+#         if not created:
+#             return
+
+#         post = instance.post
+#         viewer = instance.user  # may be None for anonymous
+
+#         # If the creator views their own post, skip
+#         if viewer and viewer_id_equals_owner(viewer, post):
+#             return
+
+#         sender_user = viewer if viewer else None
+#         profile = getattr(instance, 'profile', None)
+#         if sender_user and not profile:
+#             # Try to use viewer profile if your Notification requires a profile.
+#             profile = getattr(sender_user, 'profile', None)
+
+#         # Build text
+#         if sender_user:
+#             text_preview = f"{sender_user.first_name} {sender_user.last_name} viewed your post"
+#         else:
+#             text_preview = "Someone viewed your post"
+
+#         # Don’t spam: The unique constraint/creation logic already ensures one notification per viewer.
+#         Notification.objects.create(
+#             post=post,
+#             sender=sender_user,
+#             profile=profile if profile else getattr(post, 'profile', None),
+#             text_preview=text_preview,
+#             notification_type=5,  # new type for 'viewed'
+#         )
+#     except Exception as e:
+#         # Keep consistent with your other signal handlers
+#         raise e
+
+# def viewer_id_equals_owner(viewer: User, post: Post) -> bool:
+#     try:
+#         return viewer.id == post.user_id
+#     except Exception:
+#         return False
