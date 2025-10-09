@@ -837,6 +837,7 @@ aside .menu-item:nth-last-child(2){
   display: inline-block;
   margin-top: 4px;
   color: #6b7280; /* gray-500 */
+  font-size: 0.78rem;
 }
 
 /* Create-comment form layout */
@@ -936,6 +937,10 @@ aside .menu-item:nth-last-child(2){
   /* ensure they sit on same row on wide screens */
   display: inline-block;
 }
+
+
+
+
 
 /*  Login and Signup modal      */
 .main{
@@ -1884,7 +1889,7 @@ a{
         display: flex;
     }
     .right_col button {
-        width: 100%;
+        width: 23rem;
         margin-left: -13rem;
         display: inline-flex;
         border-radius: 999px; 
@@ -2011,7 +2016,7 @@ a{
     .right_col button {
         padding: 0.55rem 0.9rem;
         font-size: 0.95rem;
-        width: 100%;
+        width: 23rem;
         margin-left: -15rem;
     }
     .feed-img {
@@ -2033,33 +2038,3 @@ a{
     }
 }
 /*...... media queries end  .............*/
-/* Responsive styles for .cols_container */
-.cols_container {
-    /* Default styles */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 10px;
-}
-
-/* Styles for screen sizes 768px and below */
-@media (max-width: 768px) {
-    .cols_container {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-/* Styles for screen sizes 520px and below */
-@media (max-width: 520px) {
-    .cols_container {
-        padding: 5px;
-    }
-}
-
-/* Styles for screen sizes 480px and below */
-@media (max-width: 480px) {
-    .cols_container {
-        padding: 2px;
-    }
-}
