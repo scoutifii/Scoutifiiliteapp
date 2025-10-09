@@ -97,7 +97,7 @@ $(document).on('change', '#add_post', function (e) {
 });
 
 
-/* For Autoplay of videos */
+/*...... For Autoplay of videos......... */
     const videos = document.querySelectorAll('video');
 
     // Play video when it is in view
@@ -318,13 +318,6 @@ $(document).on('submit', '.create-comment', function(e){
          });
 
 
-
-         /*Windows scroll  
-        window.addEventListener('scroll', ()=>{
-            document.querySelector('.profile-popup').style.display = 'none';
-            document.querySelector('.add-post-popup').style.display = 'none';
-        });*/
-
         // Sidebar
         const menuItems = document.querySelectorAll('.menu-item');
 
@@ -393,582 +386,719 @@ commentModals.forEach((modal) => {
 
 // ...................Comments Modal End..........................
 
-// ...............Start of Like button.......................
-
-// $(document).ready(function(){
-//     $('.like__form').on('submit', function(e){
-//         e.preventDefault();
-
-//         const $form = $(this);
-//         const $btn = $form.find('like-button');
-//         const csrftoken = getCookie('csrftoken');
-//         const url = $form.attr('action');
-        
-//         $btn.toggleClass('is-liked');
-
-//         $.ajax({
-//             method: "POST",
-//             url: url,
-//             headers: {"X-CSRFToken": csrftoken },
-//             data: new FormData(this),
-//             contentType: false,
-//             cache: false,
-//             processData:false,
-//             success: function(response){
-//                 if(response && typeof response.liked !== 'undefined'){
-//                     $btn.toggleClass('is-liked', !!response.liked);
-//                 }
-//                 toastr.success("You Liked");
-//             },
-//             error: function(error){
-//                 $btn.toggleClass('is-liked');
-//                 toastr.error("error");
-//             },
-//         });
-//     });
-// });
-// End of Like button
 // Start of flair button
-    $(document).on('submit', '.flair__form', function(e){
-        e.preventDefault();
-        const $form = $(this);
-        const postId = Number($form.data('postId'));
-        const metric = String($form.data('metric'));
-        const $btn = $form.find('.action-btn');
-        const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
-        const csrftoken = getCookie('csrftoken');
+$(document).on('submit', '.flair__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        const currentlyPressed = $btn.attr('aria-pressed') === 'true';
-        // Optimistic toggle
-        $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
 
-        $.ajax({
-            method: "POST",
-            url: $form.attr('action'),
-            headers: {"X-CSRFToken": csrftoken },
-            data: $form.serialize(),
-            // contentType: false,
-            // cache: false,
-            // processData:false,
-            success: function(res){
-                
-                if (res && typeof res.count !== 'undefined') {
-                    if ($counter.length) $counter.text(res.count);
-                    toastr.success("Flair Ticked");
-                }
-                if (typeof res?.selected !== 'undefined') {
-                    $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
-                }
-            },
-            error: function(error){
-                $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
-                toastr.error('Could not submit. Please try again.');
-            },
-        });
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Flair Ticked");
+            }
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
+});
 // End of flair button
 
-$(document).ready(function(){
-    $('.positioning__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.positioning__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Positioning Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.marking__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.marking__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Marking Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.tackling__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.tackling__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Tackling Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
+    });
+});
+
+$(document).on('submit', '.vision__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
+
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
+            }
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
    
-$(document).ready(function(){
-    $('.vision__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.pace__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Vision Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.pace__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.speed__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Pace Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.speed__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.heading__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Speed Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.heading__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.jumping-reach__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Heading Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.jumping-reach__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.work-rate__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Jumping Reach Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.work-rate__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.aggression__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Workrate Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.aggression__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.charisma__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Aggression Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.charisma__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.ball-protection__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Charisma Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.ball_protection__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.crossing__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Ball Protection Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.crossing__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.shooting__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Crossing Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.shooting__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.technique__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Shooting Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.technique__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.passing__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Technique Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.passing__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.finishing__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Passing Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.finishing__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.ball-control__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Finishing Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.ball-control__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.free-kick__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Ball Control Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
+            }
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
-$(document).ready(function(){
-    $('.shooting__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
+$(document).on('submit', '.dribbling__form', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    const postId = Number($form.data('postId'));
+    const metric = String($form.data('metric'));
+    const $btn = $form.find('.action-btn');
+    const $counter = $form.closest('.action-item').find(`.notify-counter[data-counter="${metric}"]`);
+    const csrftoken = getCookie('csrftoken');
 
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Shooting Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+    const currentlyPressed = $btn.attr('aria-pressed') === 'true';
+    // Optimistic toggle
+    $btn.attr('aria-pressed', currentlyPressed ? 'false' : 'true');
+
+    $.ajax({
+        method: "POST",
+        url: $form.attr('action'),
+        headers: {"X-CSRFToken": csrftoken },
+        data: $form.serialize(),
+        success: function(res){                
+            if (res && typeof res.count !== 'undefined') {
+                if ($counter.length) $counter.text(res.count);
+                toastr.success("Success");
             }
-        });
-    });
-});
-
-$(document).ready(function(){
-    $('.free-kick__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
-
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("FreeKick Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
+            if (typeof res?.selected !== 'undefined') {
+                $btn.attr('aria-pressed', res.selected ? 'true' : 'false');
             }
-        });
-    });
-});
-
-$(document).ready(function(){
-    $('.dribbling__form').submit(function(e){
-        e.preventDefault();
-        const csrftoken = getCookie('csrftoken');
-        const url = $(this).attr('action')
-
-        $.ajax({
-            method: "POST",
-            url: url,
-            headers: {"X-CSRFToken": csrftoken },
-            data: new FormData(this),
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function(response){
-                toastr.success("Dribbling Ticked");
-            },
-            error: function(error){
-                toastr.error("error");
-            }
-        });
+        },
+        error: function(error){
+            $btn.attr('aria-pressed', currentlyPressed ? 'true' : 'false');
+            toastr.error('Could not submit. Please try again.');
+        },
     });
 });
 
@@ -1084,67 +1214,11 @@ $(document).on('submit', '.like__form', function (e) {
 
 
 
-
-
-
-// Hook like__form success to refresh immediately
-// $(document).ready(function () {
-//   // Start polling
-//   startCountsPolling(15000);
-
-//   // Enhance existing like form handler if present
-//   $('.like__form').on('submit', function (e) {
-//     e.preventDefault();
-//     const $form = $(this);
-//     const url = $form.attr('action');
-//     const csrftoken = getCookie('csrftoken'); // your existing helper
-//     const postId = Number($form.find('input[name="post_id"]').val());
-
-//     // optimistic UI toggle if you implemented .is-liked
-//     const $btn = $form.find('.like-button');
-//     $btn.toggleClass('is-liked');
-
-//     $.ajax({
-//       method: 'POST',
-//       url,
-//       headers: { 'X-CSRFToken': csrftoken },
-//       data: new FormData(this),
-//       contentType: false,
-//       cache: false,
-//       processData: false,
-//       success: async function (response) {
-//         // If backend returns liked and likes, use it; otherwise query counts endpoint
-//         if (response && typeof response.likes !== 'undefined') {
-//           updateCountersInDom(postId, {
-//             likes: response.likes,
-//             views: response.views ?? document.querySelector(`[data-view-counter="${postId}"]`)?.textContent ?? 0,
-//             comments: response.comments ?? document.querySelector(`[data-comment-counter="${postId}"]`)?.textContent ?? 0,
-//           });
-//         } else {
-//           try {
-//             const data = await fetchCounts(postId);
-//             updateCountersInDom(postId, data);
-//           } catch {}
-//         }
-//         // sync liked state if server sent it
-//         if (response && typeof response.liked !== 'undefined') {
-//           $btn.toggleClass('is-liked', !!response.liked);
-//         }
-//       },
-//       error: function () {
-//         // revert optimistic toggle on error
-//         $btn.toggleClass('is-liked');
-//       },
-//     });
-//   });
-// });
-
-
 document.addEventListener('DOMContentLoaded', () => {
-  const fallbackModal = document.getElementById('share-fallback');
-  const shareInput = document.getElementById('share-url-input');
-  const copyBtn = document.getElementById('copy-share-url');
-  const closeBtn = document.getElementById('close-share-fallback');
+    const fallbackModal = document.getElementById('share-fallback');
+    const shareInput = document.getElementById('share-url-input');
+    const copyBtn = document.getElementById('copy-share-url');
+    const closeBtn = document.getElementById('close-share-fallback');
 
     function openFallback(url) {
         if (!fallbackModal) return;

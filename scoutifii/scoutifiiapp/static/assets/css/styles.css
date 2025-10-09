@@ -234,6 +234,22 @@ main{
     top: 5.4rem;
     flex-basis: 25%;
     align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+/* #main-left-scroll {
+  position: sticky;
+  top: 1rem;
+} */
+
+/* Menu defaults */
+#main-left-scroll .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  text-decoration: none;
 }
 
 .main-left .profile{
@@ -1800,25 +1816,79 @@ a{
 
 /* SMALL TABLETS AND MOBILE PHONES */
 @media (max-width: 768px) {
+    #main-left-scroll {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -6px 24px rgba(0,0,0,.06);
+
+    /* Layout icons horizontally */
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: center;
+
+    padding: 0.4rem 0.25rem;
+    /* prevent it from inheriting sidebar height constraints */
+    height: auto;
+    top: auto;
+  }
+  .main-left > .profile {
+    display: none;
+  }
+
+  /* Bottom bar items: center icon, hide long labels, show small labels if needed */
+  #main-left-scroll .menu-item {
+    justify-content: center;
+    padding: 0.35rem 0.25rem;
+    border-radius: 8px;
+  }
+  #main-left-scroll .menu-item span {
+    display: inline-flex;
+  }
+  #main-left-scroll .menu-item h3 {
+    display: none; /* hide long text on bottom nav */
+  }
+
+  /* Notification counters stay visible and positioned */
+  #main-left-scroll .notify-counter {
+    position: absolute;
+    transform: translate(10px, -8px);
+    font-size: 0.7rem;
+    padding: 0 6px;
+    line-height: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+  }
+  #main-left-scroll .menu-item {
+    position: relative;
+  }
+
+  /* Give main content bottom padding so it doesn't hide behind the bar */
+  .main-container,
+  main, body {
+    padding-bottom: 64px; /* roughly bar height */
+  }
     .main-middle{
         max-width: 96vw;
-        padding: 0 12px;
-    } 
-    .main-middle-index{
-        max-width: 96vw;
-        padding: 0 12px;
-    } 
+    }  
     .main button{
         width: 15%
     }
-    .main-middle .story-container .story{
+    /* .main-middle .story-container .story{
         gap: 0.1rem;
         width: 45%;
-    }
+    } */
     .middle-container .stories{
         width: auto;
         margin: 0;
-    }        
+    }         
     nav .search-bar{
         display: block;
     }
@@ -1840,7 +1910,7 @@ a{
     .main-middle .add-post .profile-picture {
         width: 3rem;
     }
-    main .container{
+    /* main .container{
         grid-template-columns: repeat(1,1fr);
         gap: 0;
     }
@@ -1851,7 +1921,7 @@ a{
     }
     main .container .main-left aside a{ 
         margin-left: -0.9rem;
-    }        
+    }         */
     .notification-box{
         width: 80vw;
         height: 100vh;
@@ -1973,6 +2043,13 @@ a{
 }
 
 @media (max-width: 480px) {
+    #main-left-scroll {
+        padding: 0.5rem 0.25rem;
+    }
+    #main-left-scroll .menu-item span svg {
+        width: 24px;
+        height: 24px;
+    }
     .main-middle{
         max-width: 96vw;
         padding: 0 12px;
@@ -2019,7 +2096,7 @@ a{
         padding: 0.55rem 0.9rem;
         font-size: 0.95rem;
         width: 23rem;
-        margin-left: -15rem;
+        margin-left: -20rem;
     }
     .feed-img {
         aspect-ratio: 1 / 1;          /* square on very small devices */
