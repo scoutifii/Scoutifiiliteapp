@@ -25,6 +25,7 @@ if ALLOWED_HOSTS_ENV:
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'django_countries',
     'graphene_django',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'scoutifii.wsgi.application'
-
+ASGI_APPLICATION = 'scoutifii.asgi.application'
 
 # Database
 
@@ -148,4 +150,13 @@ EMAIL_USE_TLS = True
 # Configure GraphQL schema
 GRAPHENE = {
     'SCHEMA': 'scoutifiiapp.schema.schema',
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Redis server address and port
+        },
+    },
 }

@@ -1811,58 +1811,20 @@ a{
 
 
 #videos{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 800px;
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    overflow: hidden;
 }
 .video-player{
+    background-color: gray;
     width: 100%;
-    max-height: 400px;
-    border-radius: 10px;
-    background: #000;
+    height: 100%;
     object-fit: cover;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-#startStream {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#startStream:hover {
-    background-color: #0056b3;
 }
 #remoteVideo{
     display: none;
-}
-.control-icon {
-    width: 50px;
-    height: 50px;
-    background-color: #f4f4f9;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.control-icon:hover {
-    background-color: #007bff;
-    transform: scale(1.1);
 }
 .small-frame{
     position: fixed;
@@ -1878,29 +1840,6 @@ a{
     0 0 100px var(--main-color);
     -webkit-box-shadow: 3px 3px 15px -1px var(--bg-color);
 }
-.control-icon:hover {
-    background-color: #007bff;
-    transform: scale(1.1);
-}
-
-.control-icon svg {
-    fill: #333;
-    transition: fill 0.3s ease;
-}
-
-.control-icon:hover svg {
-    fill: #fff;
-}
-
-/* Leave Button */
-#leave-btn {
-    background-color: #ff4d4d;
-}
-
-#leave-btn:hover {
-    background-color: #cc0000;
-}
-
 .control-icon{
     background: var(--bg-color);
     padding: 14px;
@@ -1918,7 +1857,16 @@ a{
     display: flex;  
     gap: 1rem;
 }
-
+.control-icon svg{
+    width: 25px;
+    height: 25px;
+}
+#leave-btn{
+    background-color: rgba(255, 80, 80, 1);
+}
+#screen-btn{
+    background: var(--main-color);
+}
  
 
 /*...... media queries  .............*/

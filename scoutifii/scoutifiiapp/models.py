@@ -1011,3 +1011,23 @@ class AdClick(models.Model):
     
     def __str__(self):
         return f"{self.impression}"
+
+
+class LiveStream(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    uid = models.CharField(max_length=200, null=True)
+    channel_name = models.CharField(max_length=200, null=True)
+    live_date = models.DateTimeField(auto_now_add=True)
+    live_time = models.DateTimeField()
+    is_live = models.BooleanField(default=False)
+    title = models.CharField(max_length=255)
+    stream_url = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'live_stream'
+
+    def __str__(self):
+        return f"{self.title}, {self.user}, {self.live_date}" 

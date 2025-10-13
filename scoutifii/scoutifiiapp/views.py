@@ -18,11 +18,11 @@ from .models import (
     VideoBallControl, VideoFreeKick, VideoDribbling,
     VideoCrossing, VideoPace, Comment, LikePost, 
     FollowersCount, Notification, ActivityLog,
-    Repost, VideoCounts
+    Repost, VideoCounts, LiveStream,
 )
 from django.utils import timezone
-from django.utils.timezone import now
-import os
+# from django.utils.timezone import now
+# import os
 from dotenv import load_dotenv
 from django.contrib import auth
 from django.core.cache import cache
@@ -36,7 +36,7 @@ from .helper import parse_user_agent
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import get_object_or_404
-from scoutifiiapp.kafka.producer import send_event
+# from scoutifiiapp.kafka.producer import send_event
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import mail_managers
 from django.contrib.auth.forms import PasswordResetForm
@@ -1629,11 +1629,43 @@ def watch(request, pk):
 
     context = {
         'posts':post,
-        'view_count':view_count,
-        'postLists':post_lists,
+        'view_count': view_count,
+        'postLists': post_lists,
         'brand_setting': brand_setting,
         'user_profile': user_profile,
         'year': year
     }
 
     return render(request, 'watch.html', context)
+
+
+@login_required(login_url='login')
+def create_stream(request):
+    user_object = User.objects.get(username=request.user.username) 
+    user_profile = Profile.objects.get(user=user_object)
+    if request.method == "POST":
+        user = request.POST.get("user_id")
+        profile = request.POST.get("profile_id")
+        title = request.POST.get("title")
+        stream_url = request.POST.get("stream_url")
+        is_live = request.POST.get("is_live", "false").lower() == "true"
+
+        # Save the stream to the database
+        stream = LiveStream.objects.create(
+            user=user,
+            profile=profile,
+            title=title,
+            stream_url=stream_url,
+            is_live=is_live
+        )
+        stream.save()
+    context = {
+        'user_profile': user_profile,
+    }
+        # return JsonResponse({"message": "Stream created successfully", "stream_id": stream.id})
+    return render(request, 'live.html', context)
+
+
+def stream_view(request, stream_id):
+    stream = get_object_or_404(LiveStream, id=stream_id, is_live=True)
+    return render(request, 'stream.html', {'stream': stream})

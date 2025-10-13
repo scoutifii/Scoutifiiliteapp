@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+   
+    <div class="search-box">
+        {% for users in username_profile_list %}
+        <div>
+            <div class="profile-picture">
+                <a href="{% url 'profile' users.user %}">
+                    <img src="{{ users.profileimg.url }}">
+                </a>
+            </div>
+            <div class="search-body">
+                <a href="{% url 'profile' users.user %}">{{ users.user }} </a>
+                 <b>{{users.profile_type_data}}</b>
+                <small class="text-gry">{{users.bio}}</small>
+            </div>
+        </div>
+        {% endfor %}           
+    </div>   
+{% endblock %}

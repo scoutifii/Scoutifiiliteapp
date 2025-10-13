@@ -2,12 +2,16 @@ from django.contrib import admin
 from .models import (
 	AllLogins, Profile, BrandSetting, Post, Comment, LikePost,
 	VideoAggression, VideoAnticipation, VideoBallControl, VideoBallProtection,
-    VideoCommandingInDefence, VideoConcentration, VideoCrossing, VideoDribbling,
-    VideoFinishing, VideoFlair, VideoFootworkAndDistribution, VideoHeading,
-    VideoJumpingReach, VideoPace, VideoPassing, VideoReflexes, VideoSavingOneOnOne,
-    VideoSavingPenalties, VideoShooting, VideoSpeed, VideoTackling, VideoTechnique,
-    VideoVision, VideoWorkRate, VideoAgility, VideoCloseRangeShotStoppingAbility,
-	OffTheBallVideo, VideoPositioning, VideoMarking, FollowersCount,
+    VideoCommandingInDefence, VideoConcentration, VideoCrossing, 
+	VideoDribbling, VideoFinishing, VideoFlair, 
+	VideoFootworkAndDistribution, VideoHeading,
+    VideoJumpingReach, VideoPace, VideoPassing,  
+	VideoSavingOneOnOne, VideoSavingPenalties, 
+	VideoShooting, VideoSpeed, VideoTackling, 
+	VideoTechnique, LiveStream, VideoReflexes,
+    VideoVision, VideoWorkRate, VideoAgility, 
+	VideoCloseRangeShotStoppingAbility, FollowersCount,
+	OffTheBallVideo, VideoPositioning, VideoMarking, 
     VideoCounts, Notification, VideoCharisma, VideoFreeKick,
 	Notification, Repost, Plan, Subscription, OverageEvent, UsageQuota,
 	Advertiser, AdPlacement, AdClick, Campaign, Creative, AdImpression
@@ -15,8 +19,26 @@ from .models import (
 
 class AllLoginsAdmin(admin.ModelAdmin):
 	list_display = ['user', 'username', 'login_date', 'last_logged_out']
+
+
 class ProfileAdmin(admin.ModelAdmin):
-	list_display = ['user', 'profileimg', 'bio', 'location', 'phone_no', 'country_id', 'created_at']
+	list_display = [
+		'user', 
+		'profileimg', 
+		'bio', 
+		'location', 
+		'phone_no', 
+		'country_id', 
+		'created_at'
+	]
+
+
+@admin.register(LiveStream)
+class LiveStreamAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_live", "created_at", "updated_at")
+    list_filter = ("is_live", "created_at")
+    search_fields = ("title",)
+
 
 admin.site.register(AllLogins, AllLoginsAdmin)
 admin.site.register(Profile, ProfileAdmin)

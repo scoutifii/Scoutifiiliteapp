@@ -53,6 +53,8 @@ urlpatterns = [
     path('watchqv=<str:pk>', views.watch, name='watch'),
     path('<str:pk>/follower', views.follower, name='follower'),
     path('<str:pk>/following', views.following, name='following'),
+    path('live', views.create_stream, name='live'),
+    path('stream/<int:stream_id>/', views.stream_view, name='stream'),
     path('password-reset/sent/',
          TemplateView.as_view(template_name='password_reset_sent.html'),
          name='password_reset_sent'),
