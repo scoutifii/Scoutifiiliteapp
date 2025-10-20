@@ -37,28 +37,31 @@
           <label class="form-label text-light d-block">Profile Picture</label>
           <div class="d-flex align-items-center gap-3">
             <label for="feed-pic-upload" class="m-0" style="cursor:pointer;">
-              <img src="{{ profile.profileimg.url }}" alt="Profile picture"
+              <img src="{{ user_profile.profileimg.url }}" alt="Profile picture"
                    class="border border-secondary"
                    style="width: 4rem; height: 4rem; object-fit: cover; border-radius: 50%;">
             </label>
             <div class="text-secondary small">Click the avatar to upload a new photo (JPG/PNG).</div>
           </div>
-          <input id="feed-pic-upload" name="profileimg" type="file" accept="image/jpg, image/png, image/jpeg"
-                 class="visually-hidden">
+          <input type="file"
+                id="feed-pic-upload" 
+                name="profileimg"  
+                accept="image/jpg, image/png, image/jpeg"
+                class="visually-hidden">
         </div>
 
         <!-- Bio -->
         <div class="mb-4">
           <label for="Bio" class="form-label text-light">Bio</label>
-          <textarea name="bio" id="Bio" rows="3"
+          <textarea name="bio" id="bio" rows="3"
                     class="form-control bg-secondary border-0 text-light"
-                    placeholder="Tell us a bit about yourself" required>{{ profile.bio }}</textarea>
+                    placeholder="Tell us a bit about yourself" required>{{ user_profile.bio }}</textarea>
         </div>
 
         <!-- Phone -->
         <div class="mb-4">
           <label for="phone_no" class="form-label text-light">Phone No</label>
-          <input type="tel" name="phone_no" id="phone_no" value=""
+          <input type="tel" name="phone_no" id="phone_no" value="{{ user_profile.phone_no }}"
                  class="form-control bg-secondary border-0 text-light"
                  placeholder="+1 555 123 4567" required>
           <div class="form-text text-secondary">Include country code if applicable.</div>
@@ -68,14 +71,14 @@
         <div class="mb-4">
           <label for="add_dob" class="form-label text-light">Birth Date</label>
           <input type="text" name="birth_date" id="add_dob"
-                 value="" placeholder="YYYY-MM-DD"
+                 value="{{ user_profile.birth_date }}" placeholder="YYYY-MM-DD"
                  class="form-control bg-secondary border-0 text-light js-date" required>
         </div>
 
         <!-- Location -->
         <div class="mb-4">
           <label for="location" class="form-label text-light">Location</label>
-          <input type="text" name="location" id="location" value="{{ profile.location|default:'' }}"
+          <input type="text" name="location" id="location" value="{{ user_profile.location }}"
                  class="form-control bg-secondary border-0 text-light"
                  placeholder="City, State/Region" required>
         </div>
@@ -85,11 +88,10 @@
           <label for="add_country" class="form-label text-light">Country</label>
           <select name="country_id" id="add_country" data-placeholder="Select country"
                   class="form-select bg-secondary border-0 text-light">
-            <option></option>
             {% get_countries as countries %}
             {% for country in countries %}
               <option value="{{ country.code }}"
-                      {% if profile.country and profile.country.code == country.code %}selected{% endif %}>
+                {% if user_profile.country_id == country.code %}{{ country.name }}{% endif %}>
                 {{ country.name }}
               </option>
             {% endfor %}
@@ -102,12 +104,98 @@
           <select name="profile_type_data" id="add_profile_type"
                   class="form-select bg-secondary border-0 text-light">
             <option value="">Select Profile</option>
-            <option value="user" {% if profile.profile_type == 'user' %}selected{% endif %}>User</option>
-            <option value="player" {% if profile.profile_type == 'player' %}selected{% endif %}>Player</option>
-            <option value="coach" {% if profile.profile_type == 'coach' %}selected{% endif %}>Coach</option>
-            <option value="agent" {% if profile.profile_type == 'agent' %}selected{% endif %}>Agent</option>
+            <option value="user" {% if user_profile.profile_type == 'user' %}selected{% endif %}>User</option>
+            <option value="player" {% if user_profile.profile_type == 'player' %}selected{% endif %}>Player</option>
+            <option value="coach" {% if user_profile.profile_type == 'coach' %}selected{% endif %}>Coach</option>
+            <option value="agent" {% if user_profile.profile_type == 'agent' %}selected{% endif %}>Agent</option>
           </select>
         </div>
+
+        <!-- Player modal -->
+        <div class="modal fade" id="playerModal" tabindex="-1" aria-labelledby="playerModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border border-secondary">
+              <div class="modal-header">
+                <h5 class="modal-title" id="playerModalLabel">Athletic profile</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row g-3">
+                  <!-- Primary position -->
+                  <div class="col-md-4">
+                    <label class="form-label">Primary position</label>
+                    <select name="primary_position" id="primary_pos" class="form-select">
+                      <option value="" {% if not user_profile.primary_position %}selected{% endif %}>Select</option>
+                      <option value="GK" {% if user_profile.primary_position == 'GK' %}selected{% endif %}>Goalkeeper</option>
+                      <option value="CB" {% if user_profile.primary_position == 'CB' %}selected{% endif %}>Centre Back</option>
+                      <option value="LB" {% if user_profile.primary_position == 'LB' %}selected{% endif %}>Left Back</option>
+                      <option value="RB" {% if user_profile.primary_position == 'RB' %}selected{% endif %}>Right Back</option>
+                      <option value="DM" {% if user_profile.primary_position == 'DM' %}selected{% endif %}>Defensive Mid</option>
+                      <option value="CM" {% if user_profile.primary_position == 'CM' %}selected{% endif %}>Central Mid</option>
+                      <option value="AM" {% if user_profile.primary_position == 'AM' %}selected{% endif %}>Attacking Mid</option>
+                      <option value="LW" {% if user_profile.primary_position == 'LW' %}selected{% endif %}>Left Wing</option>
+                      <option value="RW" {% if user_profile.primary_position == 'RW' %}selected{% endif %}>Right Wing</option>                  
+                      <option value="ST" {% if user_profile.primary_position == 'ST' %}selected{% endif %}>Striker</option>
+                    </select>
+                  </div>
+
+                  <!-- Secondary positions -->
+                  <div class="col-md-8">
+                    <label class="form-label">Secondary positions</label>
+                    <select name="secondary_positions" id="secondary_positions" class="form-select" multiple>
+                      <option value="" {% if not user_profile.primary_position %}selected{% endif %}>Select</option>
+                      <option value="GK" {% if user_profile.primary_position == 'GK' %}selected{% endif %}>Goalkeeper</option>
+                      <option value="CB" {% if user_profile.primary_position == 'CB' %}selected{% endif %}>Centre Back</option>
+                      <option value="LB" {% if user_profile.primary_position == 'LB' %}selected{% endif %}>Left Back</option>
+                      <option value="RB" {% if user_profile.primary_position == 'RB' %}selected{% endif %}>Right Back</option>
+                      <option value="DM" {% if user_profile.primary_position == 'DM' %}selected{% endif %}>Defensive Mid</option>
+                      <option value="CM" {% if user_profile.primary_position == 'CM' %}selected{% endif %}>Central Mid</option>
+                      <option value="AM" {% if user_profile.primary_position == 'AM' %}selected{% endif %}>Attacking Mid</option>
+                      <option value="LW" {% if user_profile.primary_position == 'LW' %}selected{% endif %}>Left Wing</option>
+                      <option value="RW" {% if user_profile.primary_position == 'RW' %}selected{% endif %}>Right Wing</option>                  
+                      <option value="ST" {% if user_profile.primary_position == 'ST' %}selected{% endif %}>Striker</option>
+                    </select>
+                    <div class="form-text text-secondary">Select up to 3 secondary positions.</div>
+                  </div>
+
+                  <!-- Dominant side -->
+                  <div class="col-md-4">
+                    <label class="form-label">Dominant side</label>
+                    <select name="dominant_side" id="dominant_side" class="form-select">
+                      <option value="" {% if not user_profile.dominant_side %}selected{% endif %}>Select</option>
+                      <option value="left" {% if user_profile.dominant_side == 'left' %}selected{% endif %}>Left</option>
+                      <option value="right" {% if user_profile.dominant_side == 'right' %}selected{% endif %}>Right</option>
+                      <option value="both" {% if user_profile.dominant_side == 'both' %}selected{% endif %}>Both</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="form-label">Height (cm)</label>
+                    <input type="number" min="120" max="230" step="1" name="height_cm" class="form-control"
+                          value="{{ user_profile.height_cm|default:'' }}" />
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" min="30" max="150" step="0.5" name="weight_kg" class="form-control"
+                          value="{{ user_profile.weight_kg|default:'' }}" />
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="form-label">Jersey #</label>
+                    <input type="text" name="jersey_number" class="form-control" value="{{ user_profile.jersey_number }}" />
+                  </div>
+
+                </div>
+              </div>
+              <div class="modal-footer">
+                <small class="text-secondary me-auto">Completeness: <span id="completeness-value">{{ user_profile.completeness_score|default:0 }}</span>%</small>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- No separate Save button; the main form's Update will submit all fields -->
+              </div>
+            </div>
+          </div>
+        </div>       
 
         <!-- Submit -->
         <div class="d-flex justify-content-between align-items-center">
@@ -120,13 +208,12 @@
             </svg>
             Update
           </button>
-        </div>
+        </div>      
       </form>
     </div>
   </div>
 </div>
 
-<!-- Optional: inline preview for avatar -->
 <script>
   (function() {
     const input = document.getElementById('feed-pic-upload');
@@ -140,26 +227,19 @@
     });
   })();
 
-    $(document).ready(function() {
-        $('#add_country').select2();
-    });
-    $(function () {
-        $("#add_dob").datepicker();
-    });
-    $(function () {
-        $('#add_country').select2({
-            width: '100%',
-            placeholder: function() {
-            return $(this).data('placeholder') || '';
-            },
-            allowClear: true,
-            dropdownAutoWidth: true,
-            dropdownParent: $(document.body), // safe for modals/webviews
-            minimumResultsForSearch: 10 // search only when there are enough items
-        });
-    });
 
-
+  (function () {
+    $('#add_country').select2({
+      width: '100%',
+      // placeholder: function() {
+      // return $(this).data('placeholder') || '';
+      // },
+      allowClear: true,
+      dropdownAutoWidth: true,
+      dropdownParent: $(document.body), // safe for modals/webviews
+      minimumResultsForSearch: 10 // search only when there are enough items
+    });
+  });
 
   (function() {
     function isMobile() {
@@ -169,8 +249,8 @@
       const useNative = isMobile();
       flatpickr('.js-date', {
         dateFormat: 'Y-m-d',
-        altInput: !useNative,
-        altFormat: 'D, M j, Y',
+        // altInput: !useNative,
+        // altFormat: 'D, M j, Y',
         allowInput: true,
         disableMobile: !useNative
       });
@@ -183,5 +263,133 @@
       init();
     });
   })();
+
+  document.addEventListener('DOMContentLoaded', function () {
+  // Progressive disclosure: player-only fields
+    const playerSection = document.getElementById('player-section');
+    function refreshPlayerVisibility() {
+      const typeSelect = document.getElementById('add_profile_type');
+      const isPlayer = typeSelect 
+        ? typeSelect.value === 'player' 
+        : playerSection?.dataset.visible === '1';
+      if (playerSection) {
+        playerSection.style.display = isPlayer ? 'block' : 'none';
+      }
+    }
+    refreshPlayerVisibility();
+    const typeSelect = document.getElementById('add_profile_type');
+    if (typeSelect) typeSelect.addEventListener('change', refreshPlayerVisibility);
+
+  // Select2 for multi-selects
+  if (window.jQuery) {
+    jQuery('#secondary_positions').select2({
+      width: '100%',
+      placeholder: 'Select up to 3',
+      maximumSelectionLength: 3
+    });
+    jQuery('#team_current').select2({ width: '100%', placeholder: 'Select team' });
+    jQuery('#primary_position').select2({ width: '100%' });
+  }
+
+  // E.164 phone mask (lightweight guidance; server validates)
+  const phone = document.getElementById('phone_no');
+  if (phone && window.IMask) {
+    IMask(phone, {
+      mask: '+{0}000000000000000', // allows + and up to 15 digits total
+      lazy: false,
+      placeholderChar: ' '
+    });
+  }
+
+  // Simple completeness estimation (client-side hint)
+  const fieldsForScore = [
+    'primary_position',
+    'dominant_side',
+    'height_cm',
+    'weight_kg',
+    'team_current',
+    'birth_date',
+    'profileimg'
+  ];
+  function estimateCompleteness() {
+    const present = fieldsForScore.filter(id => {
+      const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+      if (!el) return false;
+      if (el.type === 'file') return el.files && el.files.length > 0;
+      return (el.value || '').toString().trim().length > 0;
+    }).length;
+    const pct = Math.round((present / fieldsForScore.length) * 100);
+    const el = document.getElementById('completeness-value');
+    if (el) el.textContent = String(pct);
+  }
+  estimateCompleteness();
+  fieldsForScore.forEach(id => {
+    const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
+    if (el) el.addEventListener('change', estimateCompleteness);
+  });
+
+  // Basic client-side URL sanitation for social links
+  function sanitizeUrl(u) {
+    try {
+      const url = new URL(u);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return u.trim() === '';
+    }
+  }
+  document.getElementById('profile-settings-form')?.addEventListener('submit', function (e) {
+    const socialInputs = document.querySelectorAll('input[name^="social_links["]');
+    for (const input of socialInputs) {
+      if (!sanitizeUrl(input.value)) {
+        e.preventDefault();
+        input.focus();
+        alert('Please enter valid URLs (http/https).');
+        return false;
+      }
+    }
+  });
+
+  // Cancel button behavior
+  document.getElementById('btn-cancel')?.addEventListener('click', function () {
+    window.history.back();
+  });
+});
+
+
+// JavaScript
+document.addEventListener('DOMContentLoaded', function () {
+  // Bootstrap modal helper
+  function getModal(id) {
+    const el = document.getElementById(id);
+    if (!el || !window.bootstrap) return null;
+    return bootstrap.Modal.getOrCreateInstance(el, { backdrop: 'static', keyboard: true });
+  }
+
+  const typeSelect = document.getElementById('add_profile_type');
+  const playerModal = getModal('playerModal');
+
+  function maybeOpenPlayerModal(reason) {
+    if (!playerModal || !typeSelect) return;
+    if (typeSelect.value === 'player') {
+      playerModal.show();
+    } else {
+      playerModal.hide();
+    }
+  }
+
+  // Initial open if profile_type is already player (server-side)
+  // {% if user_profile.profile_type == 'player' %}
+  // maybeOpenPlayerModal('initial');
+  // {% endif %}
+
+  // Open/close on selection changes
+  if (typeSelect) {
+    typeSelect.addEventListener('change', maybeOpenPlayerModal);
+  }
+
+  // Keep your existing Select2/IMask/Flatpickr inits...
+});
+
+
 </script>
-{% endblock %}
+{% endblock %} 

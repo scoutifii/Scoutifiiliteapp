@@ -34,7 +34,11 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponseBadRequest
 from .helper import parse_user_agent
 from django.views.generic import TemplateView
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import (
+    require_GET, 
+    require_POST,
+    require_http_methods
+)
 from django.shortcuts import get_object_or_404
 # from scoutifiiapp.kafka.producer import send_event
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -244,27 +248,37 @@ def logout(request):
 
 
 @login_required(login_url='login')
+@require_http_methods(["GET", "POST"])
 def settings(request):
     brand_setting = BrandSetting.objects.all()
     otp = random.randint(10000, 99999)
-    # user_profile = Profile.objects.get(user=request.user)
-    # profiles = Profile.objects.filter(user_id=request.user.id)
-
-    if request.method == 'POST':
-        if request.FILES.get('profileimg') == 'None':
+    profile = request.user.profile.first()
+     
+    if request.method == "POST":
+        if request.FILES.get('profileimg') == None:
             image = request.FILES.get('profileimg')
-            bio = request.POST['bio']
-            location = request.POST['location']
-            phone_no = request.POST['phone_no']
-            country_id = request.POST['country_id']
-            profile_type_data = request.POST['profile_type_data']
-            birth_date_str = request.POST['birth_date']
-            try:
-                birth_date = datetime.strptime(
-                    birth_date_str, '%Y/%m/%d'
-                ).date()
-            except ValueError:
-                messages.error(request, 'Invalid date format. Please use YYYY/MM/DD.')
+            bio = request.POST.get('bio', '').strip()
+            location = request.POST.get('location', '')
+            phone_no = request.POST.get('phone_no', '')
+            country_id = request.POST.get('country_id', '')
+            profile_type_data = request.POST.get('profile_type_data', '')
+            primary_position = request.POST.get('primary_position', '')
+            dominant_side = request.POST.get('dominant_side', '')
+            height_cm = request.POST.get('height_cm') or None
+            weight_kg = request.POST.get('weight_kg') or None
+            jersey_number = request.POST.get('jersey_number', '')
+            otp = otp
+            birth_date = request.POST.get('birth_date')
+
+            secondary_positions = request.POST.getlist('secondary_positions')
+            secondary_positions = secondary_positions
+
+            privacy = {
+                'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
+                'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
+                'media_public': bool(request.POST.get('privacy_settings[media_public]')),
+            }
+            privacy_settings = privacy       
 
             data = {
                 'profileimg': image,
@@ -273,7 +287,14 @@ def settings(request):
                 'phone_no': phone_no,
                 'country_id': country_id,
                 'profile_type_data': profile_type_data,
-                'birth_date': birth_date
+                'birth_date': birth_date,
+                'primary_position': primary_position,
+                'dominant_side': dominant_side,
+                'height_cm': height_cm,
+                'weight_kg': weight_kg,
+                'jersey_number': jersey_number,
+                'secondary_positions': secondary_positions,
+                'privacy_settings': privacy_settings,                
             }
             user_profile = Profile.objects.create(
                 user=request.user,
@@ -285,31 +306,54 @@ def settings(request):
                 country_id=data['country_id'],
                 profile_type_data=data['profile_type_data'],
                 birth_date=data['birth_date'],
-                otp=otp
+                otp=otp,
+                primary_position=data['primary_position'],
+                dominant_side=data['dominant_side'],
+                height_cm=data['height_cm'],
+                weight_kg=data['weight_kg'],
+                jersey_number=data['jersey_number'],
+                secondary_positions=data['secondary_positions'],
+                privacy_settings=data['privacy_settings'],
             )
             user_profile.save()
         if request.FILES.get('profileimg') != 'None':
             image = request.FILES.get('profileimg')
-            bio = request.POST['bio']
-            location = request.POST['location']
-            phone_no = request.POST['phone_no']
-            country_id = request.POST['country_id']
-            profile_type_data = request.POST['profile_type_data']
-            birth_date_str = request.POST['birth_date']
-            try:
-                birth_date = datetime.strptime(
-                    birth_date_str, '%Y/%m/%d'
-                ).date()
-            except ValueError:
-                messages.error(request, 'Invalid date format. Please use YYYY/MM/DD.')
+            bio = request.POST.get('bio', '').strip()
+            location = request.POST.get('location', '')
+            phone_no = request.POST.get('phone_no', '')
+            country_id = request.POST.get('country_id', '')
+            profile_type_data = request.POST.get('profile_type_data', '')
+            primary_position = request.POST.get('primary_position', '')
+            dominant_side = request.POST.get('dominant_side', '')
+            height_cm = request.POST.get('height_cm') or None
+            weight_kg = request.POST.get('weight_kg') or None
+            jersey_number = request.POST.get('jersey_number', '')
+            otp = otp
+            birth_date = request.POST.get('birth_date')
+            secondary_positions = request.POST.getlist('secondary_positions')
+            secondary_positions = secondary_positions
 
+            privacy = {
+                'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
+                'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
+                'media_public': bool(request.POST.get('privacy_settings[media_public]')),
+            }
+            privacy_settings = privacy
+            
             data = {
                 'profileimg': image,
                 'bio': bio,
                 'location': location,
                 'phone_no': phone_no,
                 'country_id': country_id,
-                'profile_type_data': profile_type_data
+                'profile_type_data': profile_type_data,
+                'primary_position': primary_position,
+                'dominant_side': dominant_side,
+                'height_cm': height_cm,
+                'weight_kg': weight_kg,
+                'jersey_number': jersey_number,
+                'secondary_positions': secondary_positions,
+                'privacy_settings': privacy_settings,
             }
             user_profile = Profile.objects.create(
                 user=request.user,
@@ -320,17 +364,23 @@ def settings(request):
                 phone_no=data['phone_no'],
                 country_id=data['country_id'],
                 profile_type_data=data['profile_type_data'],
-                otp=otp
+                otp=otp,
+                primary_position=data['primary_position'],
+                dominant_side=data['dominant_side'],
+                height_cm=data['height_cm'],
+                weight_kg=data['weight_kg'],
+                jersey_number=data['jersey_number'],
+                secondary_positions=data['secondary_positions'],
+                privacy_settings=data['privacy_settings'],
             )
 
             user_profile.save()
-
+            messages.success(request, "Profile updated.")
             return redirect('dashboard')
 
     context = {
-        'brand_setting': brand_setting
-        # 'user_profile': user_profile,
-        # 'profiles': profiles
+        'brand_setting': brand_setting,
+        'user_profile': profile,
     }
 
     return render(request, 'settings.html', context)

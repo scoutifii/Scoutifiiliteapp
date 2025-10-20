@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django_countries',
     'graphene_django',
     'channels',
+    'django_otp', 
+    'django_otp.plugins.otp_totp', 
+    'two_factor',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'scoutifiiapp.middleware.CustomActivityLog',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'scoutifii.urls'
@@ -160,3 +164,37 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_REFERRER_POLICY = 'same-origin'
+# SECURE_BROWSER_XSS_FILTER = True  # for older browsers
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = ['https://scoutifii.com']
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': BASE_DIR / 'logs/security.log',
+#         },
+#     },
+#     'loggers': {
+#         'django.security': {
+#             'handlers': ['file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#     },
+# }
+

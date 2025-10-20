@@ -70,6 +70,17 @@ class Profile(models.Model):
     profile_type_data = models.CharField(default="user", max_length=10)
     birth_date = models.DateField(null=True)
     status = models.BooleanField(default=True)
+    primary_position = models.CharField(max_length=50, blank=True)
+    secondary_positions = models.JSONField(default=list, blank=True)
+    dominant_side = models.CharField(max_length=10, blank=True)  # e.g., "right", "left"
+    height_cm = models.PositiveSmallIntegerField(blank=True, null=True)
+    weight_kg = models.PositiveSmallIntegerField(blank=True, null=True)
+    jersey_number = models.CharField(max_length=10, blank=True)
+    # team_current = models.ForeignKey("Team", on_delete=models.SET_NULL, null=True, blank=True)
+    social_links = models.JSONField(default=dict, blank=True)  # {"instagram": "...", "x": "..."}
+    verification_status = models.CharField(max_length=30, default="unverified")
+    privacy_settings = models.JSONField(default=dict, blank=True)
+    completeness_score = models.FloatField(default=0)    
     created_at = models.DateTimeField(auto_now_add=True)
     otp = models.CharField(max_length=100, null=True, blank=True)
 
@@ -971,7 +982,11 @@ class Campaign(models.Model):
         return f"{self.name} - {self.advertiser}"
 
 class Creative(models.Model):
-    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='creatives')
+    campaign = models.ForeignKey(
+        Campaign, 
+        on_delete=models.CASCADE, 
+        related_name='creatives'
+    )
     image = models.ImageField(upload_to='ads/', blank=True, null=True)
     click_url = models.URLField()
     headline = models.CharField(max_length=120, blank=True)
@@ -1002,7 +1017,11 @@ class AdImpression(models.Model):
         return f"{self.campaign} - {self.creative}"
 
 class AdClick(models.Model):
-    impression = models.ForeignKey(AdImpression, on_delete=models.CASCADE, related_name='clicks')
+    impression = models.ForeignKey(
+        AdImpression, 
+        on_delete=models.CASCADE, 
+        related_name='clicks'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
 
@@ -1031,3 +1050,91 @@ class LiveStream(models.Model):
 
     def __str__(self):
         return f"{self.title}, {self.user}, {self.live_date}" 
+
+
+class SeasonStat(models.Model):
+    player = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="season_stats"
+    )
+    season_id = models.CharField(max_length=12)  # e.g., "2024-25"
+    # team = models.ForeignKey("Team", on_delete=models.SET_NULL, null=True)
+    # competition = models.ForeignKey("Competition", on_delete=models.SET_NULL, null=True)
+    minutes = models.PositiveIntegerField(default=0)
+    appearances = models.PositiveSmallIntegerField(default=0)
+    role_metrics = models.JSONField(default=dict)  # versioned metrics
+    per90 = models.JSONField(default=dict)
+    sources = models.JSONField(default=list)
+    last_verified_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "season_stat"
+        unique_together = ("player", "season_id")
+    
+    def __str__(self):
+        return f"{self.player} - {self.season_id}"
+
+class MatchLog(models.Model):
+    player = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="match_logs"
+    )
+    # match = models.ForeignKey("Match", on_delete=models.CASCADE)
+    lineup_status = models.CharField(max_length=10, blank=True)
+    minutes = models.PositiveSmallIntegerField(default=0)
+    event_counts = models.JSONField(default=dict)
+    rating = models.FloatField(null=True, blank=True)
+    clip_ids = models.JSONField(default=list, blank=True)
+
+    class Meta:
+        db_table = "match_log"
+
+    def __str__(self):
+        return f"{self.player}"
+
+class ScoutingReport(models.Model):
+    player = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="scouting_reports"
+    )
+    author = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True
+    )
+    date = models.DateField(auto_now_add=True)
+    summary = models.TextField(max_length=2000)
+    traits = models.JSONField(default=list)
+    strengths = models.JSONField(default=list)
+    weaknesses = models.JSONField(default=list)
+    roles_suited = models.JSONField(default=list)
+    grade = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "scouting_report"
+    
+    def __str__(self):
+        return f"{self.player} - {self.date}"
+
+class Media(models.Model):
+    player = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="media")
+    type = models.CharField(max_length=20)  # "highlight", "match", "training"
+    url = models.URLField()
+    duration_s = models.PositiveIntegerField(null=True, blank=True)
+    thumbnail_url = models.URLField(blank=True)
+    visibility = models.CharField(max_length=20, default="public")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "media"
+
+    def __str__(self):
+        return f"{self.player} - {self.type} - {self.url}"
