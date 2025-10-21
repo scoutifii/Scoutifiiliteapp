@@ -237,10 +237,6 @@ main{
     display: flex;
     flex-direction: column;
 }
-/* #main-left-scroll {
-  position: sticky;
-  top: 1rem;
-} */
 
 /* Menu defaults */
 #main-left-scroll .menu-item {
@@ -353,12 +349,23 @@ aside .menu-item:nth-last-child(2){
   margin: 0 auto;            /* center in available space */
   padding: 0 16px;           /* horizontal breathing room */
 }
-.middle-container{
-    max-width: 500px !important;
+.main-middle{
+    max-width: 100%;
     width: 100%;
-    margin: 0 auto;
-    flex-basis: 47%;   
+    margin: 0 auto;    
+    padding-left: 12px;
+    padding-right: 12px;   
  }
+ .main-middle .middle-container,
+.main-middle .feeds,
+.main-middle .feed,
+.main-middle .feed-img,
+.main-middle .feed video,
+.main-middle .add-post,
+.main-middle form {
+  width: 100%;
+  box-sizing: border-box;
+}
  /*  Friends connector  */
  .main-middle .story-container{     
     height: 12rem;
@@ -1760,8 +1767,8 @@ a{
 
 /* Profile picture image */
 .profile-picture img {
-  width: 75%;
-  height: 75%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
@@ -2014,7 +2021,7 @@ a{
 
 /* SMALL TABLETS AND MOBILE PHONES */
 @media (max-width: 768px) {
-    #main-left-scroll {
+  #main-left-scroll {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -2029,7 +2036,6 @@ a{
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
     align-items: center;
-
     padding: 0.4rem 0.25rem;
     /* prevent it from inheriting sidebar height constraints */
     height: auto;
@@ -2067,23 +2073,8 @@ a{
   #main-left-scroll .menu-item {
     position: relative;
   }
-
-    .main-middle{
-        /* grid-template-columns: repeat(1, 1fr) ; */
-        grid-column: 1 / -1;
-        max-width: 96vw;
-    }  
-    .main button{
-        width: 15%;
-    }
-    /* .main-middle .story-container .story{
-        gap: 0.1rem;
-        width: 45%;
-    } */
-    /* .middle-container .stories{
-        width: auto;
-        margin: 0;
-    }          */
+  .main-middle{ grid-column: 1 / -1; max-width: 96vw;}  
+  .main button{ width: 15%;}
     nav .search-bar{
         display: block;
     }
@@ -2200,6 +2191,10 @@ a{
 }
 /* compact on small screens */
 @media (max-width: 520px) {
+  .main-middle {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
   .notification-box { padding: 0.75rem;gap: 0.7rem;}
   .notification-box > div {
     grid-template-columns: 40px 1fr;
@@ -2237,12 +2232,33 @@ a{
 @media (max-width: 480px) {
     #main-left-scroll {
         padding: 0.5rem 0.25rem;
-    }
+    } 
     #main-left-scroll .menu-item span svg {
         width: 24px;
         height: 24px;
     }
-    .main-middle{
+    .main-middle {
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-left: -5px;
+      align-items: center;
+      justify-content: center; 
+    }
+
+    .stories .story-container,
+    .stories .story {
+      overflow-x: auto;
+    }
+
+    .add-post.input-post select {
+      margin-left: -2rem;
+      margin-top: 1rem;
+    } 
+
+    .interaction-button {
+      gap: 8px;
+    }
+    .main-middle-index{
         width: 100%;
         height: 100vh;
         padding: 0;
@@ -2304,11 +2320,44 @@ a{
       padding: 12px 14px;
     }
     .profile-picture {
-      width: 40px;
-      height: 40px;
+      width: 100px;
+      height: 85px;
     }
 }
 @media (max-width: 360px) {
+  .main-middle {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Stack action buttons and reduce icon sizes if needed */
+  .action-button .btn,
+  .tactical-button .action-btn,
+  .physical-button .action-btn,
+  .technical-button .action-btn {
+    padding: 6px;
+  }
+
+  .action-button svg,
+  .tactical-button svg,
+  .physical-button svg,
+  .technical-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Inputs full width */
+  .add-post.input-post {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .add-post.input-post input[type="text"],
+  .add-post.input-post select {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
     .comment-section .card {
         max-width: 96vw;
         height: 56vh;            /* slight increase for ultra-small screens */
