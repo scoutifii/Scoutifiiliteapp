@@ -71,7 +71,7 @@
         <div class="mb-4">
           <label for="add_dob" class="form-label text-light">Birth Date</label>
           <input type="text" name="birth_date" id="add_dob"
-                 value="{{ user_profile.birth_date }}" placeholder="YYYY-MM-DD"
+                 value="{{ user_profile.birth_date|date:'Y-m-d'}}" placeholder="YYYY-MM-DD"
                  class="form-control bg-secondary border-0 text-light js-date" required>
         </div>
 
@@ -91,7 +91,7 @@
             {% get_countries as countries %}
             {% for country in countries %}
               <option value="{{ country.code }}"
-                {% if user_profile.country_id == country.code %}{{ country.name }}{% endif %}>
+                {% if user_profile.country_id == country.code %}selected{% endif %}>
                 {{ country.name }}
               </option>
             {% endfor %}
@@ -249,10 +249,10 @@
       const useNative = isMobile();
       flatpickr('.js-date', {
         dateFormat: 'Y-m-d',
-        // altInput: !useNative,
-        // altFormat: 'D, M j, Y',
-        allowInput: true,
-        disableMobile: !useNative
+        altInput: true,
+        altFormat: 'D, M j, Y',
+        allowInput: false,
+        disableMobile: false
       });
     }
     document.addEventListener('DOMContentLoaded', init);

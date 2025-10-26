@@ -55,6 +55,9 @@ urlpatterns = [
     path('<str:pk>/following', views.following, name='following'),
     path('live', views.create_stream, name='live'),
     path('stream/<int:stream_id>/', views.stream_view, name='stream'),
+    path("slot/<str:placement_code>", views.ad_slot, name="ad_slot"),
+    path("click/<int:impression_id>/", views.ad_click, name="ad_click"),
+
     path('password-reset/sent/',
          TemplateView.as_view(template_name='password_reset_sent.html'),
          name='password_reset_sent'),

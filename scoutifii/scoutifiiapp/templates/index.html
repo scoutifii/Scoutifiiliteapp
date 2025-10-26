@@ -13,7 +13,6 @@
         overflow: visible;
         position: relative;
         margin: 0 auto;
-        margin-top: 8rem;
     }
     .tabs_container::before,
     .tabs_container::after {
@@ -107,8 +106,6 @@
     max-width: 520px;
     border-radius: 14px;
     padding: 0.45rem 0.6rem;
-    margin-top: 6rem;      /* explicit top margin (do not use shorthand) */
-    margin-bottom: 1rem;
   }
   .tabs_container .nav {
     gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto;
@@ -124,7 +121,6 @@
   .tabs_container {
     max-width: 460px;
     border-radius: 12px;
-    margin-top: 5rem;      /* adjust to your header height */
     margin-bottom: 1rem;
     padding: 0.4rem 0.5rem;
   }
@@ -330,8 +326,8 @@
                         </div>
                     </div>
                     {% if post.category_type == 'football' %}
-                    <div class="tactical-button">
-                        <ul class="action-list" role="list">
+                    <div class="action-button">
+                        <ul class="interaction-button" role="list">
                             <li class="action-item">
                                 <form action="{% url 'flair' post.id %}" method="POST" class="flair__form" data-metric="flair" data-post-id="{{ post.id }}">    
                                     {% csrf_token %} 
@@ -491,10 +487,6 @@
                                 <small class="notify-counter" data-counter="Pace">{{post.no_of_pace}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="physical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'speed' post.id %}" method="POST" class="speed__form" data-metric="flair" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}
@@ -534,7 +526,7 @@
                                             aria-pressed="{{ post.user_voted_heading|default:'false' }}">
                                         <svg class="icon" aria-hidden="true" viewBox="0 0 127 199">
                                             <title>Heading</title>
-                                            <g transform="translate(0,199) scale(0.1,-0.1)" fill="#0000FF" stroke="none">
+                                            <g transform="translate(0,199) scale(0.1,-0.1)" fill="currentColor" stroke="none">
                                                 <path d="M883 1929 c-43 -13 -90 -62 -104 -109 -30 -100 46 -200 151 -200 61 0 107 26 137 77 73 124 -45 274 -184 232z"/>
                                                 <path d="M665 1608 c-56 -31 -84 -106 -60 -165 21 -50 57 -75 115 -81 42 -4 51 -1 83 28 98 86 48 231 -80 230 -21 0 -47 -6 -58 -12z"/>
                                                 <path d="M596 1323 l-79 -4 -111 -88 c-61 -48 -162 -119 -225 -157 -117 -71 -137 -93 -125 -140 7 -29 40 -54 69 -54 19 0 238 131 317 190 18 13 -9 -22 -60 -78 -97 -108 -112 -142 -74 -174 45 -41 78 -33 142 35 28 29 40 37 40 25 0 -41 -24 -129 -57 -209 l-36 -87 -134 -42 c-74 -23 -143 -50 -154 -61 -30 -30 -26 -92 7 -118 15 -12 34 -21 43 -21 32 0 333 99 350 114 10 9 37 61 61 116 24 55 46 100 50 100 6 0 50 -212 50 -244 0 -9 -40 -74 -90 -143 -51 -71 -90 -136 -90 -149 0 -43 22 -73 59 -84 51 -14 67 1 189 170 76 107 102 151 102 174 0 17 -14 118 -32 225 l-32 194 16 226 c13 189 13 230 2 252 -14 29 -42 40 -89 37 -16 -1 -66 -4 -109 -5z"/>
@@ -666,10 +658,6 @@
                                 <small class="notify-counter" data-counter="crossing">{{post.no_of_crossing}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="technical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'shooting' post.id %}" method="POST" class="shooting__form" data-metric="shooting" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}

@@ -1,0 +1,349 @@
+/* language: css */
+/* =========================================
+   Search Page CSS (search.html)
+   ========================================= */
+
+/* Theme tokens (dark-first) */
+:root {
+  --bg: #0f1217;
+  --bg-2: #121621;
+  --surface: #181c27;
+  --surface-2: #1f2533;
+  --muted-surface: #20283a;
+  --text: #e9edf3;
+  --text-dim: #a9b3c1;
+  --primary: #0d6efd;
+  --primary-600: #0b5ed7;
+  --danger: #e03131;
+  --border: #2a3142;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --radius-xs: 8px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --content-w: 840px;   /* max width for result column */
+}
+
+/* Base page background and text */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Utility from your project */
+.text-gry { color: var(--text-dim) !important; }
+
+/* =========================================
+   Search results container
+   ========================================= */
+.search-box {
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 1rem auto 2rem;
+  padding: 0 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+/* Each result row */
+.search-box > div {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.05s ease;
+}
+
+.search-box > div:hover {
+  background: var(--surface-2);
+  border-color: #394159;
+}
+
+.search-box > div:active {
+  transform: translateY(1px);
+}
+
+/* Avatar */
+.search-box .profile-picture {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.search-box .profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Right side (name, type, bio) */
+.search-body {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  gap: 0.15rem;
+  min-width: 0; /* allow text to shrink in grid */
+}
+
+.search-body > a {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-body > a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.search-body > b {
+  color: var(--text);
+  font-weight: 600;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-body > small {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* show up to 2 lines of bio */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--text-dim);
+}
+
+/* Empty state helper (optional; render conditionally in template) */
+.search-empty {
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 2rem auto;
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-dim);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+/* =========================================
+   Accessibility and interaction
+   ========================================= */
+.search-box a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* Long unbreakable strings */
+.search-body > a,
+.search-body > b,
+.search-body > small {
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+/* Narrow tablets */
+@media (max-width: 992px) {
+  :root { --content-w: 760px; }
+  .search-box { gap: 0.55rem; }
+}
+
+/* Tablets and large phones */
+@media (max-width: 768px) {
+  :root { --content-w: 680px; }
+  .search-box > div { grid-template-columns: 52px 1fr; padding: 0.6rem 0.7rem; }
+  .search-box .profile-picture { width: 52px; height: 52px; }
+}
+
+/* Phones */
+@media (max-width: 576px) {
+  :root { --content-w: 100%; }
+
+  .search-box {
+    padding: 0 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .search-box > div {
+    grid-template-columns: 48px 1fr;
+    border-radius: 12px;
+    padding: 0.55rem 0.6rem;
+  }
+
+  .search-box .profile-picture { width: 48px; height: 48px; }
+
+  .search-body > a { font-size: 0.98rem; }
+  .search-body > b { font-size: 0.92rem; }
+  .search-body > small { -webkit-line-clamp: 2; }
+}
+
+/* Very small phones (<=450px, <=380px special handling) */
+@media (max-width: 450px) {
+  .search-box { padding: 0 0.5rem; }
+  .search-box > div { grid-template-columns: 44px 1fr; }
+  .search-box .profile-picture { width: 44px; height: 44px; }
+}
+
+@media (max-width: 380px) {
+  .search-box { padding: 0 0.45rem; }
+  .search-box > div { grid-template-columns: 40px 1fr; padding: 0.5rem; }
+  .search-box .profile-picture { width: 40px; height: 40px; }
+  .search-body > a { font-size: 0.95rem; }
+  .search-body > b { font-size: 0.9rem; }
+}
+
+/* =========================================
+   Optional: compact density variant
+   Add class "dense" on .search-box to reduce vertical space
+   ========================================= */
+.search-box.dense > div { padding: 0.5rem 0.6rem; }
+.search-box.dense .profile-picture { width: 44px; height: 44px; }
+
+
+.customize-theme{
+    background: rgba(255, 255, 255, 0.2);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    text-align: center;
+    place-items: center;
+    font-size: 0.9rem;
+    display: none;
+    transform: translate(0, 0);
+}
+.customize-theme .card{
+    background: var(--color-white);    
+    border-radius: var(--card-border-radius);
+    box-shadow: 0 0 1rem var(--color-main);
+    width: 50%;
+    padding: 3rem;
+}
+.customize-theme .font-size{
+    margin-top: 5rem;
+}
+.customize-theme .font-size > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-light);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+}
+.customize-theme .choose-size{
+    background: var(--color-main);
+    height: 0.3rem;
+    width: 100%;
+    margin: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.customize-theme .choose-size span{
+    width: 1rem;
+    height: 1rem;
+    background: var(--color-secondary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.customize-theme .choose-size span.active{
+    background: var(--color-primary);
+}
+
+/* FONT SIZE  */
+.customize-theme .color{
+    margin-top: 2rem;
+}
+.customize-theme .choose-color{
+    background: var(--color-light);
+    padding: var(--search-padding);
+    border-radius: var(--card-border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.customize-theme .choose-color span{
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+}
+.customize-theme .choose-color span:nth-child(1){
+    background: hsl(252, 75%, 60%);
+}
+.customize-theme .choose-color span:nth-child(2){
+    background: hsl(52, 75%, 60%);
+}
+.customize-theme .choose-color span:nth-child(3){
+    background: hsl(352, 75%, 60%);
+}
+.customize-theme .choose-color span:nth-child(4){
+    background: hsl(152, 75%, 60%);
+}
+.customize-theme .choose-color span:nth-child(5){
+    background: hsl(202, 75%, 60%);
+}
+.customize-theme .choose-size span.active{
+    border: 2px solid var(--color-white);
+}
+
+/*.........BACKGROUND ............*/
+.customize-theme .background{
+    margin-top: 2rem;
+}
+.customize-theme .choose-bg{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+.customize-theme .choose-bg > div{
+    padding: var(--card-padding);
+    width: 100%;
+    align-items: center;
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+.customize-theme .choose-bg > div.active{
+    border: 2px solid var(--color-primary);
+}
+.customize-theme .choose-bg .bg-1{
+    background: white;
+    color: black;
+}
+.customize-theme .choose-bg .bg-2{
+    background: hsl(252, 30%, 17%);
+    color: white;
+}
+.customize-theme .choose-bg .bg-3{
+    background: hsl(252, 30%, 10%);
+    color: white;
+}
+.customize-theme .choose-bg > div span{
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--color-gray);
+    border-radius: 50%;
+    margin-right: 1rem;
+}

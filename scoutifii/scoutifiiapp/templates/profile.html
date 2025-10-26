@@ -40,12 +40,8 @@
               <input type="hidden" value="{{user.username}}" name="follower" />
               <input type="hidden" value="{{user_object.username}}" name="user" />
               <input type="hidden" value="{{user_profile.pk}}" name="profile_id" />
-              {% if user_object.username == user.username %}
-                <a href="{% url 'settings' %}">
-                  <button type="submit">
-                      Account Settings
-                  </button>
-                </a>
+              {% if request.user.is_authenticated and request.user.id == user_profile.user.id %}
+                <a href="{% url 'settings' %}" class="btn btn-primary">Account Settings</a>
               {% else %}
                 {% if button_text == 'Follow' %}
                   <button type="submit">
@@ -73,15 +69,12 @@
           <div class="info-col">
               <div class="profile-intro">
                   <h3>Bio</h3>
-                  <p class="intro-text">{{user_profile.bio}}
-                      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet" fill="#000000">
-                          <g transform="translate(0.0,512) scale(0.1,-0.1)" stroke="none" fill="#00FF00">
-                          <path d="M1623 3360 c-65 -23 -96 -44 -155 -108 -84 -89 -121 -194 -121 -337 0 -138 40 -248 125 -341 162 -177 426 -153 563 51 56 84 77 152 83 271 5 110 -9 177 -53 264 -89 174 -278 260 -442 200z"/>
-                          <path d="M3286 3364 c-128 -41 -227 -154 -271 -311 -22 -78 -17 -232 11 -313 41 -120 144 -231 249 -267 205 -70 417 65 486 308 7 24 13 85 13 134 0 195 -91 358 -244 432 -69 33 -172 40 -244 17z"/>
-                          <path d="M1024 2262 c-17 -11 -37 -34 -44 -52 -12 -28 -10 -41 10 -113 13 -45 36 -113 52 -151 212 -519 637 -874 1195 -998 85 -19 128 -22 323 -22 195 0 238 3 323 22 445 99 807 345 1044 709 92 141 196 379 219 499 12 66 -54 133 -119 120 -51 -10 -74 -42 -107 -145 -161 -502 -568 -869 -1085 -977 -125 -26 -423 -27 -545 -1 -448 95 -812 374 -1005 772 -30 61 -68 153 -85 206 -18 58 -40 105 -54 118 -33 31 -84 36 -122 13z"/>
-                          </g>
-                      </svg>
-                  </p>
+                  <p class="intro-text">{{user_profile.bio}}</p>
+                  <p class="intro-text"><small>Dominant Side</small>{{user_profile.dominant_side}}</p>
+                  <p class="intro-text"><small>Height</small>{{user_profile.height_cm}}</p>
+                  <p class="intro-text"><small>Primary Position</small>{{user_profile.primary_position}}</p>
+                  <p class="intro-text"><small>Weight</small>{{user_profile.weight_kg}}</p>
+                  <p class="intro-text"><small>Secondary Positions</small>{{user_profile.secondary_positions}}</p>
                   <hr>
               </div>
           </div>
@@ -114,13 +107,13 @@
                             </button>
                             <ul class="edit-menu" role="menu">
                                 <li role="none">
-                                <a role="menuitem" href="/delete-post/{{post.id}}" onclick="javascript: return confirm('Are You Sure you want to delete this?')" title="Delete">
-                                    <svg class="icon icon--menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill="currentColor" d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
-                                    <path fill="currentColor" d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                                    </svg>
-                                    Delete
-                                </a>
+                                    <a role="menuitem" href="/delete-post/{{post.id}}" onclick="javascript: return confirm('Are You Sure you want to delete this?')" title="Delete">
+                                        <svg class="icon icon--menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path fill="currentColor" d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+                                            <path fill="currentColor" d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+                                        </svg>
+                                        Delete
+                                    </a>
                                 </li>
                             </ul>
                           </span>
@@ -232,8 +225,8 @@
                         </div>
                     </div>
                     {% if post.category_type == 'football' %}
-                    <div class="tactical-button">
-                        <ul class="action-list" role="list">
+                    <div class="action-button">
+                        <ul class="interaction-button" role="list">
                             <li class="action-item">
                                 <form action="{% url 'flair' post.id %}" method="POST" class="flair__form" data-metric="flair" data-post-id="{{ post.id }}">    
                                     {% csrf_token %} 
@@ -393,10 +386,6 @@
                                 <small class="notify-counter" data-counter="Pace">{{post.no_of_pace}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="physical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'speed' post.id %}" method="POST" class="speed__form" data-metric="flair" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}
@@ -436,7 +425,7 @@
                                             aria-pressed="{{ post.user_voted_heading|default:'false' }}">
                                         <svg class="icon" aria-hidden="true" viewBox="0 0 127 199">
                                             <title>Heading</title>
-                                            <g transform="translate(0,199) scale(0.1,-0.1)" fill="#0000FF" stroke="none">
+                                            <g transform="translate(0,199) scale(0.1,-0.1)" fill="currentColor" stroke="none">
                                                 <path d="M883 1929 c-43 -13 -90 -62 -104 -109 -30 -100 46 -200 151 -200 61 0 107 26 137 77 73 124 -45 274 -184 232z"/>
                                                 <path d="M665 1608 c-56 -31 -84 -106 -60 -165 21 -50 57 -75 115 -81 42 -4 51 -1 83 28 98 86 48 231 -80 230 -21 0 -47 -6 -58 -12z"/>
                                                 <path d="M596 1323 l-79 -4 -111 -88 c-61 -48 -162 -119 -225 -157 -117 -71 -137 -93 -125 -140 7 -29 40 -54 69 -54 19 0 238 131 317 190 18 13 -9 -22 -60 -78 -97 -108 -112 -142 -74 -174 45 -41 78 -33 142 35 28 29 40 37 40 25 0 -41 -24 -129 -57 -209 l-36 -87 -134 -42 c-74 -23 -143 -50 -154 -61 -30 -30 -26 -92 7 -118 15 -12 34 -21 43 -21 32 0 333 99 350 114 10 9 37 61 61 116 24 55 46 100 50 100 6 0 50 -212 50 -244 0 -9 -40 -74 -90 -143 -51 -71 -90 -136 -90 -149 0 -43 22 -73 59 -84 51 -14 67 1 189 170 76 107 102 151 102 174 0 17 -14 118 -32 225 l-32 194 16 226 c13 189 13 230 2 252 -14 29 -42 40 -89 37 -16 -1 -66 -4 -109 -5z"/>
@@ -568,10 +557,6 @@
                                 <small class="notify-counter" data-counter="crossing">{{post.no_of_crossing}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="technical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'shooting' post.id %}" method="POST" class="shooting__form" data-metric="shooting" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}

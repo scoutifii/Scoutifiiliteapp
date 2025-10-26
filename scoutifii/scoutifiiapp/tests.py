@@ -4,7 +4,15 @@ import uuid as _uuid
 from unittest.mock import patch
 from django.urls import reverse
 from django.utils import timezone
-from scoutifiiapp.models import Profile, Post, FollowersCount, BrandSetting
+from scoutifiiapp.models import (
+    Profile, AdPlacement, Advertiser, 
+    Campaign, Creative, AdImpression, AdClick,
+    Post, FollowersCount, BrandSetting
+)
+import pytest
+from datetime import timedelta
+from scoutifiiapp.ad_selector import select_creative
+
 
 class UserSignupTest(TestCase):
     def setUp(self):
@@ -16,6 +24,7 @@ class UserSignupTest(TestCase):
             'password': 'testpassword',
             'password_confirm': 'testpassword',
         }
+
     def test_user_signup(self):
         response = self.client.post('/signup/', self.user_data)
         self.assertEqual(response.status_code, 302)  # Redirect to settings page
@@ -37,13 +46,13 @@ class UserSProfileTest(TestCase):
             'profile_type_data': 'User',
             'birth_date': '1990/01/01'
         }
+    
     def test_user_profile(self):
         response = self.client.post('/settings/', self.profile_data)
         self.assertEqual(response.status_code, 302)  # Redirect to dashboard page
         profile_exists = Profile.objects.filter(phone_no='0700101010').exists()
         self.assertFalse(profile_exists)
 
-    # python
 class DashboardViewTests(TestCase):
     def setUp(self):
         # Users
@@ -272,3 +281,62 @@ class LikeFlairPermissionTests(TestCase):
     # handles CSRF only if you use the template; typically you exempt via @csrf_exempt
     # or post via AJAX with proper token. If you need strict CSRF behavior, add:
     # def test_like_rejects_missing_csrf(self): ...
+
+@pytest.mark.django_db
+def test_select_creative_basic(client, django_user_model):
+    placement = AdPlacement.objects.create(code="dashboard_feed_top")
+    adv = Advertiser.objects.create(name="Acme", contact_email="acme@test")
+    campaign = Campaign.objects.create(
+        advertiser=adv,
+        name="Test",
+        placement=placement,
+        start_at=timezone.now() - timedelta(days=1),
+        end_at=timezone.now() + timedelta(days=1),
+        active=True,
+        daily_budget_cents=1000,
+        target_country="",
+        target_profile_type="",
+    )
+    creative = Creative.objects.create(
+        campaign=campaign,
+        click_url="https://example.com",
+        headline="Hi",
+    )
+
+    placement_obj, campaign_obj, creative_obj = select_creative("dashboard_feed_top")
+    assert placement_obj == placement
+    assert campaign_obj == campaign
+    assert creative_obj == creative
+
+@pytest.mark.django_db
+def test_ad_slot_and_click_flow(client):
+    placement = AdPlacement.objects.create(code="dashboard_feed_top")
+    adv = Advertiser.objects.create(name="Acme", contact_email="acme@test")
+    campaign = Campaign.objects.create(
+        advertiser=adv,
+        name="Test",
+        placement=placement,
+        start_at=timezone.now() - timedelta(days=1),
+        end_at=timezone.now() + timedelta(days=1),
+        active=True,
+        daily_budget_cents=1000,
+        target_country="",
+        target_profile_type="",
+    )
+    Creative.objects.create(
+        campaign=campaign,
+        click_url="https://example.com",
+        headline="Hi",
+    )
+    # serve slot
+    r = client.get("/ads/slot/dashboard_feed_top")
+    assert r.status_code == 200
+    data = r.json()
+    assert "impression_id" in data
+    imp_id = data["impression_id"]
+    assert AdImpression.objects.filter(id=imp_id).exists()
+
+    # click redirect
+    r2 = client.get(f"/ads/click/{imp_id}/", follow=False)
+    assert r2.status_code in (301, 302)
+    assert AdClick.objects.filter(impression_id=imp_id).exists()

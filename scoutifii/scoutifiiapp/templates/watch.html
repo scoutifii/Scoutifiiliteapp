@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}{% for post in postLists%} {{post.video_name}}{% endfor %} {% endblock %}
 {% block content %}
-<div class="main-middle">
+<div class="main-middle-index">
     <!-- Start stories -->
     <div class="middle-container">
         <div class="stories">
@@ -132,8 +132,8 @@
                         </div>
                     </div>
                     {% if post.category_type == 'football' %}
-                    <div class="tactical-button">
-                        <ul class="action-list" role="list">
+                    <div class="action-button">
+                        <ul class="interaction-button" role="list">
                             <li class="action-item">
                                 <form action="{% url 'flair' post.id %}" method="POST" class="flair__form" data-metric="flair" data-post-id="{{ post.id }}">    
                                     {% csrf_token %} 
@@ -293,10 +293,6 @@
                                 <small class="notify-counter" data-counter="Pace">{{post.no_of_pace}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="physical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'speed' post.id %}" method="POST" class="speed__form" data-metric="flair" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}
@@ -468,10 +464,6 @@
                                 <small class="notify-counter" data-counter="crossing">{{post.no_of_crossing}}</small>
                                 {% endif %}
                             </li>
-                        </ul>
-                    </div>
-                    <div class="technical-button">
-                        <ul class="action-list" role="list">
                             <li class="action-item">
                                 <form action="{% url 'shooting' post.id %}" method="POST" class="shooting__form" data-metric="shooting" data-post-id="{{ post.id }}">  
                                     {% csrf_token %}

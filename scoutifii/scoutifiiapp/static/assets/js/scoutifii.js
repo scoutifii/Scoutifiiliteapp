@@ -343,13 +343,13 @@ $(document).on('submit', '.create-comment', function(e){
         }
 
        // ..................Messages........................
-       document.querySelector('#messageMenu').addEventListener('click', ()=>{
-            document.querySelector('#notifyCounter2').style.display = 'none';
-            document.querySelector('.messages').classList.toggle('boxshadow1');
-            setTimeout(()=>{                
-                document.querySelector('.messages').classList.remove('boxshadow1');
-            }, 300);
-       });
+    //    document.querySelector('#messageMenu').addEventListener('click', ()=>{
+    //         document.querySelector('#notifyCounter2').style.display = 'none';
+    //         document.querySelector('.messages').classList.toggle('boxshadow1');
+    //         setTimeout(()=>{                
+    //             document.querySelector('.messages').classList.remove('boxshadow1');
+    //         }, 300);
+    //    });
 
 
 // ...................Comments Modal Start..........................

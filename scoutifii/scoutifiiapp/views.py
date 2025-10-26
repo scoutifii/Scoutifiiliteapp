@@ -4,7 +4,6 @@ from django.shortcuts import (
     HttpResponseRedirect, 
     reverse
 )
-from .models import BrandSetting
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -18,7 +17,8 @@ from .models import (
     VideoBallControl, VideoFreeKick, VideoDribbling,
     VideoCrossing, VideoPace, Comment, LikePost, 
     FollowersCount, Notification, ActivityLog,
-    Repost, VideoCounts, LiveStream,
+    Repost, VideoCounts, LiveStream, AdImpression, 
+    AdClick, BrandSetting
 )
 from django.utils import timezone
 # from django.utils.timezone import now
@@ -31,7 +31,7 @@ import random
 from django.core.exceptions import PermissionDenied
 from itertools import chain
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from .helper import parse_user_agent
 from django.views.generic import TemplateView
 from django.views.decorators.http import (
@@ -47,6 +47,9 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .ad_selector import select_creative
+from django.db import transaction
+from django.utils.html import escape
 
 
 load_dotenv()
@@ -137,7 +140,7 @@ def dashboard(request):
         'user_profile': user_profile, 
         'posts': feed_list,
         'brand_setting': brand_setting,
-        'username_suggestions': suggestions_username_profile_list[:10],
+        'username_suggestions': suggestions_username_profile_list,
         'year': year,
         'num_of_followers': num_of_followers,
         # 'token': token
@@ -252,49 +255,49 @@ def logout(request):
 def settings(request):
     brand_setting = BrandSetting.objects.all()
     otp = random.randint(10000, 99999)
-    profile = request.user.profile.first()
+    profile = get_object_or_404(Profile, user=request.user)
      
     if request.method == "POST":
         if request.FILES.get('profileimg') == None:
-            image = request.FILES.get('profileimg')
-            bio = request.POST.get('bio', '').strip()
-            location = request.POST.get('location', '')
-            phone_no = request.POST.get('phone_no', '')
-            country_id = request.POST.get('country_id', '')
-            profile_type_data = request.POST.get('profile_type_data', '')
-            primary_position = request.POST.get('primary_position', '')
-            dominant_side = request.POST.get('dominant_side', '')
-            height_cm = request.POST.get('height_cm') or None
-            weight_kg = request.POST.get('weight_kg') or None
-            jersey_number = request.POST.get('jersey_number', '')
+            profile.image = request.FILES.get('profileimg')
+            profile.bio = request.POST.get('bio', '').strip()
+            profile.location = request.POST.get('location', '')
+            profile.phone_no = request.POST.get('phone_no', '')
+            profile.country_id = request.POST.get('country_id', '')
+            profile.profile_type_data = request.POST.get('profile_type_data', '')
+            profile.primary_position = request.POST.get('primary_position', '')
+            profile.dominant_side = request.POST.get('dominant_side', '')
+            profile.height_cm = request.POST.get('height_cm') or None
+            profile.weight_kg = request.POST.get('weight_kg') or None
+            profile.jersey_number = request.POST.get('jersey_number', '')
             otp = otp
-            birth_date = request.POST.get('birth_date')
+            profile.birth_date = request.POST.get('birth_date', '')
 
-            secondary_positions = request.POST.getlist('secondary_positions')
-            secondary_positions = secondary_positions
+            profile.secondary_positions = request.POST.getlist('secondary_positions')
+            secondary_positions = profile.secondary_positions
 
             privacy = {
                 'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
                 'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
                 'media_public': bool(request.POST.get('privacy_settings[media_public]')),
             }
-            privacy_settings = privacy       
+            profile.privacy_settings = privacy       
 
             data = {
-                'profileimg': image,
-                'bio': bio,
-                'location': location,
-                'phone_no': phone_no,
-                'country_id': country_id,
-                'profile_type_data': profile_type_data,
-                'birth_date': birth_date,
-                'primary_position': primary_position,
-                'dominant_side': dominant_side,
-                'height_cm': height_cm,
-                'weight_kg': weight_kg,
-                'jersey_number': jersey_number,
-                'secondary_positions': secondary_positions,
-                'privacy_settings': privacy_settings,                
+                'profileimg': profile.image,
+                'bio': profile.bio,
+                'location': profile.location,
+                'phone_no': profile.phone_no,
+                'country_id': profile.country_id,
+                'profile_type_data': profile.profile_type_data,
+                'birth_date': profile.birth_date,
+                'primary_position': profile.primary_position,
+                'dominant_side': profile.dominant_side,
+                'height_cm': profile.height_cm,
+                'weight_kg': profile.weight_kg,
+                'jersey_number': profile.jersey_number,
+                'secondary_positions': profile.secondary_positions,
+                'privacy_settings': profile.privacy_settings,                
             }
             user_profile = Profile.objects.create(
                 user=request.user,
@@ -317,43 +320,45 @@ def settings(request):
             )
             user_profile.save()
         if request.FILES.get('profileimg') != 'None':
-            image = request.FILES.get('profileimg')
-            bio = request.POST.get('bio', '').strip()
-            location = request.POST.get('location', '')
-            phone_no = request.POST.get('phone_no', '')
-            country_id = request.POST.get('country_id', '')
-            profile_type_data = request.POST.get('profile_type_data', '')
-            primary_position = request.POST.get('primary_position', '')
-            dominant_side = request.POST.get('dominant_side', '')
-            height_cm = request.POST.get('height_cm') or None
-            weight_kg = request.POST.get('weight_kg') or None
-            jersey_number = request.POST.get('jersey_number', '')
+            profile.image = request.FILES.get('profileimg')
+            profile.bio = request.POST.get('bio', '').strip()
+            profile.location = request.POST.get('location', '')
+            profile.phone_no = request.POST.get('phone_no', '')
+            profile.country_id = request.POST.get('country_id', '')
+            profile.profile_type_data = request.POST.get('profile_type_data', '')
+            profile.primary_position = request.POST.get('primary_position', '')
+            profile.dominant_side = request.POST.get('dominant_side', '')
+            profile.height_cm = request.POST.get('height_cm') or None
+            profile.weight_kg = request.POST.get('weight_kg') or None
+            profile.jersey_number = request.POST.get('jersey_number', '')
             otp = otp
-            birth_date = request.POST.get('birth_date')
-            secondary_positions = request.POST.getlist('secondary_positions')
-            secondary_positions = secondary_positions
+            profile.birth_date = request.POST.get('birth_date', '')
+
+            profile.secondary_positions = request.POST.getlist('secondary_positions')
+            secondary_positions = profile.secondary_positions
 
             privacy = {
                 'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
                 'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
                 'media_public': bool(request.POST.get('privacy_settings[media_public]')),
             }
-            privacy_settings = privacy
-            
+            profile.privacy_settings = privacy       
+
             data = {
-                'profileimg': image,
-                'bio': bio,
-                'location': location,
-                'phone_no': phone_no,
-                'country_id': country_id,
-                'profile_type_data': profile_type_data,
-                'primary_position': primary_position,
-                'dominant_side': dominant_side,
-                'height_cm': height_cm,
-                'weight_kg': weight_kg,
-                'jersey_number': jersey_number,
-                'secondary_positions': secondary_positions,
-                'privacy_settings': privacy_settings,
+                'profileimg': profile.image,
+                'bio': profile.bio,
+                'location': profile.location,
+                'phone_no': profile.phone_no,
+                'country_id': profile.country_id,
+                'profile_type_data': profile.profile_type_data,
+                'birth_date': profile.birth_date,
+                'primary_position': profile.primary_position,
+                'dominant_side': profile.dominant_side,
+                'height_cm': profile.height_cm,
+                'weight_kg': profile.weight_kg,
+                'jersey_number': profile.jersey_number,
+                'secondary_positions': profile.secondary_positions,
+                'privacy_settings': profile.privacy_settings,               
             }
             user_profile = Profile.objects.create(
                 user=request.user,
@@ -365,6 +370,7 @@ def settings(request):
                 country_id=data['country_id'],
                 profile_type_data=data['profile_type_data'],
                 otp=otp,
+                birth_date=data['birth_date'],
                 primary_position=data['primary_position'],
                 dominant_side=data['dominant_side'],
                 height_cm=data['height_cm'],
@@ -391,9 +397,10 @@ def search(request):
     brand_setting = BrandSetting.objects.all()
     user_object = User.objects.get(username=request.user.username) 
     user_profile = Profile.objects.get(user=user_object) 
+    
     if request.method == 'POST':
-        searched = request.POST['q']
-        username_object = User.objects.filter(username__icontains=searched)
+        q = request.GET.get("q", "").strip()
+        username_object = User.objects.filter(username__icontains=q)
 
         username_profile = []
         username_profile_list = []
@@ -402,7 +409,9 @@ def search(request):
             username_profile.append(users.id)
 
         for ids in username_profile:
-            profile_lists = Profile.objects.filter(id_user=ids)
+            profile_lists = Profile.objects.filter(
+                id_user=ids
+            )
             username_profile_list.append(profile_lists)
 
         username_profile_list = list(chain(*username_profile_list))
@@ -410,7 +419,8 @@ def search(request):
         context = {
             'user_profile': user_profile, 
             'username_profile_list': username_profile_list,
-            'brand_setting': brand_setting
+            'brand_setting': brand_setting,
+            'q': q,
         }
 
     return render(request, 'search.html', context)
@@ -485,7 +495,6 @@ def follower(request, pk):
         followers_page = paginator.page(1)
     except EmptyPage:
         followers_page = paginator.page(paginator.num_pages)
-
 
     context = {
         'user_object': user_object,
@@ -1719,3 +1728,61 @@ def create_stream(request):
 def stream_view(request, stream_id):
     stream = get_object_or_404(LiveStream, id=stream_id, is_live=True)
     return render(request, 'stream.html', {'stream': stream})
+
+
+def _client_ip(request):
+    xff = request.META.get("HTTP_X_FORWARDED_FOR")
+    if xff:
+        # e.g., "client, proxy1, proxy2"
+        return xff.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR")
+
+
+@require_GET
+def ad_slot(request, placement_code: str):
+    selection = select_creative(
+        placement_code,
+        user=request.user if request.user.is_authenticated else None,
+        ip=_client_ip(request),
+    )
+    if not selection:
+        return HttpResponse()
+
+    placement, campaign, creative = selection
+
+    with transaction.atomic():
+        impression = AdImpression.objects.create(
+            campaign=campaign,
+            creative=creative,
+            placement=placement,
+            user=request.user if request.user.is_authenticated else None,
+            ip=_client_ip(request),
+            user_agent=(request.META.get("HTTP_USER_AGENT") or "")[:500],
+        )
+
+    # Render HTML safely; allow custom creative.html if you trust its source
+    if creative.html:
+        # Optional: sanitize/whitelist if creatives are user-submitted
+        html = creative.html
+    else:
+        headline = escape(creative.headline or "")
+        img_src = creative.image.url if creative.image else ""
+        html = (
+            f'<a href="/ads/click/{impression.id}/" target="_blank" rel="noopener nofollow">'
+            f'  <img src="{img_src}" alt="{headline}" style="max-width:100%;height:auto;" />'
+            f'</a>'
+        )
+
+    payload = {
+        "impression_id": impression.id,
+        "html": html,
+    }
+    return JsonResponse(payload)
+
+
+@require_GET
+def ad_click(request, impression_id: int):
+    impression = get_object_or_404(AdImpression, id=impression_id)
+    # Basic duplicate click protection: one click per impression per IP in quick succession could be checked
+    AdClick.objects.create(impression=impression)
+    return redirect(impression.creative.click_url)
