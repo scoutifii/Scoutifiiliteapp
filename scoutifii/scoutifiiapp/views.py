@@ -28,9 +28,10 @@ from django.contrib import auth
 from django.core.cache import cache
 from django.contrib import messages
 import random
+import json
 from django.core.exceptions import PermissionDenied
 from itertools import chain
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from .helper import parse_user_agent
 from django.views.generic import TemplateView
@@ -255,134 +256,46 @@ def logout(request):
 def settings(request):
     brand_setting = BrandSetting.objects.all()
     otp = random.randint(10000, 99999)
-    profile = get_object_or_404(Profile, user=request.user)
+
+    try:
+        profile = Profile.objects.get(user=request.user)
+        is_new = False
+    except Profile.DoesNotExist:
+        profile = Profile(user=request.user, id_user=request.user.id)
+        is_new = True
      
     if request.method == "POST":
-        if request.FILES.get('profileimg') == None:
-            profile.image = request.FILES.get('profileimg')
-            profile.bio = request.POST.get('bio', '').strip()
-            profile.location = request.POST.get('location', '')
-            profile.phone_no = request.POST.get('phone_no', '')
-            profile.country_id = request.POST.get('country_id', '')
-            profile.profile_type_data = request.POST.get('profile_type_data', '')
-            profile.primary_position = request.POST.get('primary_position', '')
-            profile.dominant_side = request.POST.get('dominant_side', '')
-            profile.height_cm = request.POST.get('height_cm') or None
-            profile.weight_kg = request.POST.get('weight_kg') or None
-            profile.jersey_number = request.POST.get('jersey_number', '')
-            otp = otp
-            profile.birth_date = request.POST.get('birth_date', '')
+        profile.bio = (request.POST.get('bio') or '').strip()
+        profile.location = request.POST.get('location') or ''
+        profile.phone_no = request.POST.get('phone_no') or ''
+        profile.country_id = request.POST.get('country_id') or ''
+        profile.profile_type_data = request.POST.get('profile_type_data') or ''
+        profile.primary_position = request.POST.get('primary_position', '') or ''
+        profile.dominant_side = request.POST.get('dominant_side', '') or ''
+        profile.height_cm = request.POST.get('height_cm') or None
+        profile.weight_kg = request.POST.get('weight_kg') or None
+        profile.jersey_number = request.POST.get('jersey_number') or ''
+        profile.otp = getattr(profile, 'otp', None) or otp
+        profile.birth_date = (request.POST.get('birth_date') or '').strip()
 
-            profile.secondary_positions = request.POST.getlist('secondary_positions')
-            secondary_positions = profile.secondary_positions
+        secondary_positions = request.POST.getlist('secondary_positions')
+        profile.secondary_positions = secondary_positions
 
-            privacy = {
-                'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
-                'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
-                'media_public': bool(request.POST.get('privacy_settings[media_public]')),
-            }
-            profile.privacy_settings = privacy       
+        privacy = {
+            'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
+            'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
+            'media_public': bool(request.POST.get('privacy_settings[media_public]')),
+        }
+        profile.privacy_settings = privacy
 
-            data = {
-                'profileimg': profile.image,
-                'bio': profile.bio,
-                'location': profile.location,
-                'phone_no': profile.phone_no,
-                'country_id': profile.country_id,
-                'profile_type_data': profile.profile_type_data,
-                'birth_date': profile.birth_date,
-                'primary_position': profile.primary_position,
-                'dominant_side': profile.dominant_side,
-                'height_cm': profile.height_cm,
-                'weight_kg': profile.weight_kg,
-                'jersey_number': profile.jersey_number,
-                'secondary_positions': profile.secondary_positions,
-                'privacy_settings': profile.privacy_settings,                
-            }
-            user_profile = Profile.objects.create(
-                user=request.user,
-                id_user=request.user.id,
-                profileimg=data['profileimg'],
-                bio=data['bio'],
-                location=data['location'],
-                phone_no=data['phone_no'],
-                country_id=data['country_id'],
-                profile_type_data=data['profile_type_data'],
-                birth_date=data['birth_date'],
-                otp=otp,
-                primary_position=data['primary_position'],
-                dominant_side=data['dominant_side'],
-                height_cm=data['height_cm'],
-                weight_kg=data['weight_kg'],
-                jersey_number=data['jersey_number'],
-                secondary_positions=data['secondary_positions'],
-                privacy_settings=data['privacy_settings'],
-            )
-            user_profile.save()
-        if request.FILES.get('profileimg') != 'None':
-            profile.image = request.FILES.get('profileimg')
-            profile.bio = request.POST.get('bio', '').strip()
-            profile.location = request.POST.get('location', '')
-            profile.phone_no = request.POST.get('phone_no', '')
-            profile.country_id = request.POST.get('country_id', '')
-            profile.profile_type_data = request.POST.get('profile_type_data', '')
-            profile.primary_position = request.POST.get('primary_position', '')
-            profile.dominant_side = request.POST.get('dominant_side', '')
-            profile.height_cm = request.POST.get('height_cm') or None
-            profile.weight_kg = request.POST.get('weight_kg') or None
-            profile.jersey_number = request.POST.get('jersey_number', '')
-            otp = otp
-            profile.birth_date = request.POST.get('birth_date', '')
+        # Image upload
+        uploaded = request.FILES.get('profileimg')
+        if uploaded:
+            profile.profileimg = uploaded   
 
-            profile.secondary_positions = request.POST.getlist('secondary_positions')
-            secondary_positions = profile.secondary_positions
-
-            privacy = {
-                'bio_public': bool(request.POST.get('privacy_settings[bio_public]')),
-                'contact_public': bool(request.POST.get('privacy_settings[contact_public]')),
-                'media_public': bool(request.POST.get('privacy_settings[media_public]')),
-            }
-            profile.privacy_settings = privacy       
-
-            data = {
-                'profileimg': profile.image,
-                'bio': profile.bio,
-                'location': profile.location,
-                'phone_no': profile.phone_no,
-                'country_id': profile.country_id,
-                'profile_type_data': profile.profile_type_data,
-                'birth_date': profile.birth_date,
-                'primary_position': profile.primary_position,
-                'dominant_side': profile.dominant_side,
-                'height_cm': profile.height_cm,
-                'weight_kg': profile.weight_kg,
-                'jersey_number': profile.jersey_number,
-                'secondary_positions': profile.secondary_positions,
-                'privacy_settings': profile.privacy_settings,               
-            }
-            user_profile = Profile.objects.create(
-                user=request.user,
-                id_user=request.user.id,
-                profileimg=data['profileimg'],
-                bio=data['bio'],
-                location=data['location'],
-                phone_no=data['phone_no'],
-                country_id=data['country_id'],
-                profile_type_data=data['profile_type_data'],
-                otp=otp,
-                birth_date=data['birth_date'],
-                primary_position=data['primary_position'],
-                dominant_side=data['dominant_side'],
-                height_cm=data['height_cm'],
-                weight_kg=data['weight_kg'],
-                jersey_number=data['jersey_number'],
-                secondary_positions=data['secondary_positions'],
-                privacy_settings=data['privacy_settings'],
-            )
-
-            user_profile.save()
-            messages.success(request, "Profile updated.")
-            return redirect('dashboard')
+        profile.save()
+        messages.success(request, "Profile created." if is_new else "Profile updated")
+        return redirect('dashboard')
 
     context = {
         'brand_setting': brand_setting,
@@ -1576,9 +1489,158 @@ def user_comments(request, id):
 
 
 @login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
 def report(request):
-    return render(request, 'report.html')
+    user_object = request.user
+    try:
+        user_profile = Profile.objects.get(user=user_object)
+    except Profile.DoesNotExist:
+        user_profile = None
+    brand_setting = BrandSetting.objects.all()
+    year = datetime.now().strftime("%Y")
 
+    # Handle POST: weekly active users between dates
+    if request.method == 'POST':
+        from_str = (request.POST.get('from_date') or '').strip()
+        to_str = (request.POST.get('to_date') or '').strip()
+        weekly_users = 0
+
+        if not from_str or not to_str:
+            messages.error(request, "Please provide both From and To dates.")
+        else:
+            try:
+                # Expect YYYY-MM-DD from your UI; make aware bounds
+                start = timezone.make_aware(datetime.strptime(from_str, "%Y-%m-%d"))
+                # include the whole end day 23:59:59
+                end = timezone.make_aware(datetime.strptime(to_str, "%Y-%m-%d")) + timezone.timedelta(days=1)
+                weekly_users = (
+                    AllLogins.objects
+                    .filter(login_date__gte=start, login_date__lt=end)
+                    .values('user_id')
+                    .distinct()
+                    .count()
+                )
+            except ValueError:
+                messages.error(request, "Invalid date format. Use YYYY-MM-DD.")
+
+        context = {
+            'weekly_users': weekly_users,
+            'user_profile': user_profile,
+            'brand_setting': brand_setting,
+            'year': year,
+            'from_date': from_str,
+            'to_date': to_str,
+        }
+        return render(request, 'report.html', context)
+
+    # GET: full dashboard metrics
+    active_users = Profile.objects.count()
+    total_posts = Post.objects.count()
+
+    today = timezone.localdate()
+    daily_users = (
+        AllLogins.objects
+        .filter(login_date__date=today)
+        .values('user_id')
+        .distinct()
+        .count()
+    )
+
+    # Top 10 most viewed videos (by VideoCounts rows)
+    most_viewed = (
+        VideoCounts.objects
+        .values('post_id', 'post__video_name')
+        .annotate(most_watched=Count('id'))
+        .order_by('-most_watched')[:10]
+    )
+    most_viewed_videos = [[item['post_id'], item['post__video_name']] for item in most_viewed]
+
+    # Posts by user and country
+    # Use Profile.country_id directly via Post->profile relationship name (Post.profile FK exists)
+    posts_by_user_country_qs = (
+        Post.objects
+        .values('user_prof', 'profile__country_id')
+        .annotate(num_posts=Count('id'))
+        .order_by('user_prof')
+    )
+    users = []
+    users_posts_counts = []
+    users_countries_counts = []
+    # Aggregate per user across countries
+    from collections import defaultdict
+    posts_per_user = defaultdict(int)
+    countries_per_user = defaultdict(set)
+    for row in posts_by_user_country_qs:
+        user = row['user_prof']
+        posts_per_user[user] += row['num_posts']
+        countries_per_user[user].add(row['profile__country_id'])
+    users = list(posts_per_user.keys())
+    users_posts_counts = [posts_per_user[u] for u in users]
+    users_countries_counts = [len(countries_per_user[u]) for u in users]
+
+    posts_by_user_payload = {
+        "labels": users,  # x-axis user names
+        "series": [
+            {"label": "Posts", "data": users_posts_counts},
+            {"label": "Countries", "data": users_countries_counts},
+        ],
+    }
+    posts_by_user = json.dumps(posts_by_user_payload)
+
+    # Profiles by country and type
+    prof_qs = (
+        Profile.objects
+        .values('country_id')
+        .annotate(
+            user_count=Count('id', filter=Q(profile_type_data='user')),
+            player_count=Count('id', filter=Q(profile_type_data='player')),
+            agent_count=Count('id', filter=Q(profile_type_data='agent')),
+            coach_count=Count('id', filter=Q(profile_type_data='coach')),
+        )
+        .order_by('country_id')
+    )
+    countries = [row['country_id'] for row in prof_qs]
+    
+    profile_payload = {
+        "labels": countries,  # x-axis country codes
+        "series": [
+            {"label": "User", "data": [row['user_count'] for row in prof_qs]},
+            {"label": "Player", "data": [row['player_count'] for row in prof_qs]},
+            {"label": "Agent", "data": [row['agent_count'] for row in prof_qs]},
+            {"label": "Coach", "data": [row['coach_count'] for row in prof_qs]},
+        ],
+    }
+    profile_data = json.dumps(profile_payload)
+
+    category_qs = (
+        Post.objects
+        .values('user__username')
+        .annotate(football_count=Count('id', filter=Q(category_type='football')))
+        .order_by('user__username')
+    )
+    cat_users = [row['user__username'] for row in category_qs]
+
+    posts_by_category_payload = {
+        "labels": cat_users,
+        "series": [
+            {"label": "Football", "data": [row['football_count'] for row in category_qs]},
+        ],
+    }
+    posts_by_category = json.dumps(posts_by_category_payload)
+
+    context = {
+        'active_users': active_users,
+        'total_posts': total_posts,
+        'daily_users': daily_users,
+        'most_viewed_videos': most_viewed_videos,
+        'posts_by_user': posts_by_user,
+        'chart': profile_data,
+        'posts_by_category': posts_by_category,
+        'user_profile': user_profile,
+        'brand_setting': brand_setting,
+        'year': year,
+    }
+    return render(request, 'report.html', context)
 
 # @login_required(login_url='login')
 def view_logs(request):

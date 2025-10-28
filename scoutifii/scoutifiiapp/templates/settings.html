@@ -104,10 +104,22 @@
           <select name="profile_type_data" id="add_profile_type"
                   class="form-select bg-secondary border-0 text-light">
             <option value="">Select Profile</option>
-            <option value="user" {% if user_profile.profile_type == 'user' %}selected{% endif %}>User</option>
-            <option value="player" {% if user_profile.profile_type == 'player' %}selected{% endif %}>Player</option>
-            <option value="coach" {% if user_profile.profile_type == 'coach' %}selected{% endif %}>Coach</option>
-            <option value="agent" {% if user_profile.profile_type == 'agent' %}selected{% endif %}>Agent</option>
+            <option value="{{user_profile.profile_type_data}}" 
+              {% if user_profile.profile_type == 'user' %}selected{% endif %}>
+                User
+            </option>
+            <option value="{{user_profile.profile_type_data}}" 
+              {% if user_profile.profile_type == 'player' %}selected{% endif %}>
+                Player
+            </option>
+            <option value="{{user_profile.profile_type_data}}" 
+              {% if user_profile.profile_type == 'coach' %}selected{% endif %}>
+                Coach
+            </option>
+            <option value="{{user_profile.profile_type_data}}" 
+              {% if user_profile.profile_type == 'agent' %}selected{% endif %}>
+                Agent
+            </option>
           </select>
         </div>
 

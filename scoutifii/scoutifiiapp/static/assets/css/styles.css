@@ -1003,6 +1003,473 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] {
 }
 :focus:not(:focus-visible) { outline: none; }
 
+
+/* Page wrapper */
+.follow-page {
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* Card */
+.follow-card {
+  width: 100%;
+  max-width: 820px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.follow-card__header {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.follow-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--heading-color, #111827);
+}
+
+.follow-card__divider {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* List */
+.follow-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.follow-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px 16px;
+  align-items: center;
+  padding: 14px 18px;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.follow-item:not(:last-child) {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.follow-item:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+/* Avatar */
+.follow-item__avatar {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid rgba(0,0,0,0.06);
+  flex: 0 0 48px;
+}
+
+.follow-item__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Body */
+.follow-item__body {
+  min-width: 0; /* enable text truncation */
+}
+
+.follow-item__name {
+  color: var(--link-color, #1f2937);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.follow-item__name:hover {
+  color: var(--link-hover-color, #0f172a);
+  text-decoration: underline;
+}
+
+.follow-item__meta {
+  margin: 4px 0 0;
+  color: var(--muted, #6b7280);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+/* Actions */
+.follow-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .02s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn--primary {
+  background: var(--primary, #2563eb);
+  color: #fff;
+  border-color: transparent;
+}
+.btn--primary:hover { background: #1e4fd6; }
+.btn--sm { padding: 6px 12px; font-size: .92rem; }
+
+/* Empty state */
+.follow-empty {
+  padding: 40px 18px;
+  text-align: center;
+  color: var(--muted, #6b7280);
+  font-size: 1rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .follow-card { border-radius: 12px; }
+  .follow-item {
+    grid-template-columns: auto 1fr;
+  }
+  .follow-item__actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    padding-left: 64px; /* indent action under avatar */
+  }
+  .follow-item__avatar { width: 44px; height: 44px; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .follow-card {
+    background: #0f172a;
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+  }
+  .follow-card__title { color: #e5e7eb; }
+  .follow-card__divider { border-top-color: rgba(255,255,255,0.12); }
+  .follow-item:hover { background: rgba(255,255,255,0.04); }
+  .follow-item__name { color: #e5e7eb; }
+  .follow-item__name:hover { color: #ffffff; }
+  .follow-item__meta { color: #9ca3af; }
+  .follow-item__avatar { border-color: rgba(255,255,255,0.12); }
+  .btn--primary { background: #3b82f6; }
+  .btn--primary:hover { background: #2563eb; }
+}
+
+
+/* Live page layout */
+#videos {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Video elements */
+.video-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;           /* keep consistent aspect ratio */
+  background: #0b1220;            /* fallback bg while loading camera */
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  object-fit: cover;
+}
+
+#localVideo {
+  /* Optional: show a subtle label overlay */
+  position: relative;
+}
+
+#remoteVideo {
+  position: relative;
+}
+
+/* Start stream button */
+#startStream {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 4px;
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  background: #2563eb;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .02s ease, box-shadow .15s ease;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+}
+
+#startStream:hover { background: #1e4fd6; }
+#startStream:active { transform: translateY(1px); }
+#startStream:disabled {
+  background: #64748b;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Control dock */
+#controls {
+  position: fixed;                 /* float over page for easy access */
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: rgba(15, 23, 42, 0.9); /* slate-900 with alpha */
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+/* Each control icon button */
+.control-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #e5e7eb;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: background-color .15s ease, transform .02s ease, color .15s ease, border-color .15s ease;
+  user-select: none;
+}
+
+.control-icon:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.control-icon:active {
+  transform: translateY(1px);
+}
+
+/* Optional active/on/off states (toggle these classes in JS) */
+.control-icon.is-off {
+  color: #fca5a5;                  /* soft red for off/muted */
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.control-icon.is-on {
+  color: #bbf7d0;                  /* soft green for on */
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+/* SVG sizing inherits from button */
+.control-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* Small overlay labels (optional, if you add via JS) */
+.video-player::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 2;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e5e7eb;
+  background: rgba(0,0,0,0.45);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Dark mode support (if body or html has .dark) */
+.dark #videos { background: transparent; }
+.dark .video-player { background: #0b1220; border-color: rgba(255,255,255,0.08); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+.dark #startStream { background: #3b82f6; }
+.dark #startStream:hover { background: #2563eb; }
+.dark #controls { background: rgba(2, 6, 23, 0.9); border-color: rgba(255,255,255,0.12); }
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  #videos {
+    grid-template-columns: 1fr;
+  }
+  #startStream {
+    width: 100%;
+  }
+}
+
+/* Page container */
+.container-report {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Metric cards row */
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.report-cards .card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: transform .08s ease, box-shadow .15s ease, border-color .15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 120px;
+}
+
+.report-cards .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+  border-color: rgba(0,0,0,0.12);
+}
+
+.report-cards .card h5 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted, #6b7280);
+}
+
+/* Big numbers */
+.report-cards .font-size h1 {
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--heading-color, #111827);
+  letter-spacing: -0.02em;
+}
+
+/* Chart containers */
+.container-bar,
+.posts-by-user,
+.posts-by-category {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+/* Optional titles if you add them in templates later */
+.container-bar::before {
+  content: "Users by Country";
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--heading-color, #111827);
+}
+.posts-by-user::before {
+  content: "Posts by User";
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--heading-color, #111827);
+}
+.posts-by-category::before {
+  content: "Posts by User";
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--heading-color, #111827);
+}
+
+/* Utility */
+.text-gry { color: var(--muted, #6b7280); }
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .report-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .report-cards {
+    grid-template-columns: 1fr;
+  }
+  .report-cards .font-size h1 {
+    font-size: 2rem;
+  }
+  .container { padding: 12px; }
+}
+
+/* Dark mode (if you toggle .dark on html/body) */
+.dark .report-cards .card,
+.dark .container-bar,
+.dark .posts-by-user,
+.dark .posts-by-category {
+  background: #0f172a;
+  border-color: rgba(255,255,255,0.10);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+}
+.dark .report-cards .card h5,
+.dark .container-bar::before,
+.dark .posts-by-user::before,
+.dark .posts-by-category::before {
+  color: #e5e7eb;
+}
+.dark .report-cards .font-size h1 {
+  color: #f8fafc;
+}
+
+/* Optional: subtle animated gradient for cards (uncomment to use)*/
+.report-cards .card {
+  background-image: radial-gradient(1200px 300px at 0% 0%, rgba(37,99,235,0.06), transparent),
+                    radial-gradient(800px 200px at 100% 100%, rgba(99,102,241,0.06), transparent);
+}
+
+
+
 /* ============================
    Responsive
    ============================ */
@@ -1039,7 +1506,6 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] {
   .menu-item h3 { font-size: 0.95rem;}
 }
 
-
 /* <= 576px: single column feel, smaller controls */
 @media (max-width: 576px) {
   .feed-title h5 { font-size: 0.95rem; }
@@ -1067,6 +1533,8 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] {
   .action-item { min-height: 0;}
   .action-list { width: 100%; display: grid; gap: 0.45rem; }
   .liked-by { padding: 0.45rem 0.6rem; }
+  #controls { bottom: 12px; gap: 8px; padding: 6px;}
+  .control-icon { width: 36px; height: 36px;}
 }
 
 /* Color consistency for inline SVG fills used across buttons */

@@ -60,7 +60,7 @@ class Profile(models.Model):
     )
     location = models.CharField(max_length=100, blank=True)
     phone_no = PhoneNumberField(
-        unique=True, 
+        unique=False, 
         max_length=13, 
         null=True, 
         blank=True

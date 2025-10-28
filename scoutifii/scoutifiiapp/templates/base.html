@@ -427,6 +427,7 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script> -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
@@ -507,6 +508,147 @@
                 .appendTo(ul);
             };
         });
+
+     
+        (function () {
+  // Parse data from Django
+  const profilesData = JSON.parse('{{ chart|escapejs }}');             // users by country/types
+  const postsByUserData = JSON.parse('{{ posts_by_user|escapejs }}');  // posts vs countries per user
+  const postsByCategoryData = JSON.parse('{{ posts_by_category|escapejs }}'); // football per user
+
+  // Color helpers
+  const palette = {
+    blue:   'rgba(37, 99, 235, 0.8)',
+    blueBg: 'rgba(37, 99, 235, 0.15)',
+    cyan:   'rgba(6, 182, 212, 0.8)',
+    cyanBg: 'rgba(6, 182, 212, 0.15)',
+    green:  'rgba(34, 197, 94, 0.8)',
+    greenBg:'rgba(34, 197, 94, 0.15)',
+    amber:  'rgba(245, 158, 11, 0.85)',
+    amberBg:'rgba(245, 158, 11, 0.20)',
+    fuchsia:'rgba(217, 70, 239, 0.8)',
+    fuchsiaBg:'rgba(217, 70, 239, 0.15)',
+    gray:   'rgba(107,114,128,0.9)',
+    grayBg: 'rgba(107,114,128,0.15)',
+  };
+
+  // 1) Users by Country (stacked)
+  const usersByCountryCtx = document.getElementById('usersByCountry');
+  if (usersByCountryCtx) {
+    const labels = profilesData.labels;
+    const dsMap = {
+      'User':   { color: palette.blue,   bg: palette.blueBg },
+      'Player': { color: palette.green,  bg: palette.greenBg },
+      'Agent':  { color: palette.amber,  bg: palette.amberBg },
+      'Coach':  { color: palette.fuchsia,bg: palette.fuchsiaBg },
+    };
+    new Chart(usersByCountryCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: profilesData.series.map(s => ({
+          label: s.label,
+          data: s.data,
+          backgroundColor: (dsMap[s.label]?.bg) || palette.grayBg,
+          borderColor: (dsMap[s.label]?.color) || palette.gray,
+          borderWidth: 1,
+          maxBarThickness: 40,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: { enabled: true },
+          title: { display: true, text: 'Users by Country' },
+        },
+        scales: {
+          x: { stacked: true, ticks: { maxRotation: 40, minRotation: 0 } },
+          y: { stacked: true, beginAtZero: true },
+        },
+      },
+    });
+    // Give the card a height
+    usersByCountryCtx.parentElement.style.height = '360px';
+  }
+
+  // 2) Posts by User (two bars)
+  const postsByUserCtx = document.getElementById('postsByUser');
+  if (postsByUserCtx) {
+    const labels = postsByUserData.labels;
+    const series = postsByUserData.series;
+    new Chart(postsByUserCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: series[0].label,
+            data: series[0].data,
+            backgroundColor: palette.blueBg,
+            borderColor: palette.blue,
+            borderWidth: 1,
+          },
+          {
+            label: series[1].label,
+            data: series[1].data,
+            backgroundColor: palette.cyanBg,
+            borderColor: palette.cyan,
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Posts and Countries per User' },
+        },
+        scales: {
+          y: { beginAtZero: true },
+        },
+      },
+    });
+    postsByUserCtx.parentElement.style.height = '360px';
+  }
+
+  // 3) Posts by Category (Football only)
+  const postsByCategoryCtx = document.getElementById('postsByCategory');
+  if (postsByCategoryCtx) {
+    const labels = postsByCategoryData.labels;
+    const series = postsByCategoryData.series[0];
+    new Chart(postsByCategoryCtx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: series.label,
+          data: series.data,
+          backgroundColor: palette.greenBg,
+          borderColor: palette.green,
+          borderWidth: 1,
+          maxBarThickness: 40,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true },
+          title: { display: true, text: 'Category Type by User' },
+        },
+        scales: {
+          y: { beginAtZero: true },
+        },
+      },
+    });
+    postsByCategoryCtx.parentElement.style.height = '340px';
+  }
+})();
+
     </script>
 {% endblock %}
 </html>

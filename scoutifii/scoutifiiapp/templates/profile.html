@@ -70,11 +70,13 @@
               <div class="profile-intro">
                   <h3>Bio</h3>
                   <p class="intro-text">{{user_profile.bio}}</p>
+                  {% if user_profile.profile_type_data == 'player' %}
                   <p class="intro-text"><small>Dominant Side</small>{{user_profile.dominant_side}}</p>
                   <p class="intro-text"><small>Height</small>{{user_profile.height_cm}}</p>
                   <p class="intro-text"><small>Primary Position</small>{{user_profile.primary_position}}</p>
                   <p class="intro-text"><small>Weight</small>{{user_profile.weight_kg}}</p>
                   <p class="intro-text"><small>Secondary Positions</small>{{user_profile.secondary_positions}}</p>
+                  {% endif %}
                   <hr>
               </div>
           </div>
