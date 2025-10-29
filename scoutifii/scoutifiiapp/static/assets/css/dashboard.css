@@ -992,7 +992,9 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] { stroke: #0000ff !important; 
 
 /* <= 480px */
 @media (max-width: 480px) {
-  .user > a { grid-template-columns: 36px 1fr; }
+  .user > a { grid-template-columns: 36px 1fr; }  
+  .main-middle-index { grid-template-columns: 36px 1fr; }
+  .middle-container .stories { width: 82%; }
   .user .profile-picture { width: 36px; height: 36px; }
   .action-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   #main-left-scroll {
