@@ -107,7 +107,7 @@ body {
 .hidden { display: none !important; }
 
 /* Layout shells */
-.main-middle-index {
+.main-middle {
   max-width: 550px;
   margin: 0 auto;
   padding-inline: 0.75rem;
@@ -993,8 +993,8 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] { stroke: #0000ff !important; 
 /* <= 480px */
 @media (max-width: 480px) {
   .user > a { grid-template-columns: 36px 1fr; }  
-  .main-middle-index { grid-template-columns: 36px 1fr; }
-  .middle-container .stories { width: 82%; }
+  .main-middle { grid-template-columns: 36px, 1fr; }
+  .main-middle .middle-container .stories { max-width: 82%; }
   .user .profile-picture { width: 36px; height: 36px; }
   .action-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   #main-left-scroll {
