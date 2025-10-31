@@ -1228,10 +1228,10 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] {
   color: #fff;
   background: #2563eb;
   border: 1px solid transparent;
-  border-radius: 9999px;
+  border-radius: 9px;
   cursor: pointer;
   transition: background-color .15s ease, transform .02s ease, box-shadow .15s ease;
-  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.25);
 }
 
 #startStream:hover { background: #1e4fd6; }
@@ -1246,7 +1246,7 @@ svg[stroke="#0000FF"], svg path[stroke="#0000FF"] {
 #controls {
   position: fixed;                 /* float over page for easy access */
   left: 50%;
-  bottom: 20px;
+  bottom: 10px;
   transform: translateX(-50%);
   z-index: 1000;
   display: flex;

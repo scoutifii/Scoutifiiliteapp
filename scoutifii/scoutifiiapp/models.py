@@ -1039,6 +1039,14 @@ class LiveStream(models.Model):
     channel_name = models.CharField(max_length=200, null=True)
     live_date = models.DateTimeField(auto_now_add=True)
     live_time = models.DateTimeField()
+    file = models.FileField(
+        VideoStorage, 
+        upload_to='recordings/%Y/%m/%d',
+         blank=True, 
+        null=True
+    )
+    mime_type = models.CharField(max_length=100, blank=True)
+    duration_seconds = models.PositiveIntegerField(null=True, blank=True)
     is_live = models.BooleanField(default=False)
     title = models.CharField(max_length=255)
     stream_url = models.URLField()

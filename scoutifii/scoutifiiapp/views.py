@@ -1765,19 +1765,26 @@ def create_stream(request):
     user_object = User.objects.get(username=request.user.username) 
     user_profile = Profile.objects.get(user=user_object)
     if request.method == "POST":
-        user = request.POST.get("user_id")
         profile = request.POST.get("profile_id")
-        title = request.POST.get("title")
         stream_url = request.POST.get("stream_url")
         is_live = request.POST.get("is_live", "false").lower() == "true"
+        file = request.FILES.get('recording')
+        title = request.POST.get('title') or 'Untitled'
+        if not file:
+            return HttpResponseBadRequest('Missing file')
+        # Basic mime/type and size checks
+        if file.content_type not in ('video/webm', 'video/mp4', 'video/ogg'):
+            return HttpResponseBadRequest('Unsupported format')
 
         # Save the stream to the database
         stream = LiveStream.objects.create(
-            user=user,
+            user=request.user,
             profile=profile,
             title=title,
             stream_url=stream_url,
-            is_live=is_live
+            is_live=is_live,
+            file=file,
+            mime_type=file.content_type,
         )
         stream.save()
     context = {
