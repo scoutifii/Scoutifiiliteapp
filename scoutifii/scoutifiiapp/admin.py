@@ -13,8 +13,9 @@ from .models import (
 	VideoCloseRangeShotStoppingAbility, FollowersCount,
 	OffTheBallVideo, VideoPositioning, VideoMarking, 
     VideoCounts, Notification, VideoCharisma, VideoFreeKick,
-	Notification, Repost, Plan, Subscription, OverageEvent, UsageQuota,
-	Advertiser, AdPlacement, AdClick, Campaign, Creative, AdImpression
+	Notification, Repost, Plan, Subscription, 
+	OverageEvent, UsageQuota, Theme, Advertiser, 
+	AdPlacement, AdClick, Campaign, Creative, AdImpression
 )
 
 class AllLoginsAdmin(admin.ModelAdmin):
@@ -91,3 +92,4 @@ admin.site.register(AdImpression)
 admin.site.register(AdClick)
 admin.site.register(Advertiser)
 admin.site.register(AdPlacement)
+admin.site.register(Theme)

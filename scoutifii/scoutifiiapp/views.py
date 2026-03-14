@@ -18,7 +18,7 @@ from .models import (
     VideoCrossing, VideoPace, Comment, LikePost, 
     FollowersCount, Notification, ActivityLog,
     Repost, VideoCounts, LiveStream, AdImpression, 
-    AdClick, BrandSetting
+    AdClick, BrandSetting, Theme
 )
 from django.utils import timezone
 # from django.utils.timezone import now
@@ -51,6 +51,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .ad_selector import select_creative
 from django.db import transaction
 from django.utils.html import escape
+from django.utils.datastructures import MultiValueDictKeyError
+import uuid
 
 
 load_dotenv()
@@ -1761,36 +1763,62 @@ def watch(request, pk):
 
 
 @login_required(login_url='login')
+@require_http_methods(["GET", "POST"])
 def create_stream(request):
-    user_object = User.objects.get(username=request.user.username) 
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = request.user 
+    user_profile = get_object_or_404(Profile, user=user_object)
+    brand_setting = BrandSetting.objects.all()
     if request.method == "POST":
-        profile = request.POST.get("profile_id")
-        stream_url = request.POST.get("stream_url")
-        is_live = request.POST.get("is_live", "false").lower() == "true"
-        file = request.FILES.get('recording')
-        title = request.POST.get('title') or 'Untitled'
-        if not file:
-            return HttpResponseBadRequest('Missing file')
-        # Basic mime/type and size checks
+        profile_id = request.POST.get("profile_id")
+        stream_url = request.META['SERVER_NAME']
+        is_live = (request.POST.get("is_live", "false").lower() == "true")
+        title = (request.POST.get('title') or 'Untitled').strip()
+
+        try:
+            file = request.FILES["recording"]
+        except MultiValueDictKeyError:
+            return HttpResponseBadRequest("Missing file")
+       
         if file.content_type not in ('video/webm', 'video/mp4', 'video/ogg'):
             return HttpResponseBadRequest('Unsupported format')
+        max_size = 200 * 1024 * 1024  # 200 MB
+        if file.size > max_size:
+            return HttpResponseBadRequest('File too large')
+        
+        profile_obj = None
+        if profile_id:
+            profile_obj = get_object_or_404(
+                Profile, 
+                pk=profile_id, 
+                user=user_object
+            )
 
         # Save the stream to the database
         stream = LiveStream.objects.create(
-            user=request.user,
-            profile=profile,
+            user=user_object,
+            profile=profile_obj,
             title=title,
             stream_url=stream_url,
             is_live=is_live,
             file=file,
             mime_type=file.content_type,
+            live_time=timezone.now(),
+            uid=str(uuid.uuid4()),
         )
         stream.save()
-    context = {
-        'user_profile': user_profile,
-    }
-        # return JsonResponse({"message": "Stream created successfully", "stream_id": stream.id})
+        return JsonResponse(
+            {
+                "id": stream.id,
+                "title": stream.title,
+                "is_live": stream.is_live,
+                "mime_type": stream.mime_type,
+            },
+            status=201,
+        ) 
+    context =  {
+        "user_profile": user_profile,
+        "brand_setting": brand_setting,
+    }     
     return render(request, 'live.html', context)
 
 
@@ -1855,3 +1883,49 @@ def ad_click(request, impression_id: int):
     # Basic duplicate click protection: one click per impression per IP in quick succession could be checked
     AdClick.objects.create(impression=impression)
     return redirect(impression.creative.click_url)
+
+
+@login_required
+def save_theme(request):
+    user_object = request.user 
+    user_profile = get_object_or_404(Profile, user=user_object)
+    brand_setting = BrandSetting.objects.all()
+    if request.method == 'POST':
+        profile_id = request.POST.get("profile_id")
+        # return JsonResponse({'error': 'POST required'}, status=405)
+    # try:
+        data = json.loads(request.body.decode('utf-8'))
+        theme_name = data.get('theme')
+        profile_obj = None
+        if profile_id:
+            profile_obj = get_object_or_404(
+                Profile, 
+                pk=profile_id, 
+                user=user_object
+            )
+        if theme_name:
+            theme = Theme.objects.create(
+                user=user_object,
+                profile=profile_obj,
+            )
+            theme.name = theme_name
+            theme.save()
+            return JsonResponse({'ok': True})
+        else:
+            return JsonResponse({'error': 'No theme provided'}, status=400)
+    # except json.JSONDecodeError:
+    #     return JsonResponse({'error': 'bad json'}, status=400)
+    context =  {
+        "user_profile": user_profile,
+        "brand_setting": brand_setting,
+    }     
+    return render(request, 'theme.html', context)
+
+
+@login_required
+def get_theme(request):
+    try:
+        theme = Theme.objects.get(user=request.user)
+        return JsonResponse({'theme': theme.name})
+    except Theme.DoesNotExist:
+        return JsonResponse({'theme': 'light-theme'})  # Default theme

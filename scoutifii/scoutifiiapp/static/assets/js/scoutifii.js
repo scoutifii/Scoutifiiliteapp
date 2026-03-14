@@ -177,11 +177,62 @@ $(document).on('submit', '.create-comment', function(e){
     });            
 });
 /*..... End of adding comments..... */
+const applyTheme = (theme) => {
+    const root = document.documentElement;
+    root.className = theme; // Set the theme class on the <html> element
+};
+
+const saveTheme = (theme) => {
+    fetch('/save-theme/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ theme }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            alert('Theme saved successfully!');
+        } else {
+            alert('Failed to save theme.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+};
+
+// Attach the saveTheme function to a button or event
+document.querySelectorAll('.theme-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const theme = button.dataset.theme;
+        applyTheme(theme);
+        saveTheme(theme);
+    });
+});
+// document.querySelector('#theme').addEventListener('click', saveTheme);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/get-theme', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.theme) {
+            applyTheme(data.theme);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
 
 // THEME CUSTOMIZATION
-        const theme = document.querySelector('#theme');
-        const themeModal = document.querySelector('.customize-theme');
-        const fontSizes = document.querySelectorAll('.choose-size span');
+        const theme = document.querySelector('#them');
+        const themeModal = document.querySelector('.customiz-theme');
+        const fontSizes = document.querySelectorAll('.choos-size span');
         const root = document.querySelector(':root');
         const colorPalette = document.querySelectorAll('.choose-color span');
         const Bg1 = document.querySelector('.bg-1');

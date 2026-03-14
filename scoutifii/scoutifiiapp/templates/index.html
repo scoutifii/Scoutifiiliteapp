@@ -93,6 +93,10 @@
     }
     .tabs_container .nav {
         gap: 0.4rem; flex-wrap: nowrap; overflow-x: auto;
+        -ms-overflow-style: none; scrollbar-width: none;
+    }
+    .tabs_container .nav::-webkit-scrollbar {
+        display: none; height: 0; width: 0;background: transparent;
     }
     .tabs_container .nav .nav-link {
         padding: 0.35rem 0.7rem;
@@ -109,6 +113,11 @@
   }
   .tabs_container .nav {
     gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto;
+    -ms-overflow-style: none;   
+    scrollbar-width: none;
+  }
+  .tabs_container .nav::-webkit-scrollbar {
+    display: none; height: 0; width: 0;background: transparent;
   }
   .tabs_container .nav .nav-link {
     padding: 0.32rem 0.6rem;
@@ -126,6 +135,11 @@
   }
   .tabs_container .nav {
     gap: 0.3rem; flex-wrap: nowrap; overflow-x: auto;
+    -ms-overflow-style: none;   
+    scrollbar-width: none;
+  }
+  .tabs_container .nav::-webkit-scrollbar {
+    display: none; height: 0; width: 0;background: transparent;
   }
   .tabs_container .nav .nav-link {
     padding: 0.28rem 0.55rem;
@@ -899,7 +913,7 @@
                                 required
                                 class="flex-1 px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 dark:text-white">
                                 <input type="submit" value="💡" class="btn btn-primary">&nbsp;
-                                <input type="submit" value="🚀" class="btn btn-danger" id="emoji-button">
+                                <!-- <input type="submit" value="🚀" class="btn btn-danger" id="emoji-button"> -->
                             </form>
                             {% endif %}
                         </div>

@@ -211,7 +211,7 @@
                             <h3>Log Report</h3>
                     </a>
                     {% endif %}
-                    <a class="menu-item" id="theme">
+                    <a href="{% url 'save-theme' %}" class="menu-item" id="theme">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                                 <title>Theme</title>
@@ -435,7 +435,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/imask"></script>
-    <script type="text/javascript">       
+    <script type="text/javascript">
+        const csrftoken = '{{ csrf_token }}';
+    
         setInterval(function() {
             var currentTime = new Date();    
             var cdate = currentTime.getDate();
@@ -468,10 +470,12 @@
                     grabCursor: true,
 
                     breakpoints: {
-                    1024: { slidesPerView: 4, spaceBetween: 16 },
-                    768: { slidesPerView: 3, spaceBetween: 14 },
-                    480: { slidesPerView: 2, spaceBetween: 12 },
-                    0: { slidesPerView: 1, spaceBetween: 10 },
+                        0: { slidesPerView: 1, spaceBetween: 10 },
+                        320: { slidesPerView: 2, spaceBetween: 20 },
+                        480: { slidesPerView: 3, spaceBetween: 30 },
+                        640: { slidesPerView: 4, spaceBetween: 40 },                    
+                        768: { slidesPerView: 5, spaceBetween: 14 },
+                        1024: { slidesPerView: 6, spaceBetween: 16 }                    
                     },
                     // And if we need scrollbar
                     scrollbar: {

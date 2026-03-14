@@ -57,7 +57,8 @@ urlpatterns = [
     path('stream/<int:stream_id>/', views.stream_view, name='stream'),
     path("slot/<str:placement_code>", views.ad_slot, name="ad_slot"),
     path("click/<int:impression_id>/", views.ad_click, name="ad_click"),
-
+    path('save-theme/', views.save_theme, name='save-theme'),
+    path('get-theme', views.get_theme, name='get-theme'),
     path('password-reset/sent/',
          TemplateView.as_view(template_name='password_reset_sent.html'),
          name='password_reset_sent'),

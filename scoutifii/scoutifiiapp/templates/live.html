@@ -9,6 +9,7 @@
     <video class="video-player play" id="localVideo" autoplay muted playsinline preload="metadata"></video>
     <video class="video-player play" id="remoteVideo" autoplay playsinline preload="metadata"></video>
     <button id="startStream">Start Stream</button>
+    <!-- <input type="hidden" name="profile_id" value="{{user_profile.pk}}"> -->
       <div id="controls">
         <div class="control-icon" id="mic-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
@@ -45,5 +46,10 @@
         </div>
       </div>
     </div>
-    <script src="{% static 'assets/js/live.js' %}"></script>
+    <script type="text/javascript" src="https://download.agora.io/sdk/release/AgoraRTC_N-4.23.1.js"></script>
+    <!-- <script type="text/javascript" src="{% static 'assets/js/AgoraRTC_N-4.22.0.js' %}"></script>  -->
+    <script type="text/javascript" src="{% static 'assets/js/live.js' %}"></script>
+    <script>
+      window.CURRENT_PROFILE_ID = {{ user_profile.id }};
+    </script>
  {% endblock content %}

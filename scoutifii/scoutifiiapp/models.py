@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from django_countries.fields import CountryField
@@ -15,6 +16,30 @@ import uuid
 from datetime import date
 videos_storage = VideoStorage()
 
+
+class ShardRouter:
+    """
+    A router to control database operations for sharding.
+    """
+    def db_for_read(self, model, **hints):
+        user_id = hints.get('user_id')
+        if user_id is not None:
+            return self.get_shard(user_id)
+        return 'default'
+
+    def db_for_write(self, model, **hints):
+        user_id = hints.get('user_id')
+        if user_id is not None:
+            return self.get_shard(user_id)
+        return 'default'
+
+    def get_shard(self, user_id):
+        shard_count = len(settings.DATABASES) - 1  # Exclude 'default'
+        shard_index = user_id % shard_count
+        return f'shard_{shard_index + 1}'
+
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        return db == 'default'
 
 class AllLogins(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -1146,3 +1171,25 @@ class Media(models.Model):
 
     def __str__(self):
         return f"{self.player} - {self.type} - {self.url}"
+
+
+class Theme(models.Model):
+    profile = models.ForeignKey(
+        Profile, 
+        on_delete=models.CASCADE, 
+        related_name="theme")
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name="theme")
+    font_size = models.CharField(max_length=10, default="13px")
+    primary_color = models.CharField(max_length=20, default="color-1")
+    background = models.CharField(max_length=20, default="bg-1")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "theme"
+
+    def __str__(self):
+        return f"{self.user.username}'s Theme"
