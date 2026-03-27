@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.conf import settings
 
 load_dotenv()
 
@@ -85,7 +86,23 @@ DATABASES = {
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'PORT': os.getenv("DB_PORT"),
         'HOST': os.getenv("DB_HOST"),
-    }
+    },
+    'shard_1': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("SHARD1_DB_NAME"),
+        'USER': os.getenv("SHARD1_DB_USER"),
+        'PASSWORD': os.getenv("SHARD1_DB_PASSWORD"),
+        'PORT': os.getenv("SHARD1_DB_PORT"),
+        'HOST': os.getenv("SHARD1_DB_HOST"),
+    },
+    'shard_2': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("SHARD2_DB_NAME"),
+        'USER': os.getenv("SHARD2_DB_USER"),
+        'PASSWORD': os.getenv("SHARD2_DB_PASSWORD"),
+        'PORT': os.getenv("SHARD2_DB_PORT"),
+        'HOST': os.getenv("SHARD2_DB_HOST"),
+    },
 }
 
 
@@ -179,6 +196,9 @@ SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 CSRF_TRUSTED_ORIGINS = ['https://scoutifii.com']
 
+settings.DATABASE_ROUTERS = ['scoutifiiapp.models.ShardRouter']
+
+
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
@@ -197,4 +217,17 @@ CSRF_TRUSTED_ORIGINS = ['https://scoutifii.com']
 #         },
 #     },
 # }
+
+# Kafka Configuration
+KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
+KAFKA_TOPICS = {
+    'post_created': 'scoutifii.post.created',
+    'comment_created': 'scoutifii.comment.created',
+    'like_created': 'scoutifii.like.created',
+}
+
+# Redis Configuration
+REDIS_HOST = 'redis_db'
+REDIS_PORT = 6388
+REDIS_DB = 0
 

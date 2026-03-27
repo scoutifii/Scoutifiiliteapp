@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="theme-container">
+    <h1 class="theme-title">Choose Your Theme</h1>
+    <div class="theme-options">
+        <div class="theme-card light-theme" data-theme="light-theme">
+            <h3>Light Theme</h3>
+        </div>
+        <div class="theme-card dark-theme" data-theme="dark-theme">
+            <h3>Dark Theme</h3>
+        </div>
+        <div class="theme-card high-contrast-theme" data-theme="high-contrast-theme">
+            <h3>High Contrast</h3>
+        </div>
+        <div class="theme-card minimal-theme" data-theme="minimal-theme">
+            <h3>Minimal Theme</h3>
+        </div>
+        <div class="theme-card vibrant-theme" data-theme="vibrant-theme">
+            <h3>Vibrant Theme</h3>
+        </div>
+        <div class="theme-card nature-theme" data-theme="nature-theme">
+            <h3>Nature Theme</h3>
+        </div>
+        <div class="theme-card ocean-theme" data-theme="ocean-theme">
+            <h3>Ocean Theme</h3>
+        </div>
+        <div class="theme-card retro-theme" data-theme="retro-theme">
+            <h3>Retro Theme</h3>
+        </div>
+    </div>
+    <button id="save-theme-btn" class="save-theme-btn">Save Theme</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeCards = document.querySelectorAll('.theme-card');
+        let selectedTheme = null;
+
+        themeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                themeCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedTheme = card.dataset.theme;
+                document.documentElement.className = selectedTheme; // Apply theme
+            });
+        });
+
+        document.getElementById('save-theme-btn').addEventListener('click', () => {
+            if (!selectedTheme) {
+                alert('Please select a theme first!');
+                return;
+            }
+
+            fetch('/save-theme/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ theme: selectedTheme }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('Theme saved successfully!');
+                } else {
+                    alert('Failed to save theme.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+{% endblock %}

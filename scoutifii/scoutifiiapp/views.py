@@ -41,7 +41,7 @@ from django.views.decorators.http import (
     require_http_methods
 )
 from django.shortcuts import get_object_or_404
-# from scoutifiiapp.kafka.producer import send_event
+from scoutifiiapp.kafka.producer import send_event
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import mail_managers
 from django.contrib.auth.forms import PasswordResetForm
@@ -53,6 +53,7 @@ from django.db import transaction
 from django.utils.html import escape
 from django.utils.datastructures import MultiValueDictKeyError
 import uuid
+from scoutifiiapp.redis.redis_utils import set_key
 
 
 load_dotenv()
@@ -510,6 +511,11 @@ def user_post(request, id):
             category_type=category_type
         )
         new_post.save()
+        send_event('scoutifii.post.created', 
+            key=str(new_post), 
+            value=str(new_post)
+        )
+        set_key(f'post:{new_post}', new_post, expiry=3600)  # Cache in redis for 1 hour
         return HttpResponseRedirect(reverse('dashboard'))
     else:
         return render(request, 'dashboard')

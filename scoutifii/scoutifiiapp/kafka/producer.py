@@ -10,6 +10,7 @@ load_dotenv()
 _producer = None
 _lock = threading.Lock()
 
+
 def _get_config():
     cfg = {
         "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
@@ -28,6 +29,7 @@ def _get_config():
         })
     return cfg
 
+
 def get_producer() -> Producer:
     global _producer
     if _producer is None:
@@ -36,11 +38,13 @@ def get_producer() -> Producer:
                 _producer = Producer(_get_config())
     return _producer
 
+
 def _delivery_report(err, msg):
     if err is not None:
         # Replace with your logger
         print(f"[kafka] delivery failed: {err} topic={msg.topic()} key={msg.key()}")
     # else: delivered OK; avoid chatty logs in prod
+
 
 def send_event(topic: str, key: str, payload: dict) -> None:
     p = get_producer()

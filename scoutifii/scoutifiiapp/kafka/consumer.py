@@ -1,12 +1,12 @@
 # scoutifiiapp/kafka/consumer.py
 import json
 import signal
-import sys
 from confluent_kafka import Consumer, KafkaException
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 class KafkaRunner:
     def __init__(self, group_id: str, topics: list[str]):
@@ -21,6 +21,7 @@ class KafkaRunner:
 
     def start(self, handler):
         self.c.subscribe(self.topics)
+        
         def _stop(*_):
             self.running = False
         signal.signal(signal.SIGINT, _stop)
