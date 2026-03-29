@@ -16,6 +16,7 @@ constantly==23.10.4
 cryptography==46.0.2
 daphne==4.2.1
 Django==6.0.3
+django-cors-headers==4.9.0
 django-countries==7.6.1
 django-cron==0.6.0
 django-environ==0.12.0
