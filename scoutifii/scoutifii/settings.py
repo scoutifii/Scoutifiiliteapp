@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'scoutifiiapp.apps.ScoutifiiappConfig',
     'phonenumber_field',
     'django_countries',
+    'corsheaders',
     'graphene_django',
     'channels',
     'django_otp', 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -198,25 +200,28 @@ CSRF_TRUSTED_ORIGINS = ['https://scoutifii.com']
 
 settings.DATABASE_ROUTERS = ['scoutifiiapp.models.ShardRouter']
 
+# ================== CORS SETTINGS ==================
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': BASE_DIR / 'logs/security.log',
-#         },
-#     },
-#     'loggers': {
-#         'django.security': {
-#             'handlers': ['file'],
-#             'level': 'INFO',
-#             'propagate': True,
-#         },
-#     },
-# }
+# For completely public API (recommended during development & early stage)
+CORS_ALLOW_ALL_ORIGINS = True          # Allows any website to call your API
+
+# More secure option (recommended for production)
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",      # React/Vue
+#     "https://yourfrontend.com",
+#     "https://app.example.com",
+# ]
+
+CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'authorization',
+    'content-type',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_CREDENTIALS = False         # Set True only if using cookies/auth
 
 # Kafka Configuration
 KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
