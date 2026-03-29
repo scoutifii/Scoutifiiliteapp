@@ -3,7 +3,7 @@ from graphene_django.types import DjangoObjectType
 from .models import Profile, Post, Comment, Notification, FollowersCount
 from django.contrib.auth.models import User
 
-
+# ...Creating Models....
 class UserType(DjangoObjectType):
     class Meta:
         model = User
@@ -66,7 +66,9 @@ class FollowersCountType(DjangoObjectType):
         fields = ('id', 'follower', 'user', 'created_at', 'status')
 
 
+# ....Creating queries..... Specify how clients can read data
 class Query(graphene.ObjectType):
+    # Define a field that returns alist of ProfileType objects
     all_profiles = graphene.List(ProfileType)
     # User and Profile APIs
     user_profile = graphene.Field(
@@ -75,11 +77,13 @@ class Query(graphene.ObjectType):
    
     # Post APIs
     all_posts = graphene.List(PostType)
+    # Get post by user id
     posts_by_user = graphene.List(
         PostType, 
         user_id=graphene.Int(required=True))
 
     # Comment APIs
+    # Get all comments by a post
     comments_by_post = graphene.List(
         CommentType, 
         post_id=graphene.String(required=True))
@@ -109,18 +113,23 @@ class Query(graphene.ObjectType):
         except Profile.DoesNotExist:
             return None
 
+    # The resolver method to fetch the data for 'all_profiles'
     def resolve_all_profiles(self, info):
         return Profile.objects.all()
 
+    # The resolver method to fetch the data for 'all_posts'
     def resolve_all_posts(self, info):
         return Post.objects.all()
 
+    # The resolver method to fetch the data for 'posts by user'
     def resolve_posts_by_user(self, info, user_id):
         return Post.objects.filter(user_id=user_id)
 
+    # The resolver method to fetch the data for 'comments by post'
     def resolve_comments_by_post(self, info, post_id):
         return Comment.objects.filter(post_id=post_id)
 
+    # The resolver method to fetch the data for 'notifications by user'
     def resolve_notifications_by_user(self, info, user_id):
         return Notification.objects.filter(user_id=user_id)
 
@@ -134,8 +143,7 @@ class Query(graphene.ObjectType):
         return Profile.objects.filter(user__username__icontains=query)
 
 
-# Define Mutations
-
+# Define Mutations -> Mutations are used for creating, updating or deleting data
 class FollowUser(graphene.Mutation):
     class Arguments:
         user_id = graphene.Int(required=True)

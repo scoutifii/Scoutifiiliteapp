@@ -511,7 +511,8 @@ def user_post(request, id):
             category_type=category_type
         )
         new_post.save()
-        send_event('scoutifii.post.created', 
+        send_event(
+            'scoutifii.post.created', 
             key=str(new_post), 
             value=str(new_post)
         )
