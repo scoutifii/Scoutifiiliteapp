@@ -4,6 +4,7 @@ import threading
 from confluent_kafka import Producer
 import os
 from dotenv import load_dotenv
+from scoutifiiapp.models import 
 
 load_dotenv()
 
@@ -19,6 +20,16 @@ def _get_config():
         "retries": 3,
         "linger.ms": 5,
         "batch.num.messages": 1000,
+        "kafka.kraft.mode": os.getenv("KAFKA_KRAFT_MODE"),
+        "kafka.node.id": os.getenv("KAFKA_NODE_ID"),
+        "cluster.id": os.getenv("CLUSTER_ID"),
+        "kafka.process.roles": os.getenv("KAFKA_PROCESS_ROLES"),
+        "kafka.controller.quorum.voters": os.getenv("KAFKA_CONTROLLER_QUORUM_VOTERS"),
+        "kafka.offsets.topic.replication.factor": os.getenv("KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR"),
+        "kafka.listeners": os.getenv("KAFKA_LISTENERS"),
+        "kafka.advertised.listeners": os.getenv("KAFKA_ADVERTISED_LISTENERS"),
+        "kafka.controller.listener.names": os.getenv("KAFKA_CONTROLLER_LISTENER_NAMES"),
+        "kafka.log.dirs": os.getenv("KAFKA_LOG_DIRS")
     }
     if os.getenv("KAFKA_SECURITY_PROTOCOL") != "PLAINTEXT":
         cfg.update({
@@ -29,7 +40,7 @@ def _get_config():
         })
     return cfg
 
-
+   
 def get_producer() -> Producer:
     global _producer
     if _producer is None:
@@ -40,15 +51,17 @@ def get_producer() -> Producer:
 
 
 def _delivery_report(err, msg):
-    if err is not None:
-        # Replace with your logger
-        print(f"[kafka] delivery failed: {err} topic={msg.topic()} key={msg.key()}")
-    # else: delivered OK; avoid chatty logs in prod
+    if err:
+        print(f"Delivery failed: {err}")
+    else:
+        print(f"Delivered {msg.value().decode("utf-8")}") 
+        print(f"Delivered to topic={msg.topic()} key={msg.key()} partition={msg.partition} : at offset {msg.offset()}")
 
 
 def send_event(topic: str, key: str, payload: dict) -> None:
     p = get_producer()
     try:
+        # Creates posts
         p.produce(
             topic=topic,
             key=key.encode("utf-8") if isinstance(key, str) else key,

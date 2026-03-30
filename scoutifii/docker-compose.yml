@@ -74,20 +74,24 @@ services:
     env_file:
       - .env
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.6.0
-    env_file:
-      - .env
-    ports: ["2181:2181"]
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:latest
+  #   container_name: zookeeper
+  #   env_file:
+  #     - .env
+  #   ports: ["2181:2181"]
 
   kafka:
-    image: confluentinc/cp-kafka:7.6.0
-    depends_on: [zookeeper]
+    image: confluentinc/cp-kafka:latest
+    container_name: broker
+    # depends_on: [zookeeper]
     ports:
       - "9092:9092"      # host access
       - "29092:29092"    # intra-docker access
     env_file:
       - .env
+    volumes:
+      - kafka_kraft: /var/lib/kafka/data
   
   networks:
     postgres:
@@ -99,3 +103,4 @@ services:
     postgres: {}
     pgadmin: {}
     data: {}
+    kafka_kraft: {}

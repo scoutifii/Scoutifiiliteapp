@@ -13,11 +13,11 @@ class KafkaRunner:
         self.topics = topics
         self.c = Consumer({
             "bootstrap.servers": os.getenv('KAFKA_BOOTSTRAP_SERVERS'),
-            "group.id": group_id,
+            "group.id": group_id,  # A unique string that identifies the consumer group this group belongs to  
             "auto.offset.reset": "earliest",
             "enable.auto.commit": False,
         })
-        self.running = True
+        self.running = True   # Consumer is running and subscribed to topics
 
     def start(self, handler):
         self.c.subscribe(self.topics)
@@ -28,7 +28,9 @@ class KafkaRunner:
         signal.signal(signal.SIGTERM, _stop)
 
         while self.running:
-            msg = self.c.poll(1.0)
+            # Asks the broker for any new messages on the subscribed topic
+            #  and returns them to the consumer for processing
+            msg = self.c.poll(1.0)   
             if msg is None:
                 continue
             if msg.error():
@@ -40,5 +42,5 @@ class KafkaRunner:
                 self.c.commit(msg)
             except Exception as e:
                 # log and optionally send to DLQ
-                print(f"[kafka] handler error: {e} topic={msg.topic()} key={key} value={msg.value()!r}")
+                print(f"handler error: {e} topic={msg.topic()} key={key} value={msg.value()!r}")
         self.c.close()

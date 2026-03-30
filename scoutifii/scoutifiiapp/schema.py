@@ -24,14 +24,7 @@ class ProfileType(DjangoObjectType):
 class PostType(DjangoObjectType):
     class Meta:
         model = Post
-        fields = (
-            'id', 
-            'user_prof', 
-            'video_name', 
-            'no_of_likes', 
-            'category_type', 
-            'created_at'
-        )
+        fields = "__all__"
 
 
 class CommentType(DjangoObjectType):
@@ -80,7 +73,12 @@ class Query(graphene.ObjectType):
     # Get post by user id
     posts_by_user = graphene.List(
         PostType, 
-        user_id=graphene.Int(required=True))
+        user_id=graphene.Int(required=True))   
+
+    # Get posts by category
+    posts_by_category = graphene.List(
+        PostType, 
+        category_type=graphene.String(required=False))
 
     # Comment APIs
     # Get all comments by a post
@@ -141,6 +139,12 @@ class Query(graphene.ObjectType):
 
     def resolve_search_users(self, info, query):
         return Profile.objects.filter(user__username__icontains=query)
+    
+    # The resolver method to fetch the data for 'posts by category'
+    def resolve_posts_by_category(self, info, category_type=None):
+        if category_type:
+            return Post.objects.filter(category_type=category_type)
+        return Post.objects.all()
 
 
 # Define Mutations -> Mutations are used for creating, updating or deleting data
