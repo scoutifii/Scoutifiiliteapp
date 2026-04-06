@@ -1,7 +1,14 @@
 import graphene
 from graphene_django.types import DjangoObjectType
-from .models import Profile, Post, Comment, Notification, FollowersCount
+from .models import (
+    Profile, 
+    Post, 
+    Comment, 
+    Notification, 
+    FollowersCount, 
+)
 from django.contrib.auth.models import User
+
 
 # ...Creating Models....
 class UserType(DjangoObjectType):
@@ -24,7 +31,16 @@ class ProfileType(DjangoObjectType):
 class PostType(DjangoObjectType):
     class Meta:
         model = Post
-        fields = "__all__"
+        fields = (
+            'id', 
+            'video', 
+            'video_name', 
+            'user', 
+            'user_prof', 
+            'no_of_views', 
+            'category_type', 
+            'no_of_likes'
+        )
 
 
 class CommentType(DjangoObjectType):
@@ -103,7 +119,8 @@ class Query(graphene.ObjectType):
     search_users = graphene.List(
         ProfileType, 
         query=graphene.String(required=True))
-
+    
+  
     # Define resolvers
     def resolve_user_profile(self, info, username):
         try:

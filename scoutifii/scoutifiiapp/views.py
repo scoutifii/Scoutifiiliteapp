@@ -1747,7 +1747,12 @@ def watch(request, pk):
             return redirect('dashboard')
         else:
             if not VideoCounts.objects.filter(post=video, session=session_key):
-                views = VideoCounts(post=video, ip_address=ip_address, session=session_key, user_id=request.user.pk)
+                views = VideoCounts(
+                    post=video, 
+                    ip_address=ip_address, 
+                    session=session_key, 
+                    user_id=request.user.pk
+                )
                 views.save()
     else:
         post_lists = Post.objects.filter(id=pk)
@@ -1758,7 +1763,7 @@ def watch(request, pk):
         year = datetime.now().strftime("%Y")
 
     context = {
-        'posts':post,
+        'posts': post,
         'view_count': view_count,
         'postLists': post_lists,
         'brand_setting': brand_setting,

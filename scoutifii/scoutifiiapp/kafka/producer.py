@@ -4,7 +4,7 @@ import threading
 from confluent_kafka import Producer
 import os
 from dotenv import load_dotenv
-from scoutifiiapp.models import 
+
 
 load_dotenv()
 
