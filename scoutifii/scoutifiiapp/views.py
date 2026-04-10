@@ -1651,6 +1651,7 @@ def report(request):
     }
     return render(request, 'report.html', context)
 
+
 # @login_required(login_url='login')
 def view_logs(request):
     log_list = ActivityLog.objects.all().values(
