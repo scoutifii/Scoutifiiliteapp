@@ -1,3 +1,4 @@
+# Build stage
 FROM python:3.13.7-alpine3.22
 
 # Set the default django project name
@@ -13,8 +14,10 @@ COPY ./requirements.txt /app/requirements.txt
 COPY . /app/
 
 # set default environment variables
-ENV PYTHONUNBUFFERED=1
-ENV DEBIAN_FRONTEND=noniteractive
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noniteractive \
+    DJANGO_SETTINGS_MODULE=scoutifii.settings.production
 
 RUN python3 -m venv /opt/venv /opt/venv/bin/pip install pip --upgrade && \
 /opt/venv/bin/pip install --no-cache-dir -r requirements.txt && \ 
