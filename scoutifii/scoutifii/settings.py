@@ -42,10 +42,12 @@ INSTALLED_APPS = [
     'django_otp', 
     'django_otp.plugins.otp_totp', 
     'two_factor',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',    
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'scoutifiiapp.middleware.CustomActivityLog',
     'django_otp.middleware.OTPMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'scoutifii.urls'
